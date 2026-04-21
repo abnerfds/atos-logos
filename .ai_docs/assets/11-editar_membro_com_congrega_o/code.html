@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editar Membro - Atos Logos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#cde6f4",
+                    "surface-container-highest": "#dce3e9",
+                    "secondary-fixed-dim": "#bfd8e5",
+                    "on-secondary-container": "#3e5560",
+                    "tertiary": "#635983",
+                    "on-surface": "#2c3338",
+                    "tertiary-dim": "#574d76",
+                    "on-primary-fixed-variant": "#225077",
+                    "error-dim": "#67040d",
+                    "background": "#f7f9fc",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#a6d0fe",
+                    "error-container": "#fa746f",
+                    "primary-fixed": "#a6d0fe",
+                    "inverse-surface": "#0b0f11",
+                    "surface-container": "#e9eef3",
+                    "on-tertiary": "#fdf7ff",
+                    "outline-variant": "#abb3b9",
+                    "on-primary-container": "#16476d",
+                    "on-background": "#2c3338",
+                    "inverse-on-surface": "#9a9da0",
+                    "primary-dim": "#29567d",
+                    "on-surface-variant": "#596065",
+                    "surface-container-low": "#f0f4f8",
+                    "outline": "#747c81",
+                    "secondary-dim": "#3f5661",
+                    "on-secondary-fixed-variant": "#475f6a",
+                    "secondary": "#4b626e",
+                    "on-error-container": "#6e0a12",
+                    "surface-bright": "#f7f9fc",
+                    "surface": "#f7f9fc",
+                    "surface-dim": "#d4dbe1",
+                    "secondary-container": "#cde6f4",
+                    "primary": "#37628a",
+                    "on-tertiary-fixed": "#382e55",
+                    "inverse-primary": "#a6d0fe",
+                    "on-error": "#fff7f6",
+                    "on-primary": "#f7f9ff",
+                    "error": "#a83836",
+                    "tertiary-fixed": "#d8cafc",
+                    "tertiary-fixed-dim": "#cabded",
+                    "surface-variant": "#dce3e9",
+                    "on-secondary": "#f2faff",
+                    "on-tertiary-container": "#4b416a",
+                    "on-primary-fixed": "#003354",
+                    "surface-container-high": "#e3e9ee",
+                    "tertiary-container": "#d8cafc",
+                    "primary-fixed-dim": "#98c2ef",
+                    "on-tertiary-fixed-variant": "#554a74",
+                    "surface-tint": "#37628a",
+                    "on-secondary-fixed": "#2b424d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fc; color: #2c3338; -webkit-font-smoothing: antialiased; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; display: inline-block; }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+        input:checked ~ .accordion-content {
+            max-height: 1200px;
+            padding-top: 1.25rem;
+            padding-bottom: 1.5rem;
+        }
+        input:checked ~ label .chevron-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col">
+<header class="fixed top-0 w-full z-50 bg-[#f7f9fc]/70 backdrop-blur-xl flex items-center justify-between px-6 h-16">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#37628a] cursor-pointer">menu</span>
+<h1 class="text-xl font-bold tracking-tighter text-[#37628a]">Atos Logos</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border-2 border-primary-container">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCENF8cMsAk_v_oJzggFahUTYkdrrWFeP_BLgFxFpHJQzsBVq9OgeGgXSxeuEuVkvrIwrIs_f-qtR8-KXKq56kq9jGIIVZQbDGaMbkH8uQHhJWsTkMUehjIxBl63J2kcxkd-jo3MsDdMvJ44s5QZjQAARy_eFK27QRF8buSXd5l2zOyOvXURUC-moMLlQDpk9EMpRN1qrcobdtp-EK8XfxMDHOt77qhnJamw880W5Ku9x4LPAKmEWZi_nyw7oyIdBQzqY9WUabn_J3A"/>
+</div>
+</div>
+</header>
+<main class="flex-grow container mx-auto max-w-2xl px-6 pt-24 pb-32">
+<div class="mb-8 flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container-low text-primary hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<h2 class="font-headline text-3xl font-bold text-on-surface tracking-tight">Editar Membro</h2>
+<p class="text-on-surface-variant text-sm">Atualize os dados do registro na secretaria.</p>
+</div>
+</div>
+<form class="space-y-4">
+<!-- Profile Photo Section -->
+<div class="bg-surface-container-lowest rounded-2xl p-8 shadow-sm border border-surface-variant flex flex-col items-center justify-center mb-6">
+<div class="relative group cursor-pointer">
+<div class="w-32 h-32 rounded-full bg-surface-container flex items-center justify-center border-2 border-outline-variant group-hover:border-primary transition-colors overflow-hidden">
+<img alt="Foto do Perfil" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyqs2jvVdBnbn7R_o8IxnEDXpipgLJnR2--rpPKKC8hj52n1fP3_4w1mntLE3dGWTUnQQEahoftNASFI1XuEjLQ5LpXfGZS9W2q1S5RWElt7DhCdIOLIie1SbzPrGdx_ewY39AWKWHDwMml5SF_S4W4BxjxWYurr7spKeb65LdSPAqk8k6sp8dsG780oZTvOaepf05sbmG4zEyifBXpZHHQgraYqaihMQrcwBjd03D7PkY8Jm0IY3O4N_--ONLhCijGgUU6TEWDOI"/>
+</div>
+<div class="absolute bottom-0 right-0 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center border-4 border-surface-container-lowest shadow-md">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</div>
+</div>
+<span class="mt-4 text-sm font-semibold text-on-surface-variant">Foto do Perfil</span>
+</div>
+<!-- Informações Pessoais -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-surface-variant overflow-hidden">
+<input checked="" class="hidden peer" id="section-pessoal" type="checkbox"/>
+<label class="flex items-center justify-between px-6 py-5 cursor-pointer active:bg-surface-container-low transition-colors" for="section-pessoal">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="person">person</span>
+<h3 class="font-headline font-bold text-lg text-on-surface">Informações Pessoais</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-300 chevron-icon" data-icon="expand_more">expand_more</span>
+</label>
+<div class="accordion-content px-6 border-t border-surface-container">
+<div class="space-y-5">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">Nome Completo</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface placeholder:text-outline/50" type="text" value="Ana Beatriz Silva"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">E-mail</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface placeholder:text-outline/50" type="email" value="ana.beatriz@atoslogos.com.br"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">CPF</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface placeholder:text-outline/50" type="text" value="123.456.789-00"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">Telefone</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface placeholder:text-outline/50" type="tel" value="(11) 98765-4321"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">Data de Nascimento</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface" type="date" value="1990-05-12"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Dados Eclesiásticos -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-surface-variant overflow-hidden">
+<input checked="" class="hidden peer" id="section-eclesiastico" type="checkbox"/>
+<label class="flex items-center justify-between px-6 py-5 cursor-pointer active:bg-surface-container-low transition-colors" for="section-eclesiastico">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="church">church</span>
+<h3 class="font-headline font-bold text-lg text-on-surface">Dados Eclesiásticos</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-300 chevron-icon" data-icon="expand_more">expand_more</span>
+</label>
+<div class="accordion-content px-6 border-t border-surface-container">
+<div class="space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">Data de Batismo</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface" type="date" value="2005-08-15"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">Data de Admissão</label>
+<input class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface" type="date" value="2010-01-20"/>
+</div>
+</div>
+<div class="space-y-5">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">Cargo</label>
+<select class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface appearance-none">
+<option>Membro</option>
+<option selected="">Diácono</option>
+<option>Presbítero</option>
+<option>Evangelista</option>
+<option>Pastor</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1">Congregação</label>
+<select class="w-full bg-surface-container-high border-none rounded-lg focus:ring-0 focus:bg-surface-container-lowest transition-all px-4 py-3 text-on-surface appearance-none">
+<option selected="">Sede Central</option>
+<option>Congregação Norte</option>
+<option>Congregação Sul</option>
+<option>Ponto de Pregação Leste</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Danger Zone -->
+<div class="bg-red-50/50 rounded-2xl p-6 border border-red-100 mt-8">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-red-600 text-xl" data-icon="report">report</span>
+<h3 class="font-headline font-bold text-red-600 uppercase tracking-wide text-sm">Zona de Perigo</h3>
+</div>
+<button class="w-full py-3 px-4 border-2 border-red-500 text-red-500 font-bold rounded-xl hover:bg-red-500 hover:text-white transition-all active:scale-[0.98]" type="button">
+                    Excluir Registro
+                </button>
+</div>
+</form>
+</main>
+<button class="fixed bottom-28 right-6 w-14 h-14 rounded-2xl bg-primary text-on-primary flex items-center justify-center shadow-[0_12px_40px_rgba(55,98,138,0.3)] hover:scale-105 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined text-3xl" data-icon="check" style="font-variation-settings: 'FILL' 0, 'wght' 600;">check</span>
+</button>
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 pb-8 pt-3 bg-[#f7f9fc]/70 backdrop-blur-xl rounded-t-2xl shadow-[0_-12px_40px_rgba(44,51,56,0.06)] z-50">
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[10px] font-medium mt-1">Início</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#cde6f4] text-[#37628a] rounded-2xl px-2 py-1.5 active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined" data-icon="account_balance" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="font-['Inter'] text-[10px] font-bold mt-1">Secretaria</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-['Inter'] text-[10px] font-medium mt-1">Notificações</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-['Inter'] text-[10px] font-medium mt-1">Agenda</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] text-[10px] font-medium mt-1">Gestão</span>
+</div>
+</nav>
+</body></html>

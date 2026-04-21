@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#6e0a12",
+                    "secondary-dim": "#3f5661",
+                    "background": "#f7f9fc",
+                    "surface-container": "#e9eef3",
+                    "inverse-on-surface": "#9a9da0",
+                    "error-dim": "#67040d",
+                    "secondary-fixed": "#cde6f4",
+                    "on-surface": "#2c3338",
+                    "surface-container-low": "#f0f4f8",
+                    "secondary-container": "#cde6f4",
+                    "outline-variant": "#abb3b9",
+                    "primary-fixed": "#a6d0fe",
+                    "on-secondary-fixed": "#2b424d",
+                    "on-background": "#2c3338",
+                    "primary-container": "#a6d0fe",
+                    "surface-dim": "#d4dbe1",
+                    "tertiary": "#635983",
+                    "inverse-surface": "#0b0f11",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-dim": "#574d76",
+                    "on-tertiary": "#fdf7ff",
+                    "surface-container-high": "#e3e9ee",
+                    "secondary": "#4b626e",
+                    "primary": "#37628a",
+                    "secondary-fixed-dim": "#bfd8e5",
+                    "tertiary-fixed": "#d8cafc",
+                    "error": "#a83836",
+                    "on-tertiary-fixed": "#382e55",
+                    "on-error": "#fff7f6",
+                    "tertiary-container": "#d8cafc",
+                    "on-secondary-container": "#3e5560",
+                    "tertiary-fixed-dim": "#cabded",
+                    "on-primary-container": "#16476d",
+                    "inverse-primary": "#a6d0fe",
+                    "surface-container-highest": "#dce3e9",
+                    "outline": "#747c81",
+                    "surface-bright": "#f7f9fc",
+                    "on-primary": "#f7f9ff",
+                    "primary-fixed-dim": "#98c2ef",
+                    "surface-variant": "#dce3e9",
+                    "on-primary-fixed": "#003354",
+                    "on-secondary": "#f2faff",
+                    "surface": "#f7f9fc",
+                    "error-container": "#fa746f",
+                    "on-tertiary-container": "#4b416a",
+                    "on-tertiary-fixed-variant": "#554a74",
+                    "on-primary-fixed-variant": "#225077",
+                    "on-surface-variant": "#596065",
+                    "primary-dim": "#29567d",
+                    "surface-tint": "#37628a",
+                    "on-secondary-fixed-variant": "#475f6a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<header class="fixed top-0 w-full z-40 flex justify-between items-center px-6 h-16 bg-[#f7f9fc]/70 backdrop-blur-xl">
+<span class="text-xl font-black text-[#37628a] tracking-tight">Atos Logos</span>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#37628a]">notifications</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkUBNFBu1EyJnDj2L57VXK1WFpl8LerrlRzrZdOo2Nlv-UpvrsQ7gW9a70BONz7qDT4BATfYbN9HaqmIpwSB71BhDeuJnpYR8PIbiMcVAJWAa97BwtnJtmKufxclcm7Uywy5OLz2UMbKf74v-jTAEn8DiY8WaFTx2YWoSILWBjfbsTnxbTOKXck6oxRQrgmMauuMBUxBgIQQZ_fdRjdkQuTbrm6Qe0ee1GCI2OuKQuYCAgHIP4lKpFd7OTcnu_0ha80oPh_yIMX8Q"/>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-24 px-6 max-w-lg mx-auto">
+<section class="space-y-8">
+<header>
+<h1 class="text-3xl font-extrabold tracking-tight text-primary mb-1">Olá, Admin</h1>
+<p class="text-on-surface-variant font-medium">Bem-vindo à sua gestão pastoral.</p>
+</header>
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-2 p-6 rounded-xl bg-primary-container text-on-primary-container">
+<span class="material-symbols-outlined mb-2">volunteer_activism</span>
+<h3 class="font-bold text-lg">Contribuições</h3>
+<p class="text-2xl font-black">R$ 12.450,00</p>
+<p class="text-xs opacity-80 mt-1">Acumulado este mês</p>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-lowest shadow-sm border-0">
+<span class="material-symbols-outlined text-secondary-dim mb-2">groups</span>
+<h3 class="font-bold text-sm">Membros</h3>
+<p class="text-xl font-bold">842</p>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-lowest shadow-sm border-0">
+<span class="material-symbols-outlined text-secondary-dim mb-2">calendar_today</span>
+<h3 class="font-bold text-sm">Eventos</h3>
+<p class="text-xl font-bold">12</p>
+</div>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 w-full z-40 bg-[#f7f9fc]/70 backdrop-blur-xl rounded-t-2xl shadow-[0_-12px_40px_rgba(44,51,56,0.06)] flex justify-around items-center h-20 pb-safe px-4">
+<div class="flex flex-col items-center bg-[#cde6f4] text-[#37628a] rounded-2xl px-6 py-1 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Home</span>
+</div>
+<div class="flex flex-col items-center text-[#596065] opacity-70">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Agenda</span>
+</div>
+<div class="flex flex-col items-center text-[#596065] opacity-70">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Avisos</span>
+</div>
+</nav>
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-[2px] z-50 flex flex-col justify-end">
+<div class="bg-surface-container-lowest w-full max-w-md mx-auto rounded-t-[2.5rem] shadow-2xl pb-10 overflow-hidden transform transition-transform duration-300">
+<div class="flex justify-center pt-3 pb-1">
+<div class="w-12 h-1.5 rounded-full bg-outline-variant/30"></div>
+</div>
+<div class="px-8 pt-4 pb-5 flex items-center gap-4">
+<div class="w-14 h-14 rounded-full bg-secondary-fixed flex items-center justify-center overflow-hidden">
+<img alt="Admin profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa73h-v1pxOvgMFYGWb6BsUgFwGpwKlOWVe1kW4jBuCWSNC_eudfaSeImKs_p41MqMMfnkjT3_Sv5_93LTu88UW5_YAcuMacg9GQEF09pUaFBYC45hsZ7yKfebSEXLckuJaXkOYoeHqndJyN1G-nXLFsfw6SpJNDUdZqdMEI1ucwVDMoInhILDA8jjaa_gwNuUEdqkB7vi69w_xPyp08xTFuhHhSvfyipW1fPoN6NIB_YRFEAX_iMSON7ey49M9pTKKnNsNCIBnLk"/>
+</div>
+<div>
+<h2 class="text-xl font-extrabold text-on-surface tracking-tight">Atos Logos Admin</h2>
+<p class="text-on-surface-variant text-sm font-medium">Gestor da Comunidade</p>
+</div>
+</div>
+<div class="px-2 space-y-1">
+<button class="w-full flex items-center gap-4 px-3 py-4 rounded-2xl hover:bg-surface-container-low transition-colors group">
+<div class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center text-primary group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined">person</span>
+</div>
+<span class="flex-grow text-left font-semibold text-on-surface">Meu Perfil</span>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<button class="w-full flex items-center gap-4 px-3 py-4 rounded-2xl hover:bg-surface-container-low transition-colors group">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface-variant group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<span class="flex-grow text-left font-semibold text-on-surface">Configurações</span>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<button class="w-full flex items-center gap-4 px-3 py-4 rounded-2xl hover:bg-error-container/10 transition-colors group">
+<div class="w-12 h-12 rounded-xl bg-error-container/20 flex items-center justify-center text-error group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined">logout</span>
+</div>
+<span class="flex-grow text-left font-semibold text-error">Sair</span>
+<span class="material-symbols-outlined text-error/30">chevron_right</span>
+</button>
+</div>
+<div class="mt-8 px-8 flex justify-center">
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline-variant">Versão 2.4.0 • Atos Logos</p>
+</div>
+</div>
+</div>
+
+</body></html>

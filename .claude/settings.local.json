@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(dart --version)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter pub:*)",
+      "WebFetch(domain:stitch.withgoogle.com)",
+      "Bash(flutter test:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(npm run:*)",
+      "Bash(dart run:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(grep -E \"\\(service|controller\\)\\\\.ts$\")",
+      "Bash(npx jest:*)",
+      "Bash(dart -e \"import 'package:flutter/widgets.dart'; print\\(AnimatedBuilder\\);\")",
+      "Bash(npm test:*)",
+      "Bash(npx nest:*)",
+      "Bash(ipconfig)",
+      "Bash(docker compose:*)",
+      "Bash(dart analyze:*)",
+      "Bash(npx ts-node -e ':*)",
+      "Bash(grep -E \"^\\\\.env|package\\\\.json$\")",
+      "Bash(node tool/coverage_home.js)"
+    ]
+  }
+}

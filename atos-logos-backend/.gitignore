@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+/node_modules
+
+# Prisma generated client (already versioned via schema.prisma)
+/generated/prisma
+
+# Build output
+/dist
+
+# Test coverage
+/coverage
+*.lcov
+
+# Environment variables
+# Keep environment variables out of version control
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo

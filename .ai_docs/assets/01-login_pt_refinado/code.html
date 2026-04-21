@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | Atos Logos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#37628a",
+                        "on-primary": "#f7f9ff",
+                        "primary-container": "#a6d0fe",
+                        "on-primary-container": "#16476d",
+                        "surface": "#f7f9fc",
+                        "on-surface": "#2c3338",
+                        "surface-variant": "#dce3e9",
+                        "on-surface-variant": "#596065",
+                        "surface-container-low": "#f0f4f8",
+                        "surface-container-high": "#e3e9ee",
+                        "surface-container-highest": "#dce3e9",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#747c81",
+                        "outline-variant": "#abb3b9",
+                        "secondary-container": "#cde6f4",
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            min-height: 100dvh;
+            background-color: #f7f9fc;
+        }
+        .card-shadow {
+            box-shadow: 0 12px 40px rgba(44, 51, 56, 0.06);
+        }
+    </style>
+</head>
+<body class="font-body text-on-surface antialiased flex flex-col items-center justify-center p-6 bg-surface">
+<!-- Login Card -->
+<div class="w-full max-w-md bg-surface-container-lowest rounded-2xl card-shadow p-8 md:p-10 border border-surface-container-low">
+<!-- Branding Section -->
+<div class="flex flex-col items-center mb-10">
+<div class="w-14 h-14 bg-secondary-container rounded-2xl flex items-center justify-center mb-4 transition-transform hover:scale-105 duration-300">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">church</span>
+</div>
+<h1 class="font-headline font-extrabold text-2xl text-primary tracking-tight">Atos Logos</h1>
+</div>
+<!-- Header -->
+<header class="mb-8 text-center lg:text-left">
+<h2 class="font-headline font-bold text-3xl text-on-surface mb-2 tracking-tight">Bem-vindo de Volta</h2>
+<p class="text-on-surface-variant text-base">Por favor, insira suas credenciais</p>
+</header>
+<!-- Form -->
+<form class="space-y-6">
+<!-- Email Field -->
+<div class="space-y-1.5">
+<label class="block font-label text-xs font-bold uppercase tracking-wider text-on-surface-variant ml-1" for="email">E-mail</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">mail</span>
+</div>
+<input class="w-full bg-surface-container-high border-none rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-primary/10 focus:bg-surface-container-lowest transition-all duration-300 font-body text-sm placeholder:text-outline text-on-surface" id="email" name="email" placeholder="pastor@church.org" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center ml-1">
+<label class="block font-label text-xs font-bold uppercase tracking-wider text-on-surface-variant" for="password">Senha</label>
+<a class="text-xs font-bold text-primary hover:underline decoration-2 underline-offset-4 transition-all" href="#">Esqueceu a senha?</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">lock</span>
+</div>
+<input class="w-full bg-surface-container-high border-none rounded-xl py-3.5 pl-12 pr-12 focus:ring-2 focus:ring-primary/10 focus:bg-surface-container-lowest transition-all duration-300 font-body text-sm placeholder:text-outline text-on-surface" id="password" name="password" placeholder="••••••••" type="password"/>
+<button class="absolute inset-y-0 right-4 flex items-center text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center space-x-3 ml-1">
+<input class="h-5 w-5 rounded-lg border-none bg-surface-container-high text-primary focus:ring-primary/20 transition-all cursor-pointer" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="text-sm font-medium text-on-surface-variant cursor-pointer" for="remember-me">Lembrar deste dispositivo</label>
+</div>
+<!-- Login Button -->
+<button class="w-full bg-primary text-on-primary font-headline font-bold py-4 rounded-xl shadow-[0_8px_20px_rgba(55,98,138,0.2)] hover:shadow-lg hover:bg-[#29567d] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 group" type="submit">
+<span>Entrar</span>
+<span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</form>
+<!-- Footer Links -->
+<div class="mt-10 text-center">
+<p class="text-on-surface-variant text-sm">Não tem uma conta ainda? <br class="md:hidden"/><a class="text-primary font-bold hover:underline decoration-2 underline-offset-4 ml-1" href="#">Contate o Administrador</a></p>
+</div>
+</div>
+<!-- Accessibility/Legal Footer -->
+<div class="mt-8 flex justify-center gap-6 text-[10px] uppercase tracking-widest text-outline font-bold">
+<a class="hover:text-primary transition-colors" href="#">Privacidade</a>
+<a class="hover:text-primary transition-colors" href="#">Termos</a>
+<a class="hover:text-primary transition-colors" href="#">Suporte</a>
+</div>
+</body></html>

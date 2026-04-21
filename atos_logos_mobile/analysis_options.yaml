@@ -1,0 +1,9 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    avoid_print: true
+    prefer_single_quotes: true
+    sized_box_for_whitespace: true
+    use_key_in_widget_constructors: true
+    use_null_aware_elements: false

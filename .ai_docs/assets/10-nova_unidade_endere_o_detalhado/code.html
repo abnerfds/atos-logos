@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-dim": "#3f5661",
+              "tertiary-container": "#d8cafc",
+              "surface-container": "#e9eef3",
+              "tertiary": "#635983",
+              "secondary-fixed": "#cde6f4",
+              "on-error-container": "#6e0a12",
+              "on-tertiary-fixed": "#382e55",
+              "tertiary-dim": "#574d76",
+              "primary": "#37628a",
+              "inverse-primary": "#a6d0fe",
+              "inverse-on-surface": "#9a9da0",
+              "inverse-surface": "#0b0f11",
+              "surface-container-high": "#e3e9ee",
+              "on-background": "#2c3338",
+              "on-surface": "#2c3338",
+              "primary-fixed-dim": "#98c2ef",
+              "on-primary-fixed-variant": "#225077",
+              "background": "#f7f9fc",
+              "on-secondary": "#f2faff",
+              "secondary-fixed-dim": "#bfd8e5",
+              "primary-fixed": "#a6d0fe",
+              "tertiary-fixed": "#d8cafc",
+              "on-secondary-fixed-variant": "#475f6a",
+              "error-container": "#fa746f",
+              "on-tertiary": "#fdf7ff",
+              "on-primary": "#f7f9ff",
+              "on-tertiary-fixed-variant": "#554a74",
+              "outline": "#747c81",
+              "error": "#a83836",
+              "surface-variant": "#dce3e9",
+              "on-secondary-fixed": "#2b424d",
+              "tertiary-fixed-dim": "#cabded",
+              "surface-container-low": "#f0f4f8",
+              "outline-variant": "#abb3b9",
+              "primary-dim": "#29567d",
+              "error-dim": "#67040d",
+              "on-tertiary-container": "#4b416a",
+              "on-error": "#fff7f6",
+              "surface-dim": "#d4dbe1",
+              "surface-tint": "#37628a",
+              "surface": "#f7f9fc",
+              "secondary": "#4b626e",
+              "primary-container": "#a6d0fe",
+              "secondary-container": "#cde6f4",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-container": "#3e5560",
+              "on-primary-container": "#16476d",
+              "surface-bright": "#f7f9fc",
+              "surface-container-highest": "#dce3e9",
+              "on-primary-fixed": "#003354"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f7f9fc;
+        color: #2c3338;
+      }
+      .font-headline {
+        font-family: 'Manrope', sans-serif;
+      }
+      .glass-effect {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #dce3e9;
+        border-radius: 10px;
+      }
+      body {
+        min-height: 100dvh;
+        overflow-x: hidden;
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen relative">
+<!-- Top Navigation Anchor -->
+<header class="w-full top-0 sticky z-40 bg-[#f0f4f8] flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#37628a] cursor-pointer" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-['Manrope'] font-semibold text-lg tracking-tight text-[#37628a]">Congregações</h1>
+</div>
+<span class="material-symbols-outlined text-[#37628a] cursor-pointer" data-icon="account_circle">account_circle</span>
+</header>
+<!-- Main Content Canvas (Blurred Background State) -->
+<main class="p-6 pb-32 filter blur-sm pointer-events-none">
+<div class="max-w-4xl mx-auto space-y-8">
+<header class="space-y-2">
+<h2 class="text-display-md font-headline font-extrabold text-primary tracking-tight text-2xl">Visão Geral</h2>
+<p class="text-on-surface-variant font-body text-sm">Gerencie as unidades e expansões da sua comunidade.</p>
+</header>
+<!-- Bento Grid Layout for Congregations -->
+<div class="grid grid-cols-1 gap-6">
+<!-- Primary Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm flex flex-col justify-between min-h-[200px]">
+<div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary mb-3 block">Sede Central</span>
+<h3 class="text-xl font-headline font-bold mb-1">Atos Logos Matriz</h3>
+<p class="text-on-surface-variant text-xs">Avenida das Nações, 1200 - Centro</p>
+</div>
+<div class="flex items-center gap-3 mt-4">
+<div class="flex -space-x-2">
+<img class="w-7 h-7 rounded-full border-2 border-surface-container-lowest" data-alt="Portrait of a smiling male church leader" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUhGqLdo0TYPqxcZUZczB9pNNIz-SzgW8mR-AvIqa7IjMNZZ_M5yaOa9yq92lXx6rwRaxdp5I2h2U-Qd4hTjTpZxe7pl9tJq8nWs7n7aYpF8gsPWSrSK4WJY_8djv8ML4_Mcz1kKEUBxGgQjy55_STa-5JVQt9qAhWCdQ6iWMnWYnlpqB7qCzvVIvbzLt-5t_SE0xTGgco-cQvv88AhG96-SG2Bsxi2sz-2FZ2VekV0dwpq9cyKpCNsyZa6m4jyQAN3aGPhNQ0L9w"/>
+</div>
+<span class="text-xs font-medium text-secondary">420 Membros ativos</span>
+</div>
+</div>
+<!-- Secondary Stats Card -->
+<div class="bg-secondary-container p-6 rounded-xl flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="church">church</span>
+<div class="text-2xl font-headline font-extrabold text-on-secondary-container">08</div>
+<div class="text-xs font-medium text-on-secondary-container opacity-80">Congregações</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-on-surface/25 backdrop-blur-[1px]">
+<!-- Modular Registration Modal (Standard Mobile Width for App Consistency) -->
+<section class="bg-background w-full max-w-sm max-h-[85dvh] rounded-3xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.18)] overflow-hidden flex flex-col">
+<!-- Sticky Header -->
+<header class="p-5 bg-surface-container-lowest border-b border-outline-variant/10 shrink-0">
+<div class="flex items-center gap-2.5 text-primary mb-1">
+<div class="p-1.5 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-lg" data-icon="add_business">add_business</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest">Nova Unidade</span>
+</div>
+<h2 class="text-xl font-headline font-extrabold text-on-surface tracking-tight leading-tight">Cadastrar Congregação</h2>
+<p class="text-on-surface-variant text-[11px] mt-1">Expanda sua missão definindo a estrutura da nova unidade.</p>
+</header>
+<!-- Scrollable Form Content -->
+<div class="flex-1 overflow-y-auto p-5 space-y-6">
+<!-- Section 1: Dados da Unidade -->
+<section class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base" data-icon="info">info</span>
+<h3 class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Dados da Unidade</h3>
+</div>
+<div class="space-y-3">
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1">Nome da Congregação</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" placeholder="Ex: Atos Logos Sul" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1">Tipo de Unidade</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all text-xs appearance-none cursor-pointer">
+<option value="sede">Sede</option>
+<option selected="" value="filial">Filial</option>
+<option value="ponto">Ponto de Pregação</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Section 2: Localização -->
+<section class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-base" data-icon="location_on">location_on</span>
+<h3 class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Localização</h3>
+</div>
+<div class="space-y-4">
+<!-- Detailed Address Fields -->
+<div class="grid grid-cols-2 gap-3">
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1 uppercase tracking-wider">País</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" type="text" value="Brasil"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1 uppercase tracking-wider">Estado</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" type="text" value="SP"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1 uppercase tracking-wider">Cidade</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" type="text" value="São Paulo"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1 uppercase tracking-wider">Bairro</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" type="text" value="Jardins"/>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="space-y-1.5 col-span-2">
+<label class="text-[11px] font-semibold text-on-surface px-1 uppercase tracking-wider">Rua</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" type="text" value="Rua das Flores"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1 uppercase tracking-wider">Número</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" type="text" value="123"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1 uppercase tracking-wider">Logradouro/Complemento</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" placeholder="Apto, bloco, etc." type="text"/>
+</div>
+<!-- Map Button Section -->
+<div class="relative h-32 w-full rounded-2xl overflow-hidden border border-outline-variant/20 mt-2">
+<img alt="Mapa de localização" class="w-full h-full object-cover grayscale opacity-40" data-alt="minimalist architectural map view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfdkqfWUVQqz4GOUGAxl3OkBfY7ICjmD_NkUBkR8YqPNBpQEjfWuxxJjXntkmW6RrHMPo1hPzSKS2GMs6gcnNjwmoY0FWWe4Fghpm5zP8I06Rfj_3LQNPdmR2tjx1eQpDVwfHkl7FB83g9ppNrdM34d-PAgvAVw22lsRWHoJUDKHcU58WPPPZbB2HaZtCYn-BvjTMVW6RZO1Vr9l3pSq8uEPWHqtTEf92-Hzt_mKE9wWpYnE03yzorqEESGAwfhi76W3U7N37_OHE"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<button class="bg-surface-container-lowest/90 px-4 py-2 rounded-full shadow-sm text-[10px] font-bold text-primary flex items-center gap-2 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-xs">map</span>
+                                Visualizar no Mapa
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Responsável -->
+<section class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-base" data-icon="person_pin">person_pin</span>
+<h3 class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Responsável</h3>
+</div>
+<div class="space-y-3">
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1">Pastor ou Líder</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" placeholder="Nome completo" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-semibold text-on-surface px-1">Contato Direto</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-3 text-outline/60 text-base">call</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-3 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/20 transition-all text-xs" placeholder="(00) 00000-0000" type="tel"/>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Sticky Footer Actions (Modern Styled) -->
+<footer class="p-5 bg-surface-container-lowest border-t border-outline-variant/10 flex items-center gap-3 shrink-0">
+<button class="flex-1 py-3 px-4 rounded-xl font-bold text-xs text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200">
+                Cancelar
+            </button>
+<button class="flex-[1.5] py-3.5 px-4 rounded-xl font-bold text-xs bg-primary text-on-primary shadow-lg shadow-primary/20 active:scale-[0.98] transition-all duration-150">
+                Salvar Unidade
+            </button>
+</footer>
+</section>
+</div>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-40 flex justify-around items-center px-4 pb-6 pt-2 bg-white/70 backdrop-blur-xl shadow-[0_-12px_40px_rgba(44,51,56,0.06)] rounded-t-2xl">
+<div class="flex flex-col items-center justify-center text-[#596065] px-5 py-1 transition-all duration-300 hover:text-[#37628a]">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Início</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#cde6f4] text-[#37628a] rounded-xl px-5 py-1 transition-all duration-300">
+<span class="material-symbols-outlined mb-1" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Membros</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-5 py-1 transition-all duration-300 hover:text-[#37628a]">
+<span class="material-symbols-outlined mb-1" data-icon="payments">payments</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Finanças</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-5 py-1 transition-all duration-300 hover:text-[#37628a]">
+<span class="material-symbols-outlined mb-1" data-icon="menu">menu</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Mais</span>
+</div>
+</nav>
+</body></html>

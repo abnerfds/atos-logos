@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#6e0a12",
+                    "secondary-dim": "#3f5661",
+                    "background": "#f7f9fc",
+                    "surface-container": "#e9eef3",
+                    "inverse-on-surface": "#9a9da0",
+                    "error-dim": "#67040d",
+                    "secondary-fixed": "#cde6f4",
+                    "on-surface": "#2c3338",
+                    "surface-container-low": "#f0f4f8",
+                    "secondary-container": "#cde6f4",
+                    "outline-variant": "#abb3b9",
+                    "primary-fixed": "#a6d0fe",
+                    "on-secondary-fixed": "#2b424d",
+                    "on-background": "#2c3338",
+                    "primary-container": "#a6d0fe",
+                    "surface-dim": "#d4dbe1",
+                    "tertiary": "#635983",
+                    "inverse-surface": "#0b0f11",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-dim": "#574d76",
+                    "on-tertiary": "#fdf7ff",
+                    "surface-container-high": "#e3e9ee",
+                    "secondary": "#4b626e",
+                    "primary": "#37628a",
+                    "secondary-fixed-dim": "#bfd8e5",
+                    "tertiary-fixed": "#d8cafc",
+                    "error": "#a83836",
+                    "on-tertiary-fixed": "#382e55",
+                    "on-error": "#fff7f6",
+                    "tertiary-container": "#d8cafc",
+                    "on-secondary-container": "#3e5560",
+                    "tertiary-fixed-dim": "#cabded",
+                    "on-primary-container": "#16476d",
+                    "inverse-primary": "#a6d0fe",
+                    "surface-container-highest": "#dce3e9",
+                    "outline": "#747c81",
+                    "surface-bright": "#f7f9fc",
+                    "on-primary": "#f7f9ff",
+                    "primary-fixed-dim": "#98c2ef",
+                    "surface-variant": "#dce3e9",
+                    "on-primary-fixed": "#003354",
+                    "on-secondary": "#f2faff",
+                    "surface": "#f7f9fc",
+                    "error-container": "#fa746f",
+                    "on-tertiary-container": "#4b416a",
+                    "on-tertiary-fixed-variant": "#554a74",
+                    "on-primary-fixed-variant": "#225077",
+                    "on-surface-variant": "#596065",
+                    "primary-dim": "#29567d",
+                    "surface-tint": "#37628a",
+                    "on-secondary-fixed-variant": "#475f6a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen overflow-hidden">
+<aside class="h-screen w-80 bg-[#f7f9fc] dark:bg-slate-900 flex flex-col p-4 gap-2 rounded-r-2xl shadow-2xl shadow-[#2c3338]/10 z-50 shrink-0">
+<div class="flex flex-col gap-4 px-4 py-8 mb-2">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container overflow-hidden">
+<img alt="Church Admin" data-alt="Professional portrait of a middle-aged man in a soft grey suit, smiling warmly, soft studio lighting, blurred office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAX-bxmazPCuBPFHR6l60ccREWHjCslpXY-vEON0BVGnI-qVcCyHNnau7fClnhzOle8-aWy4HyLXQEx0YqJNWje9KioWYvxPDzQwW7QCn4HPvL2a9q-yY944L8LEXve8CWtgZ8o0JQ5GgND-z9L7azKUK7Z8R2ePLki4jyb9GSD-5jf2pW9Ay95J8tpBgy7LKWmRSC9kd-rggMZzqcE3RWb1iYpOjYuAgdBIu94Wmv8PSdbQfgbxuK6AXRbRaCIxR7NXV0VQ6PWLQI"/>
+</div>
+<div>
+<h2 class="text-lg font-bold text-[#2c3338] dark:text-slate-100 font-headline leading-tight">Atos Logos</h2>
+<p class="text-xs text-on-surface-variant font-medium">Church Management</p>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-1 overflow-y-auto">
+<div class="px-4 py-2 mt-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Core Modules</span>
+</div>
+<a class="flex items-center gap-4 px-4 py-3 border-l-4 border-[#37628a] text-[#37628a] dark:text-[#a6d0fe] transition-all duration-300 ease-in-out font-['Inter'] text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span>Secretary</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#596065] dark:text-slate-400 hover:bg-[#e3e9ee]/50 dark:hover:bg-slate-800 transition-all duration-300 ease-in-out font-['Inter'] text-sm font-medium border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Finance</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#596065] dark:text-slate-400 hover:bg-[#e3e9ee]/50 dark:hover:bg-slate-800 transition-all duration-300 ease-in-out font-['Inter'] text-sm font-medium border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span>Patrimony</span>
+</a><a class="flex items-center gap-4 px-4 py-3 text-[#596065] dark:text-slate-400 hover:bg-[#e3e9ee]/50 dark:hover:bg-slate-800 transition-all duration-300 ease-in-out font-['Inter'] text-sm font-medium border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="church">church</span>
+<span>Congregações</span>
+</a>
+<div class="mx-4 my-3 h-px bg-surface-container-high opacity-50"></div>
+<div class="px-4 py-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Tools</span>
+</div>
+<a class="flex items-center gap-4 px-4 py-3 text-[#596065] dark:text-slate-400 hover:bg-[#e3e9ee]/50 dark:hover:bg-slate-800 transition-all duration-300 ease-in-out font-['Inter'] text-sm font-medium border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#596065] dark:text-slate-400 hover:bg-[#e3e9ee]/50 dark:hover:bg-slate-800 transition-all duration-300 ease-in-out font-['Inter'] text-sm font-medium border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span>Certificates</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#596065] dark:text-slate-400 hover:bg-[#e3e9ee]/50 dark:hover:bg-slate-800 transition-all duration-300 ease-in-out font-['Inter'] text-sm font-medium border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="volunteer_activism">volunteer_activism</span>
+<span>Contributions</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#596065] dark:text-slate-400 hover:bg-[#e3e9ee]/50 dark:hover:bg-slate-800 transition-all duration-300 ease-in-out font-['Inter'] text-sm font-medium border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Cell</span>
+</a>
+</nav>
+<div class="mt-auto p-4">
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs font-bold text-primary">System Status</span>
+<span class="text-[10px] text-on-surface-variant">All services operational</span>
+</div>
+<div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-screen relative overflow-y-auto bg-surface">
+<header class="fixed top-0 w-[calc(100%-320px)] ml-0 z-40 bg-[#f7f9fc]/70 dark:bg-slate-900/70 backdrop-blur-xl flex justify-between items-center px-8 h-16 border-b border-surface-container">
+<div class="flex items-center gap-4">
+<h1 class="text-xl font-black text-[#37628a] dark:text-[#a6d0fe] font-['Manrope'] tracking-tight">Secretary Overview</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#e3e9ee] transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#e3e9ee] transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+</div>
+</div>
+</header>
+<section class="pt-24 px-8 pb-12 w-full max-w-7xl mx-auto">
+<div class="grid grid-cols-12 gap-6 mb-12">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl p-8 relative overflow-hidden flex flex-col justify-end min-h-[320px]">
+<div class="absolute inset-0 z-0">
+<img alt="Church Sanctuary" class="w-full h-full object-cover opacity-20" data-alt="Modern church interior with clean architectural lines, warm natural light flooding through tall windows, soft blue and white color palette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1QSD3eP4Rwmr-jVM2imYz5pjSoHnx1RKCOraWixuCr0rQ2u-CkrU3weE6SO7F12bEq4RhZliJuz5iRjSl2O-YR6mXF6e8dt9XkMzM-vsr2DLhdRAT-GvzfKz1-3KsgwPxvlPZ4Dgl4z285mCMg5TGvvbuCtopU2IeXzhWqlVQ7cUtWN_gwdAOeV6dQaeKnUc6a8EIIyMm1IfC6jPEwVAcXx2W1UvXORtpWxpbd5GCkUUn1MIw9X_mUhkA2VAB9YnsJEYUSTPq9nc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10">
+<span class="inline-block px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest rounded-full mb-4">Management Dashboard</span>
+<h2 class="text-4xl font-extrabold text-on-surface tracking-tight mb-4 max-w-xl">Welcome to Atos Logos Gestão Eclesiástica.</h2>
+<p class="text-on-surface-variant text-lg max-w-md">Effortlessly manage your congregation with grace and precision. Your digital steward for a growing community.</p>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-primary rounded-xl p-8 flex flex-col justify-between text-on-primary">
+<span class="material-symbols-outlined text-4xl" data-icon="church">church</span>
+<div>
+<div class="text-5xl font-black mb-1">1,248</div>
+<div class="text-sm font-medium opacity-80 uppercase tracking-widest">Active Members</div>
+</div>
+<div class="flex -space-x-2">
+<img alt="Member" class="w-8 h-8 rounded-full border-2 border-primary" data-alt="Closeup headshot of a person with friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpvdDWA5xNGe2S1XPOLBkZBBpPaCR5_wXFfp1FtOlXgNmIsIB9g3iTMlF1QnuyoK0dyLL9-BHT9ksp_ycKBgMSMZ9smn_tJkFn7HzFwMnpjDs4fGz5Mll0NlPrwAyui6-aS-DKCS-zjk8pRbS3HSl8OXGxywqHxMa49Xki_doXN9tQqMYJ8GJcDMc4kK--qLmYNKkrzr3aoOFhNVlbppr_3mQpW__-eT-VE80_KfRiWKDH06yRFuJbTnbZsZVQ0gYCKYlQCEkiN2w"/>
+<img alt="Member" class="w-8 h-8 rounded-full border-2 border-primary" data-alt="Closeup headshot of a woman with a bright smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCs9etRuNbngiWRLTR6TkVKySrRO-c_Nn5ImEXK5Lx3RyTTdcMWOBVF6ZyI-mdeQRUy5vIdZG3i6GrQvJHxpgkQUje_Ap2QesXRoo2BKOLBhxwG8rrdHuXf8nXyE2xWNOGL9-TsEcIqcre4BarlFrUtcRg_BHxhgttboEOvIkLyQwpL9rVms7xhuC95vx0koNr33phujcG4YxKwoCw3GQblCTJumx735uM-lrD8XlH34Fi7P4K7dbcrvwvRSh6cZLYsU_DVFHhN47c"/>
+<img alt="Member" class="w-8 h-8 rounded-full border-2 border-primary" data-alt="Portrait of an elderly man with glasses, soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9XdciM-w6AbHiaGmaJfRw36XPO8yJJvRxv5z8TnJjQxXmlp_aJVaiYOWPF26ALza4yKyBytsyJ3iKpnKsQ7oOUZQ-OHknc3L9mHCJrLhoKP-iXOZiPJXErUOXZ7_coBp3caFZF-GHEPH2PhHYsO9mNKMlHWLyrP7_-Qk2axrqVl72wlhK6h_ClQo4OLqjWyQi_nnXpSDxG2bCXZFxFo3Q0IfkesSEOxfViXGEVYCdvHxCozypGMHFRIC_vDtpuZCGYEIoALx077E"/>
+<div class="w-8 h-8 rounded-full border-2 border-primary bg-primary-container text-on-primary-container text-[10px] flex items-center justify-center font-bold">+12</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="bg-surface-container-low p-8 rounded-xl flex flex-col gap-6">
+<div class="flex justify-between items-center">
+<h3 class="text-lg font-bold text-on-surface">Recent Updates</h3>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="history">history</span>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="person_add">person_add</span>
+</div>
+<div>
+<p class="text-sm font-semibold">New Member Registered</p>
+<p class="text-xs text-on-surface-variant">Ana Clara joined the Central Cell</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-xl" data-icon="receipt_long">receipt_long</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Certificate Issued</p>
+<p class="text-xs text-on-surface-variant">Membership certificate for João Silva</p>
+</div>
+</div>
+</div>
+<button class="mt-4 text-primary text-sm font-bold flex items-center gap-2 hover:translate-x-1 transition-transform">
+                    View Full Activity <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="bg-tertiary-container p-8 rounded-xl relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-2 bg-tertiary"></div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-xs font-bold uppercase tracking-widest text-on-tertiary-container">Community Focus</span>
+</div>
+<h3 class="text-xl font-bold text-on-tertiary-container leading-tight">Prayer Network: Global Missions Week</h3>
+<p class="text-sm text-on-tertiary-container opacity-90">Join our secretary team in coordinating the logistics for the upcoming missionary outreach program.</p>
+<div class="mt-4 flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-tertiary text-on-tertiary rounded-full text-[10px] font-bold">URGENT</span>
+<span class="px-3 py-1 bg-white/20 text-on-tertiary-container rounded-full text-[10px] font-bold">12 REQUESTS</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_12px_40px_rgba(44,51,56,0.06)] flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-lg font-bold text-on-surface">Growth Insight</h3>
+<p class="text-xs text-on-surface-variant">Last 30 days vs previous</p>
+</div>
+<div class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded">+8.2%</div>
+</div>
+<div class="h-32 flex items-end gap-1 px-2">
+<div class="flex-1 bg-surface-container h-[40%] rounded-t-sm"></div>
+<div class="flex-1 bg-surface-container h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-surface-container h-[30%] rounded-t-sm"></div>
+<div class="flex-1 bg-surface-container h-[50%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-[85%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-[70%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-[100%] rounded-t-sm"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+<span>WK 1</span>
+<span>WK 2</span>
+<span>WK 3</span>
+<span>WK 4</span>
+</div>
+</div>
+</div>
+<div class="mt-12 bg-secondary-container p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-6">
+<div class="w-14 h-14 rounded-full bg-white flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="savings">savings</span>
+</div>
+<div>
+<h4 class="text-on-secondary-container font-bold text-lg">Financial Statement ready</h4>
+<p class="text-on-secondary-container opacity-80 text-sm">Monthly contributions report for August is now available for audit.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 bg-primary text-on-primary rounded-lg font-bold text-sm hover:opacity-90 transition-opacity">
+                    View Report
+                </button>
+<button class="px-6 py-3 border border-on-secondary-container/20 text-on-secondary-container rounded-lg font-bold text-sm hover:bg-white/10 transition-colors">
+                    Dismiss
+                </button>
+</div>
+</div>
+</section>
+</main>
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-on-primary rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</body></html>

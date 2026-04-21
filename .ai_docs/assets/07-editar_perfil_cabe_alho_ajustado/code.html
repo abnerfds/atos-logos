@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#f2faff",
+                    "primary": "#37628a",
+                    "on-surface-variant": "#596065",
+                    "primary-fixed-dim": "#98c2ef",
+                    "inverse-surface": "#0b0f11",
+                    "tertiary-fixed": "#d8cafc",
+                    "surface-container": "#e9eef3",
+                    "surface-dim": "#d4dbe1",
+                    "outline-variant": "#abb3b9",
+                    "surface-container-high": "#e3e9ee",
+                    "on-background": "#2c3338",
+                    "on-tertiary-fixed": "#382e55",
+                    "tertiary-fixed-dim": "#cabded",
+                    "background": "#f7f9fc",
+                    "secondary-fixed-dim": "#bfd8e5",
+                    "tertiary-dim": "#574d76",
+                    "on-primary-container": "#16476d",
+                    "secondary-fixed": "#cde6f4",
+                    "secondary": "#4b626e",
+                    "on-secondary-fixed-variant": "#475f6a",
+                    "surface-tint": "#37628a",
+                    "error-container": "#fa746f",
+                    "on-primary-fixed-variant": "#225077",
+                    "outline": "#747c81",
+                    "on-error": "#fff7f6",
+                    "secondary-container": "#cde6f4",
+                    "primary-fixed": "#a6d0fe",
+                    "on-surface": "#2c3338",
+                    "inverse-primary": "#a6d0fe",
+                    "tertiary-container": "#d8cafc",
+                    "surface": "#f7f9fc",
+                    "error-dim": "#67040d",
+                    "tertiary": "#635983",
+                    "surface-container-highest": "#dce3e9",
+                    "surface-bright": "#f7f9fc",
+                    "secondary-dim": "#3f5661",
+                    "inverse-on-surface": "#9a9da0",
+                    "primary-dim": "#29567d",
+                    "on-primary": "#f7f9ff",
+                    "on-tertiary": "#fdf7ff",
+                    "error": "#a83836",
+                    "on-secondary-container": "#3e5560",
+                    "surface-container-low": "#f0f4f8",
+                    "on-primary-fixed": "#003354",
+                    "on-secondary-fixed": "#2b424d",
+                    "on-error-container": "#6e0a12",
+                    "on-tertiary-container": "#4b416a",
+                    "surface-variant": "#dce3e9",
+                    "primary-container": "#a6d0fe",
+                    "on-tertiary-fixed-variant": "#554a74",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tap-highlight-transparent {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#f7f9fc] dark:bg-[#1a1c1e] w-full top-0 z-50 sticky">
+<div class="flex items-center px-6 py-4 gap-4">
+<div class="flex items-center gap-2">
+<button class="text-[#37628a] dark:text-[#a6d0fe] hover:bg-[#f0f4f8] dark:hover:bg-[#2c3338] transition-colors rounded-full p-2 active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[#37628a]" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Manrope'] text-lg font-bold text-[#37628a] dark:text-[#a6d0fe] whitespace-nowrap">Atos Logos</h1>
+</div>
+<div class="flex-grow"></div>
+<div class="flex items-center gap-2">
+<button class="text-[#37628a] dark:text-[#a6d0fe] hover:bg-[#f0f4f8] dark:hover:bg-[#2c3338] transition-colors rounded-full p-2 active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-6 pt-8">
+<!-- Avatar Section -->
+<div class="flex flex-col items-center mb-10">
+<div class="relative group cursor-pointer">
+<div class="w-28 h-28 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-md">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="Close-up portrait of a smiling young woman with dark hair in soft natural light against a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP7yxV6crI1xhE9Sq5b9ixmwdz5PG7LnexEpZN0vMgIXigC-u1TbnNSDw1_ON1R_TwSF9MxCFqgV-A7RjZUMJYTX44Fl1GpsynwLd2BeEK9BkR2f97-YS9akjiTujInyN9sEhJ67sjEnouiG36ziMROqoqs4KfSSFpABGQXPmBTqwWFRg2TNO17clRzuDFWYTtxl2ob-rKp2IoisHOU-zi2TZUw_OKa-_Nu4JkNd0xhIcTmIZLn9gEMnWarld8PK2615aVQfnTo5c"/>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-on-primary p-2 rounded-full shadow-lg border-2 border-surface-container-lowest active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="photo_camera">photo_camera</span>
+</div>
+</div>
+<p class="mt-4 text-on-surface-variant font-medium text-sm">Toque para alterar a foto</p>
+</div>
+<!-- Form Section -->
+<div class="space-y-6">
+<!-- Disabled Fields Group -->
+<div class="bg-surface-container-low rounded-xl p-5 space-y-4">
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Nome Completo</label>
+<div class="bg-surface-container-high/50 px-4 py-3 rounded-lg border-none text-on-surface/60 font-medium">
+                    Ana Beatriz Silva
+                </div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">CPF</label>
+<div class="bg-surface-container-high/50 px-4 py-3 rounded-lg border-none text-on-surface/60 font-medium">
+                    123.456.789-00
+                </div>
+</div>
+</div>
+<!-- Editable Fields -->
+<div class="space-y-5">
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Telefone</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="tel" value="(11) 98765-4321"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">E-mail</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="email" value="anabeatriz@atoslogos.com.br"/>
+</div>
+<!-- Refactored Address Section -->
+<div class="space-y-5">
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">País</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="text" value="Brasil"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Estado</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="text" value="SP"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Cidade</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="text" value="São Paulo"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Bairro</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="text" value="Jardins"/>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="flex flex-col gap-1 col-span-2">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Rua</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="text" value="Rua das Flores"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Número</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" type="text" value="123"/>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Logradouro/Complemento</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-0 transition-all outline-none font-medium text-on-surface" placeholder="Apto, bloco, etc." type="text"/>
+</div>
+</div>
+</div>
+<!-- Password Change -->
+<div class="pt-4"><button class="w-full bg-primary text-on-primary py-4 rounded-xl font-headline font-bold text-lg shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">SALVAR</button></div></div>
+<!-- Submit Action -->
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/70 dark:bg-black/70 backdrop-blur-xl shadow-[0_-12px_40px_rgba(44,51,56,0.06)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-[#596065] dark:text-[#c4c7cb] px-4 py-1 hover:opacity-80 transition-opacity tap-highlight-transparent active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#596065] dark:text-[#c4c7cb] px-4 py-1 hover:opacity-80 transition-opacity tap-highlight-transparent active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Agenda</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#596065] dark:text-[#c4c7cb] px-4 py-1 hover:opacity-80 transition-opacity tap-highlight-transparent active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Notificações</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#cde6f4] dark:bg-[#37628a]/30 text-[#37628a] dark:text-[#a6d0fe] rounded-xl px-4 py-1 hover:opacity-80 transition-opacity tap-highlight-transparent active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Perfil</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,362 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  SECRETARY
+  MEMBER
+}
+
+enum MembershipStatus {
+  ACTIVE
+  INACTIVE
+  TRANSFERRED
+}
+
+enum EventType {
+  SERVICE
+  EBD
+  MEETING
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum CivilStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+  SEPARATED
+  STABLE_UNION
+}
+
+// ── Module 1: Core & Auth ───────────────────────────────────────────────────
+
+/// The top-level tenant entity. All data isolation is scoped to a Church.
+model Church {
+  id                    String                 @id @default(uuid())
+  name                  String
+  documentNumber        String? // CNPJ or equivalent tax ID
+  activePlan            String                 @default("free")
+  branches              Branch[]
+  memberships           Membership[]
+  memberProfiles        MemberProfile[]
+  memberPositions       MemberPosition[]
+  events                Event[]
+  visitors              Visitor[]
+  ebdClasses            EbdClass[]
+  campaigns             Campaign[]
+  financialTransactions FinancialTransaction[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+
+  @@map("churches")
+}
+
+/// A physical location belonging to a Church. One branch per church is the headquarters.
+model Branch {
+  id             String       @id @default(uuid())
+  churchId       String
+  church         Church       @relation(fields: [churchId], references: [id])
+  name           String
+  isHeadquarters Boolean      @default(false)
+  country        String?
+  state          String?
+  city           String?
+  neighborhood   String?
+  street         String?
+  number         String?
+  memberships    Membership[]
+  events         Event[]
+  ebdClasses     EbdClass[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("branches")
+}
+
+/// A global user account. Users can belong to multiple churches via Memberships.
+model User {
+  id                String                 @id @default(uuid())
+  name              String
+  email             String?                @unique
+  phone             String?                @unique
+  password          String
+  cpf               String?                @unique
+  rg                String?
+  sex               Sex?
+  civilStatus       CivilStatus?
+  fatherName        String?
+  motherName        String?
+  country           String?
+  state             String?
+  city              String?
+  neighborhood      String?
+  street            String?
+  number            String?
+  complement        String?
+  memberships       Membership[]
+  memberProfiles    MemberProfile[]
+  positions         PositionUser[]
+  eventSchedules    EventSchedule[]
+  ebdEnrollments    EbdEnrollment[]
+  ebdAttendances    EbdAttendance[]
+  donorTransactions FinancialTransaction[]
+  refreshTokens     RefreshToken[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  @@map("users")
+}
+
+/// Persistent refresh tokens supporting rotation + reuse detection.
+///
+/// Each row stores a *hash* of the token (never the plaintext). On every
+/// successful refresh the current token is marked `revokedAt` and a new one
+/// is issued. If a client ever presents a token that is already revoked, we
+/// treat it as a compromise signal and revoke every active token the user
+/// holds, forcing a full re-login.
+model RefreshToken {
+  id           String    @id @default(uuid())
+  tokenHash    String    @unique
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  churchId     String
+  branchId     String
+  role         Role
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  replacedById String? // Points to the row that superseded this one (rotation trail)
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+/// Pivot table linking a User to a Church+Branch with a specific role.
+/// This is the core of multi-tenancy: one user can have memberships in multiple churches.
+model Membership {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  churchId  String
+  church    Church           @relation(fields: [churchId], references: [id])
+  branchId  String
+  branch    Branch           @relation(fields: [branchId], references: [id])
+  role      Role             @default(MEMBER)
+  status    MembershipStatus @default(ACTIVE)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([userId, churchId]) // A user can only have one membership per church
+  @@map("memberships")
+}
+
+// ── Module 2: Ecclesiastical Data ──────────────────────────────────────────
+
+/// Extended profile for a church member (one per user per church).
+model MemberProfile {
+  id                 String    @id @default(uuid())
+  userId             String
+  user               User      @relation(fields: [userId], references: [id])
+  churchId           String
+  church             Church    @relation(fields: [churchId], references: [id])
+  registrationNumber String    @unique // Auto-generated: YYYY-BRANCHID_SHORT-SEQ
+  birthDate          DateTime  @db.Date
+  baptismDate        DateTime? @db.Date
+  consecrationDate   DateTime? @db.Date
+  admissionDate      DateTime  @db.Date
+  photoUrl           String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([userId, churchId])
+  @@map("member_profiles")
+}
+
+/// Ecclesiastical titles/positions (e.g., Pastor, Deacon, Elder).
+model MemberPosition {
+  id        String         @id @default(uuid())
+  churchId  String
+  church    Church         @relation(fields: [churchId], references: [id])
+  name      String
+  users     PositionUser[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([churchId, name]) // Position names must be unique per church
+  @@map("member_positions")
+}
+
+/// Pivot table linking users to ecclesiastical positions.
+model PositionUser {
+  id         String         @id @default(uuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id])
+  positionId String
+  position   MemberPosition @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime       @default(now())
+
+  @@unique([userId, positionId])
+  @@map("position_user")
+}
+
+// ── Module 3: Events & Visitor CRM ─────────────────────────────────────────
+
+/// A church event (service, Sunday School session, meeting).
+model Event {
+  id                 String              @id @default(uuid())
+  churchId           String
+  church             Church              @relation(fields: [churchId], references: [id])
+  branchId           String?
+  branch             Branch?             @relation(fields: [branchId], references: [id])
+  title              String
+  startsAt           DateTime
+  type               EventType
+  schedules          EventSchedule[]
+  visitorAttendances VisitorAttendance[]
+  ebdAttendances     EbdAttendance[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@map("events")
+}
+
+/// A schedule entry assigning a user to a function in an event.
+model EventSchedule {
+  id           String   @id @default(uuid())
+  eventId      String
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  functionName String // e.g., "Pregador", "Louvor", "Recepcao"
+  createdAt    DateTime @default(now())
+
+  @@unique([eventId, userId]) // A user can only have one function per event
+  @@map("event_schedules")
+}
+
+/// A visitor (person without a system account) tracked for CRM purposes.
+model Visitor {
+  id           String              @id @default(uuid())
+  churchId     String
+  church       Church              @relation(fields: [churchId], references: [id])
+  name         String
+  phone        String?
+  observations String?
+  attendances  VisitorAttendance[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@map("visitors")
+}
+
+/// Check-in record linking a visitor to an event they attended.
+model VisitorAttendance {
+  id        String   @id @default(uuid())
+  visitorId String
+  visitor   Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([visitorId, eventId])
+  @@map("visitor_attendances")
+}
+
+// ── Module 4: Sunday School (EBD) ──────────────────────────────────────────
+
+/// A Sunday School class within a branch.
+model EbdClass {
+  id          String          @id @default(uuid())
+  churchId    String
+  church      Church          @relation(fields: [churchId], references: [id])
+  branchId    String
+  branch      Branch          @relation(fields: [branchId], references: [id])
+  name        String
+  enrollments EbdEnrollment[]
+  attendances EbdAttendance[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("ebd_classes")
+}
+
+/// A student enrolled in an EBD class.
+model EbdEnrollment {
+  id        String   @id @default(uuid())
+  classId   String
+  class_    EbdClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([classId, userId])
+  @@map("ebd_enrollments")
+}
+
+/// Attendance record for a student in a class session (linked to an event).
+model EbdAttendance {
+  id        String   @id @default(uuid())
+  classId   String
+  class_    EbdClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  isPresent Boolean
+  createdAt DateTime @default(now())
+
+  @@unique([classId, eventId, userId])
+  @@map("ebd_attendances")
+}
+
+// ── Module 5: Financial ────────────────────────────────────────────────────
+
+/// A fundraising campaign.
+model Campaign {
+  id            String   @id @default(uuid())
+  churchId      String
+  church        Church   @relation(fields: [churchId], references: [id])
+  title         String
+  goalAmount    Decimal  @db.Decimal(10, 2)
+  currentAmount Decimal  @default(0) @db.Decimal(10, 2)
+  status        String   @default("active") // active, completed, cancelled
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("campaigns")
+}
+
+/// An income or expense transaction.
+model FinancialTransaction {
+  id              String          @id @default(uuid())
+  churchId        String
+  church          Church          @relation(fields: [churchId], references: [id])
+  branchId        String?
+  type            TransactionType
+  category        String // e.g., "tithe", "offering", "rent", "utilities"
+  amount          Decimal         @db.Decimal(10, 2)
+  donorUserId     String?
+  donor           User?           @relation(fields: [donorUserId], references: [id])
+  transactionDate DateTime        @db.Date
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@map("financial_transactions")
+}

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Atos Logos - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#d4dbe1",
+                    "inverse-surface": "#0b0f11",
+                    "surface-container": "#e9eef3",
+                    "surface-container-high": "#e3e9ee",
+                    "tertiary-fixed": "#d8cafc",
+                    "on-error-container": "#6e0a12",
+                    "surface-bright": "#f7f9fc",
+                    "surface": "#f7f9fc",
+                    "inverse-primary": "#a6d0fe",
+                    "inverse-on-surface": "#9a9da0",
+                    "on-tertiary-fixed-variant": "#554a74",
+                    "tertiary-container": "#d8cafc",
+                    "background": "#f7f9fc",
+                    "primary-container": "#a6d0fe",
+                    "on-primary": "#f7f9ff",
+                    "primary-dim": "#29567d",
+                    "primary": "#37628a",
+                    "error-container": "#fa746f",
+                    "on-background": "#2c3338",
+                    "on-tertiary-fixed": "#382e55",
+                    "on-primary-fixed-variant": "#225077",
+                    "surface-variant": "#dce3e9",
+                    "on-surface-variant": "#596065",
+                    "on-primary-fixed": "#003354",
+                    "on-secondary": "#f2faff",
+                    "on-error": "#fff7f6",
+                    "surface-container-low": "#f0f4f8",
+                    "outline-variant": "#abb3b9",
+                    "primary-fixed-dim": "#98c2ef",
+                    "outline": "#747c81",
+                    "secondary-fixed-dim": "#bfd8e5",
+                    "on-primary-container": "#16476d",
+                    "on-tertiary": "#fdf7ff",
+                    "tertiary-dim": "#574d76",
+                    "tertiary": "#635983",
+                    "on-secondary-fixed": "#2b424d",
+                    "secondary-fixed": "#cde6f4",
+                    "on-secondary-container": "#3e5560",
+                    "on-surface": "#2c3338",
+                    "surface-container-highest": "#dce3e9",
+                    "tertiary-fixed-dim": "#cabded",
+                    "error": "#a83836",
+                    "error-dim": "#67040d",
+                    "secondary": "#4b626e",
+                    "secondary-dim": "#3f5661",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#cde6f4",
+                    "on-tertiary-container": "#4b416a",
+                    "on-secondary-fixed-variant": "#475f6a",
+                    "surface-tint": "#37628a",
+                    "primary-fixed": "#a6d0fe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .card-perspective {
+            perspective: 1000px;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card-active .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            top: 0;
+            left: 0;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f7f9fc]/70 backdrop-blur-xl flex items-center justify-between px-6 h-16">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#37628a]">menu</span>
+<h1 class="text-xl font-bold tracking-tighter text-[#37628a]">Atos Logos</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border-2 border-primary-container">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="Professional portrait of a friendly woman with a warm smile, corporate office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCENF8cMsAk_v_oJzggFahUTYkdrrWFeP_BLgFxFpHJQzsBVq9OgeGgXSxeuEuVkvrIwrIsf-qtR8-KXKq56kq9jGIIVZQbDGaMbkH8uQHhJWsTkMUehjIxBl63J2kcxkd-jo3MsDdMvJ44s5QZjQAARy_eFK27QRF8buSXd5l2zOyOvXURUC-moMLlQDpk9EMpRN1qrcobdtp-EK8XfxMDHOt77qhnJamw880W5Ku9x4LPAKmEWZi_nyw7oyIdBQzqY9WUabn_J3A"/>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Welcome Section -->
+<section class="mb-8">
+<h1 class="text-4xl font-extrabold font-headline tracking-tight text-on-background leading-tight">
+                Olá, Ricardo
+            </h1>
+<p class="text-on-surface-variant font-medium mt-1">Que bom ter você aqui hoje.</p>
+</section>
+<!-- Digital ID Card (Carteirinha Digital) -->
+<section class="mb-10">
+<div class="card-perspective h-[220px] w-full" onclick="this.classList.toggle('flip-card-active')">
+<div class="card-inner relative w-full h-full duration-500">
+<!-- FRONT SIDE -->
+<div class="card-front bg-gradient-to-br from-primary to-primary-dim rounded-2xl shadow-xl p-6 overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-16 h-16 rounded-full border-2 border-white/50 overflow-hidden bg-white/10">
+<img alt="João da Silva" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWJvi7-LASWVkfqvQhaNvk6PJnxN-4iMFHRhnC0beW8_mZ3BjSkB5DpQOQHYkcUg5nqhEW7FJJh5Z1FmOPyyzq5AugB-JvltmU2WthbdBiCWt8BUDMEG5kz1xM0XK7w8TSojD8SFkXoM8ZaXLLoHuyFOVVtqvPvVHCzl4px5-VfOse_ni3znQNVWRav4dU06xG09MtKR4ENoOCAza22v0rfHQZ1rlm9feJibsEfjC828YvrGq4VGBiqxMm_DYJ9ZV_Uw6zsdlutAI"/>
+</div>
+<div>
+<h3 class="text-white font-bold text-lg font-headline">João da Silva</h3>
+<p class="text-white/80 text-xs font-medium uppercase tracking-wider">Membro</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-2xl font-black text-white/20 font-headline leading-none">Atos Logos</span>
+<p class="text-white/60 text-[10px] font-bold mt-1 tracking-widest">#10234</p>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex items-center gap-2 text-white/50 text-[10px] uppercase font-bold tracking-widest">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+                        Toque para girar
+                    </div>
+<div class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-bold">CARTEIRA DIGITAL</div>
+</div>
+</div>
+<!-- BACK SIDE -->
+<div class="card-back bg-gradient-to-br from-[#2c3338] to-[#0b0f11] rounded-2xl shadow-xl p-6 overflow-hidden flex flex-col justify-between">
+<div class="absolute bottom-0 left-0 w-32 h-32 bg-primary/10 rounded-full -ml-16 -mb-16 blur-2xl"></div>
+<div>
+<h4 class="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em] mb-4">Informações de Registro</h4>
+<div class="grid grid-cols-2 gap-y-4 gap-x-2">
+<div>
+<p class="text-white/40 text-[10px] uppercase font-bold">Nascimento</p>
+<p class="text-white font-medium">14/05/1985</p>
+</div>
+<div>
+<p class="text-white/40 text-[10px] uppercase font-bold">Batismo</p>
+<p class="text-white font-medium">22/07/2010</p>
+</div>
+<div>
+<p class="text-white/40 text-[10px] uppercase font-bold">Admissão</p>
+<p class="text-white font-medium">05/01/2012</p>
+</div>
+<div>
+<p class="text-white/40 text-[10px] uppercase font-bold">Status</p>
+<p class="text-primary font-bold">ATIVO</p>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex items-center gap-2 text-white/30 text-[10px] uppercase font-bold tracking-widest">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+                        Toque para voltar
+                    </div>
+<span class="text-xl font-black text-white/10 font-headline">Atos Logos</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Birthday Section (Aniversariantes do Mês) -->
+<section class="mb-10">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline font-bold text-xl text-on-background">Aniversariantes do Mês</h3>
+<span class="text-xs font-bold text-primary uppercase tracking-wider">Ver todos</span>
+</div>
+<div class="flex overflow-x-auto gap-6 no-scrollbar pb-2">
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-[72px] h-[72px] rounded-full p-[3px] bg-gradient-to-tr from-primary to-tertiary">
+<div class="w-full h-full rounded-full border-4 border-background overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a smiling man with a beard against a clean blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWJvi7-LASWVkfqvQhaNvk6PJnxN-4iMFHRhnC0beW8_mZ3BjSkB5DpQOQHYkcUg5nqhEW7FJJh5Z1FmOPyyzq5AugB-JvltmU2WthbdBiCWt8BUDMEG5kz1xM0XK7w8TSojD8SFkXoM8ZaXLLoHuyFOVVtqvPvVHCzl4px5-VfOse_ni3znQNVWRav4dU06xG09MtKR4ENoOCAza22v0rfHQZ1rlm9feJibsEfjC828YvrGq4VGBiqxMm_DYJ9ZV_Uw6zsdlutAI"/>
+</div>
+</div>
+<div class="text-center">
+<p class="text-[11px] font-bold text-on-background leading-none">Marcos</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Hoje</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-[72px] h-[72px] rounded-full p-[3px] bg-surface-container">
+<div class="w-full h-full rounded-full border-4 border-background overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a young woman with a warm smile in soft natural sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxZwaIpWtsGOGPRhGZhXYoTm1UPi703tkeO5mEfqVnSSkU8JZbz8lArravFMq-usTlnNdmpr4SkSyPk_8goRGiytqXT1q4p2XLp1g3fA5AN0S8pILZ563-xeWwDkCqvB0KV6HbckPlrTQk6BUmQK7dtF0dOHP8zf_zrnnqbPGBpWr51dg88Om7Mra0nn3nEX9MMY1EcBFVb6QQ5Uum2YgEyn5NAewDjn94f-xldfe-ll-JZzebsnctK9bpOmbqf-YkGtkQO2rinLc"/>
+</div>
+</div>
+<div class="text-center">
+<p class="text-[11px] font-bold text-on-background leading-none">Ana Paula</p>
+<p class="text-[10px] text-on-surface-variant mt-1">12 Mai</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-[72px] h-[72px] rounded-full p-[3px] bg-surface-container">
+<div class="w-full h-full rounded-full border-4 border-background overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Candid headshot of a cheerful man outdoors in a public park with soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFLCTBSVrM8_E-QjSRLU7hW4dKUfurNIN0-fdWBeT-yHGyRrVgbz5hOkNHrVNj53otLYLv9bq3a9z1M67ut_3YXxnOdJ0P3b_t6nk0T7-RD8w1WH7w4Fi6w_MxjbXdkneaYbSn1Em3QriJDRWDFgsyh37oSxd_9vTr0NQSvso1uRRzTIhIX7ePpRymnx5_i_yu0feqDlOEgP1inY7nNfGL3uAnTbsr8URbwoGMuLPiRHsBG1ANRxF9xbPLZ4GfQoo-bEUsWJkyXQo"/>
+</div>
+</div>
+<div class="text-center">
+<p class="text-[11px] font-bold text-on-background leading-none">Lucas</p>
+<p class="text-[10px] text-on-surface-variant mt-1">15 Mai</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-[72px] h-[72px] rounded-full p-[3px] bg-surface-container">
+<div class="w-full h-full rounded-full border-4 border-background overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a confident woman in a business casual outfit with neutral studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSh3Piy_rljGrzxrS71vmLMlGf7mkN7fq_qb4Z3d-eLXjb0tkQ9nmBix7qgjvIfFYWg3VFpv-A8FXdZ9NACdLavhKXkAAcNI7MuPSOSn_KCXwm5x7FB7kzQtxUZO9xpsIRhnsmTLEMTjnwiIzpMlVxMT_bwNV380YGn3Y5X4w-oMx4p3tIo3Yso4AoatVBKWU3ys8gdQvYnHkKCshVNAbFQlZHl-YVFqU0KV6od8LKNYj6itqtRzPrcUnBKHCziYe-qxIQygSkJIc"/>
+</div>
+</div>
+<div class="text-center">
+<p class="text-[11px] font-bold text-on-background leading-none">Sofia</p>
+<p class="text-[10px] text-on-surface-variant mt-1">18 Mai</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Events Section (Próximos Eventos) -->
+<section>
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline font-bold text-xl text-on-background">Próximos Eventos</h3>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="filter_list">filter_list</span>
+</div>
+<div class="space-y-4">
+<!-- Event Card 1 -->
+<div class="flex gap-4 p-4 rounded-xl bg-surface-container-lowest border border-white/40 shadow-sm">
+<div class="w-16 h-16 rounded-lg bg-secondary-container flex flex-col items-center justify-center shrink-0">
+<span class="text-[10px] font-bold text-primary uppercase">Dom</span>
+<span class="text-2xl font-black text-primary font-headline leading-none">12</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-bold text-on-background truncate">Culto de Celebração</h4>
+<p class="text-sm text-on-surface-variant mt-0.5">18:30 • Santuário Principal</p>
+<div class="flex gap-2 mt-2">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container text-[10px] font-bold">PRESENCIAL</span>
+</div>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="flex gap-4 p-4 rounded-xl bg-surface-container-lowest border border-white/40 shadow-sm">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex flex-col items-center justify-center shrink-0">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Qua</span>
+<span class="text-2xl font-black text-on-surface font-headline leading-none">15</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-bold text-on-background truncate">Reunião de Oração</h4>
+<p class="text-sm text-on-surface-variant mt-0.5">20:00 • Sala de Oração</p>
+<div class="flex gap-2 mt-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold">ESTUDO</span>
+</div>
+</div>
+</div>
+<!-- Event Card 3: Community Prayer Special -->
+<div class="relative overflow-hidden flex gap-4 p-4 rounded-xl bg-surface-container-lowest border-l-4 border-tertiary shadow-sm">
+<div class="absolute top-0 right-0 w-24 h-24 bg-tertiary-container/30 -mr-12 -mt-12 rounded-full blur-xl"></div>
+<div class="w-16 h-16 rounded-lg bg-tertiary-container flex flex-col items-center justify-center shrink-0">
+<span class="text-[10px] font-bold text-tertiary uppercase">Sáb</span>
+<span class="text-2xl font-black text-tertiary font-headline leading-none">18</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-bold text-on-background truncate">Vigília da Juventude</h4>
+<p class="text-sm text-on-surface-variant mt-0.5">22:00 • Campus Sul</p>
+<div class="flex gap-2 mt-2">
+<span class="px-2 py-0.5 rounded-full bg-tertiary text-on-tertiary text-[10px] font-bold">ESPECIAL</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 pb-8 pt-3 bg-[#f7f9fc]/70 backdrop-blur-xl rounded-t-2xl shadow-[0_-12px_40px_rgba(44,51,56,0.06)] z-50">
+<div class="flex flex-col items-center justify-center bg-[#cde6f4] text-[#37628a] rounded-2xl px-2 py-1.5 active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-inter text-[10px] font-bold mt-1">Início</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-inter text-[10px] font-medium mt-1">Secretaria</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-inter text-[10px] font-medium mt-1">Notificações</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-inter text-[10px] font-medium mt-1">Agenda</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#596065] px-2 py-1.5 hover:bg-[#e9eef3] rounded-2xl transition-all active:scale-90 duration-200 cursor-pointer min-w-[64px]">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-inter text-[10px] font-medium mt-1">Gestão</span>
+</div>
+</nav>
+</body></html>

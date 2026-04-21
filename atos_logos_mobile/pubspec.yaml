@@ -1,0 +1,61 @@
+name: atos_logos_mobile
+description: "Atos Logos - Plataforma de Gestão Eclesiástica (Mobile)"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_bloc: ^9.1.1
+
+  # Network
+  dio: ^5.8.0+1
+
+  # Dependency Injection
+  get_it: ^9.2.1
+  injectable: ^2.5.0
+
+  # Navigation
+  go_router: ^17.1.0
+
+  # Data / Serialization
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+
+  # Fonts
+  google_fonts: ^6.2.1
+
+  # Secure Storage
+  flutter_secure_storage: ^10.0.0
+
+  # Input formatters
+  mask_text_input_formatter: ^2.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+  # Code Generation
+  build_runner: ^2.4.15
+  freezed: ^3.2.5
+  json_serializable: ^6.9.4
+  injectable_generator: ^2.7.0
+
+  # Testing
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true

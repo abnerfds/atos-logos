@@ -1,0 +1,191 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:atos_logos_mobile/shared/widgets/app_drawer.dart';
+
+void main() {
+  Widget buildSubject({String? churchName, void Function(String)? onNavigate}) {
+    return MaterialApp(
+      home: Scaffold(
+        drawer: AppDrawer(
+          churchName: churchName ?? 'Atos Logos',
+          onNavigate: onNavigate ?? (_) {},
+        ),
+        body: Builder(
+          builder: (context) => ElevatedButton(
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            child: const Text('Open'),
+          ),
+        ),
+      ),
+    );
+  }
+
+  group('AppDrawer', () {
+    testWidgets('should display church name and subtitle', (tester) async {
+      await tester.pumpWidget(buildSubject(churchName: 'Igreja Teste'));
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(find.text('Igreja Teste'), findsOneWidget);
+      expect(find.text('Gestão Eclesiástica'), findsOneWidget);
+    });
+
+    testWidgets('should display core modules section', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(find.text('Secretaria'), findsOneWidget);
+      expect(find.text('Finanças'), findsOneWidget);
+      expect(find.text('Patrimônio'), findsOneWidget);
+      expect(find.text('Congregações'), findsOneWidget);
+    });
+
+    testWidgets('should display tools section', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(find.text('Relatórios'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Célula'), 100, scrollable: find.byType(Scrollable).first);
+      await tester.pumpAndSettle();
+      expect(find.text('Certificados'), findsOneWidget);
+      expect(find.text('Contribuições'), findsOneWidget);
+      expect(find.text('Célula'), findsOneWidget);
+    });
+
+    testWidgets(
+        'should call onNavigate with "congregacoes" when the Congregações item is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Congregações'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'congregacoes');
+    });
+
+    testWidgets(
+        'should call onNavigate with "secretaria" when the Secretaria item is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Secretaria'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'secretaria');
+    });
+
+    testWidgets(
+        'should call onNavigate with "financas" when the Finanças item is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Finanças'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'financas');
+    });
+
+    testWidgets(
+        'should call onNavigate with "patrimonio" when the Patrimônio item is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Patrimônio'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'patrimonio');
+    });
+
+    testWidgets(
+        'should call onNavigate with "relatorios" when the Relatórios tool is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Relatórios'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'relatorios');
+    });
+
+    testWidgets(
+        'should call onNavigate with "certificados" when the Certificados tool is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Certificados'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Certificados'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'certificados');
+    });
+
+    testWidgets(
+        'should call onNavigate with "contribuicoes" when the Contribuições tool is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Contribuições'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Contribuições'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Contribuições'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'contribuicoes');
+    });
+
+    testWidgets(
+        'should call onNavigate with "celula" when the Célula tool is tapped',
+        (tester) async {
+      String? navigatedTo;
+      await tester.pumpWidget(
+        buildSubject(onNavigate: (route) => navigatedTo = route),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Célula'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Célula'));
+      await tester.pumpAndSettle();
+      expect(navigatedTo, 'celula');
+    });
+
+    testWidgets('should display system status footer', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(find.text('Status do Sistema'), findsOneWidget);
+    });
+  });
+}
