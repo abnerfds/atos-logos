@@ -30,6 +30,28 @@ abstract class MemberProfileUser with _$MemberProfileUser {
 }
 
 @freezed
+abstract class MemberProfileBranch with _$MemberProfileBranch {
+  const factory MemberProfileBranch({
+    required String id,
+    required String name,
+  }) = _MemberProfileBranch;
+
+  factory MemberProfileBranch.fromJson(Map<String, dynamic> json) =>
+      _$MemberProfileBranchFromJson(json);
+}
+
+@freezed
+abstract class MemberProfilePosition with _$MemberProfilePosition {
+  const factory MemberProfilePosition({
+    required String id,
+    required String name,
+  }) = _MemberProfilePosition;
+
+  factory MemberProfilePosition.fromJson(Map<String, dynamic> json) =>
+      _$MemberProfilePositionFromJson(json);
+}
+
+@freezed
 abstract class MemberProfile with _$MemberProfile {
   const factory MemberProfile({
     String? id,
@@ -41,6 +63,10 @@ abstract class MemberProfile with _$MemberProfile {
     String? admissionDate,
     String? consecrationDate,
     String? photoUrl,
+    String? branchId,
+    MemberProfileBranch? branch,
+    String? positionId,
+    MemberProfilePosition? position,
     MemberProfileUser? user,
   }) = _MemberProfile;
 

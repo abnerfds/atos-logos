@@ -1,0 +1,28 @@
+# ============================================================
+# Raiz do monorepo — .gitignore
+# ============================================================
+
+# ── Ferramentas de IA / IDE local ───────────────────────────
+# Arquivo de controle interno do Kiro (IDs de spec, metadados de sessão)
+.kiro/specs/**/.config.kiro
+
+# Configurações locais do Claude Code (permissões de bash, específicas da máquina)
+.claude/settings.local.json
+
+# Arquivo de controle do Codex (vazio, gerado pelo ambiente)
+.codex
+
+# ── OS ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editores ────────────────────────────────────────────────
+.idea/
+*.swp
+*.swo
+*.orig
+
+# ── Logs genéricos ──────────────────────────────────────────
+*.log
+logs/

@@ -10,8 +10,8 @@ class EbdCubit extends Cubit<EbdState> {
   final EbdRepository _repository;
 
   EbdCubit({required EbdRepository repository})
-      : _repository = repository,
-        super(const EbdState.initial());
+    : _repository = repository,
+      super(const EbdState.initial());
 
   Future<void> loadClasses() async {
     emit(const EbdState.loading());
@@ -24,14 +24,34 @@ class EbdCubit extends Cubit<EbdState> {
     }
   }
 
-  Future<void> createClass({required String name, required String branchId}) async {
+  Future<bool> createClass({
+    required String name,
+    required String branchId,
+    String targetAudience = 'Geral',
+    String? quarterId,
+    String? quarterName,
+    List<String> teacherIds = const [],
+    List<String> studentIds = const [],
+    List<EbdLessonInput> lessons = const [],
+  }) async {
     emit(const EbdState.loading());
     try {
-      await _repository.createClass(name: name, branchId: branchId);
+      await _repository.createClass(
+        name: name,
+        branchId: branchId,
+        targetAudience: targetAudience,
+        quarterId: quarterId,
+        quarterName: quarterName,
+        teacherIds: teacherIds,
+        studentIds: studentIds,
+        lessons: lessons,
+      );
       await loadClasses();
+      return true;
     } catch (e) {
       final message = e is AppException ? e.message : 'Erro inesperado';
       emit(EbdState.error(message: message));
+      return false;
     }
   }
 }

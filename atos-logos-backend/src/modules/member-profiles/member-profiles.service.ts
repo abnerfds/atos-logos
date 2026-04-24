@@ -55,7 +55,7 @@ export class MemberProfilesService {
     if (!profile) {
       throw new NotFoundException('Member profile not found');
     }
-    return profile;
+    return this.withEditFormRelations(churchId, profile);
   }
 
   async findByUserId(churchId: string, userId: string) {
@@ -68,7 +68,7 @@ export class MemberProfilesService {
     });
 
     if (profile) {
-      return profile;
+      return this.withEditFormRelations(churchId, profile);
     }
 
     // No profile yet — return user+membership data with null profile fields
@@ -81,7 +81,7 @@ export class MemberProfilesService {
       throw new NotFoundException('User not found in this church');
     }
 
-    return {
+    return this.withEditFormRelations(churchId, {
       id: null,
       userId: membership.userId,
       churchId,
@@ -92,7 +92,7 @@ export class MemberProfilesService {
       consecrationDate: null,
       photoUrl: null,
       user: membership.user,
-    };
+    });
   }
 
   async create(churchId: string, dto: CreateMemberProfileDto) {
@@ -205,5 +205,29 @@ export class MemberProfilesService {
     const seq = String(count + 1).padStart(3, '0');
 
     return `${year}-${branchShort}-${seq}`;
+  }
+
+  private async withEditFormRelations(
+    churchId: string,
+    profile: { userId: string; [key: string]: unknown },
+  ) {
+    const [membership, positionUser] = await Promise.all([
+      this.prisma.forTenant(churchId).membership.findFirst({
+        where: { userId: profile.userId },
+        include: { branch: { select: { id: true, name: true } } },
+      }),
+      this.prisma.forTenant(churchId).positionUser.findFirst({
+        where: { userId: profile.userId, position: { churchId } },
+        include: { position: { select: { id: true, name: true } } },
+      }),
+    ]);
+
+    return {
+      ...profile,
+      branchId: membership?.branchId ?? null,
+      branch: membership?.branch ?? null,
+      positionId: positionUser?.positionId ?? null,
+      position: positionUser?.position ?? null,
+    };
   }
 }

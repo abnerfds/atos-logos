@@ -88,6 +88,15 @@ export class PrismaService
             return query(args);
           },
         },
+        ebdQuarter: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma $extends API requires untyped args
+          async $allOperations({ args, query }: { args: Record<string, any>; query: (args: any) => any }) {
+            if ('where' in args) {
+              args.where = { ...args.where, churchId };
+            }
+            return query(args);
+          },
+        },
         ebdClass: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma $extends API requires untyped args
           async $allOperations({ args, query }: { args: Record<string, any>; query: (args: any) => any }) {

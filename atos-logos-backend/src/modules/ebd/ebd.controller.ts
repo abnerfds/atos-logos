@@ -1,10 +1,17 @@
 import {
-  Controller, Get, Post, Delete,
-  Body, Param, UseGuards, HttpCode,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EbdService } from './ebd.service';
 import { CreateEbdClassDto } from './dto/create-ebd-class.dto';
-import { RecordAttendanceDto } from './dto/record-attendance.dto';
+import { SaveLessonAttendanceDto } from './dto/record-attendance.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -19,9 +26,23 @@ export class EbdController {
 
   // ── Classes ───────────────────────────────────────────────────────────
 
+  @Get('setup-options')
+  async getSetupOptions(@CurrentUser() user: AuthenticatedUser) {
+    return this.ebdService.getSetupOptions(user.churchId);
+  }
+
   @Get('classes')
-  async findAllClasses(@CurrentUser() user: AuthenticatedUser) {
-    return this.ebdService.findAllClasses(user.churchId);
+  async findAllClasses(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.ebdService.findAllClasses(
+      user.churchId,
+      Number(page ?? 1),
+      Number(limit ?? 20),
+      user.userId,
+    );
   }
 
   @Post('classes')
@@ -41,6 +62,26 @@ export class EbdController {
     @Param('id') id: string,
   ) {
     return this.ebdService.deleteClass(user.churchId, id);
+  }
+
+  @Post('classes/:id/enrollments/copy-from-previous')
+  @Roles(Role.ADMIN, Role.SECRETARY)
+  async copyEnrollmentsFromPreviousClass(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') classId: string,
+  ) {
+    return this.ebdService.copyEnrollmentsFromPreviousClass(
+      user.churchId,
+      classId,
+    );
+  }
+
+  @Get('classes/:id/lessons')
+  async findLessons(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') classId: string,
+  ) {
+    return this.ebdService.findLessons(user.churchId, classId);
   }
 
   // ── Enrollments ───────────────────────────────────────────────────────
@@ -76,14 +117,22 @@ export class EbdController {
 
   // ── Attendance ────────────────────────────────────────────────────────
 
-  @Post('classes/:id/attendance')
-  @Roles(Role.ADMIN, Role.SECRETARY)
-  async recordAttendance(
+  @Get('lessons/:id/attendance')
+  async getLessonAttendance(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('id') classId: string,
-    @Body() dto: RecordAttendanceDto,
+    @Param('id') lessonId: string,
   ) {
-    return this.ebdService.recordAttendance(user.churchId, classId, dto);
+    return this.ebdService.getLessonAttendance(user.churchId, lessonId);
+  }
+
+  @Post('lessons/:id/attendance')
+  @Roles(Role.ADMIN, Role.SECRETARY)
+  async saveLessonAttendance(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') lessonId: string,
+    @Body() dto: SaveLessonAttendanceDto,
+  ) {
+    return this.ebdService.saveLessonAttendance(user.churchId, lessonId, dto);
   }
 
   // ── Frequency / Certificate ───────────────────────────────────────────
@@ -95,5 +144,21 @@ export class EbdController {
     @Param('userId') userId: string,
   ) {
     return this.ebdService.getFrequency(user.churchId, classId, userId);
+  }
+
+  @Get('members/:memberId/progress')
+  async getMemberProgress(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('memberId') memberId: string,
+  ) {
+    return this.ebdService.getMemberProgress(user.churchId, memberId);
+  }
+
+  @Post('members/:memberId/certificates')
+  async createMemberCertificate(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('memberId') memberId: string,
+  ) {
+    return this.ebdService.createMemberCertificate(user.churchId, memberId);
   }
 }

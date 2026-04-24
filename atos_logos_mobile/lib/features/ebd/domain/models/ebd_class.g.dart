@@ -20,6 +20,11 @@ _EbdClass _$EbdClassFromJson(Map<String, dynamic> json) => _EbdClass(
   branch: json['branch'] == null
       ? null
       : EbdClassBranch.fromJson(json['branch'] as Map<String, dynamic>),
+  targetAudience: json['targetAudience'] as String?,
+  status: json['status'] as bool?,
+  teacherName: json['teacherName'] as String?,
+  enrolledCount: (json['enrolledCount'] as num?)?.toInt() ?? 0,
+  certificateAvailable: json['certificateAvailable'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$EbdClassToJson(_EbdClass instance) => <String, dynamic>{
@@ -28,6 +33,11 @@ Map<String, dynamic> _$EbdClassToJson(_EbdClass instance) => <String, dynamic>{
   'branchId': instance.branchId,
   'name': instance.name,
   'branch': instance.branch,
+  'targetAudience': instance.targetAudience,
+  'status': instance.status,
+  'teacherName': instance.teacherName,
+  'enrolledCount': instance.enrolledCount,
+  'certificateAvailable': instance.certificateAvailable,
 };
 
 _EbdFrequency _$EbdFrequencyFromJson(Map<String, dynamic> json) =>

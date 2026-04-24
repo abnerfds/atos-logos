@@ -14,6 +14,10 @@ import '../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../features/branches/presentation/pages/branches_page.dart';
 import '../../features/branches/presentation/pages/create_branch_page.dart';
 import '../../features/branches/presentation/pages/edit_branch_page.dart';
+import '../../features/ebd/presentation/pages/create_ebd_quarter_page.dart';
+import '../../features/ebd/presentation/pages/ebd_attendance_page.dart';
+import '../../features/ebd/presentation/pages/ebd_class_details_page.dart';
+import '../../features/ebd/presentation/pages/ebd_page.dart';
 import '../../shared/widgets/authenticated_shell.dart';
 import '../../shared/widgets/coming_soon_page.dart';
 import '../di/injection.dart';
@@ -36,10 +40,7 @@ final appRouter = GoRouter(
     );
   },
   routes: [
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginPage(),
-    ),
+    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegisterPage(),
@@ -48,10 +49,7 @@ final appRouter = GoRouter(
       path: '/select-church',
       builder: (context, state) => const ChurchSelectionPage(),
     ),
-    GoRoute(
-      path: '/home',
-      builder: (context, state) => const HomePage(),
-    ),
+    GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/secretaria',
       builder: (context, state) => BlocProvider(
@@ -102,6 +100,34 @@ final appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/ebd',
+      builder: (context, state) => const AuthenticatedShell(child: EbdPage()),
+    ),
+    GoRoute(
+      path: '/ebd/new-quarter',
+      builder: (context, state) => const AuthenticatedShell(
+        selectedBottomNavIndex: 1,
+        child: CreateEbdQuarterPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/ebd/classes/:id',
+      builder: (context, state) => AuthenticatedShell(
+        selectedBottomNavIndex: 1,
+        child: EbdClassDetailsPage(classId: state.pathParameters['id']!),
+      ),
+    ),
+    GoRoute(
+      path: '/ebd/classes/:id/lessons/:lessonId/attendance',
+      builder: (context, state) => AuthenticatedShell(
+        selectedBottomNavIndex: 1,
+        child: EbdAttendancePage(
+          classId: state.pathParameters['id']!,
+          lessonId: state.pathParameters['lessonId']!,
+        ),
+      ),
+    ),
+    GoRoute(
       path: '/create-branch',
       builder: (context, state) => BlocProvider(
         create: (_) => getIt<BranchesCubit>(),
@@ -122,9 +148,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/coming-soon',
-      builder: (context, state) => const AuthenticatedShell(
-        child: ComingSoonPage(title: 'Em breve'),
-      ),
+      builder: (context, state) =>
+          const AuthenticatedShell(child: ComingSoonPage(title: 'Em breve')),
     ),
   ],
 );

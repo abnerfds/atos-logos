@@ -43,8 +43,7 @@ void main() {
       expect(result, isNull);
     });
 
-    test('lets an unauthenticated user stay on /select-church (2FA step)',
-        () {
+    test('lets an unauthenticated user stay on /select-church (2FA step)', () {
       final result = resolveAuthRedirect(
         currentPath: '/select-church',
         isAuthenticated: false,
@@ -85,67 +84,70 @@ void main() {
       expect(appRouter, isA<GoRouter>());
       // The initialLocation is embedded in the GoRouter config — we assert it
       // indirectly via the router information provider's initial uri.
-      expect(
-        appRouter.routeInformationProvider.value.uri.path,
-        '/login',
-      );
+      expect(appRouter.routeInformationProvider.value.uri.path, '/login');
     });
 
     test(
-        'should expose every public and private route the login flow can land on',
-        () {
-      // Given — a map of path → expected presence in the router
-      const expectedPaths = {
-        '/login',
-        '/register',
-        '/select-church',
-        '/home',
-      };
+      'should expose every public and private route the login flow can land on',
+      () {
+        // Given — a map of path → expected presence in the router
+        const expectedPaths = {
+          '/login',
+          '/register',
+          '/select-church',
+          '/home',
+          '/ebd',
+          '/ebd/new-quarter',
+          '/ebd/classes/:id',
+          '/ebd/classes/:id/lessons/:lessonId/attendance',
+        };
 
-      // When — the registered route paths are collected
-      final registeredPaths = appRouter.configuration.routes
-          .whereType<GoRoute>()
-          .map((r) => r.path)
-          .toSet();
+        // When — the registered route paths are collected
+        final registeredPaths = appRouter.configuration.routes
+            .whereType<GoRoute>()
+            .map((r) => r.path)
+            .toSet();
 
-      // Then — every required path is registered (extra paths are fine)
-      for (final required in expectedPaths) {
-        expect(registeredPaths, contains(required));
-      }
-    });
+        // Then — every required path is registered (extra paths are fine)
+        for (final required in expectedPaths) {
+          expect(registeredPaths, contains(required));
+        }
+      },
+    );
 
     testWidgets(
-        'should render the LoginPage on cold start when the user has no persisted session',
-        (tester) async {
-      // Given — an unauthenticated stub in the DI container AND a mock
-      // AuthCubit for the LoginPage to consume via BlocProvider.
-      final stubRepo = _MockAuthRepository();
-      when(() => stubRepo.isAuthenticated()).thenAnswer((_) async => false);
-      if (getIt.isRegistered<AuthRepository>()) {
+      'should render the LoginPage on cold start when the user has no persisted session',
+      (tester) async {
+        // Given — an unauthenticated stub in the DI container AND a mock
+        // AuthCubit for the LoginPage to consume via BlocProvider.
+        final stubRepo = _MockAuthRepository();
+        when(() => stubRepo.isAuthenticated()).thenAnswer((_) async => false);
+        if (getIt.isRegistered<AuthRepository>()) {
+          await getIt.unregister<AuthRepository>();
+        }
+        getIt.registerSingleton<AuthRepository>(stubRepo);
+
+        final mockAuthCubit = _MockAuthCubit();
+        when(() => mockAuthCubit.state).thenReturn(const AuthState.initial());
+
+        // When — MaterialApp.router is pumped with the real appRouter and
+        // the mandatory AuthCubit provider LoginPage needs.
+        await tester.pumpWidget(
+          BlocProvider<AuthCubit>.value(
+            value: mockAuthCubit,
+            child: MaterialApp.router(routerConfig: appRouter),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Then — the initial navigation lands on /login and renders the page.
+        // This exercises the `redirect` callback (lines 26-35) and the
+        // `/login` route builder (line 40) in app_router.dart.
+        expect(find.byType(LoginPage), findsOneWidget);
+
+        // Cleanup: unregister the stub so later tests get a fresh container.
         await getIt.unregister<AuthRepository>();
-      }
-      getIt.registerSingleton<AuthRepository>(stubRepo);
-
-      final mockAuthCubit = _MockAuthCubit();
-      when(() => mockAuthCubit.state).thenReturn(const AuthState.initial());
-
-      // When — MaterialApp.router is pumped with the real appRouter and
-      // the mandatory AuthCubit provider LoginPage needs.
-      await tester.pumpWidget(
-        BlocProvider<AuthCubit>.value(
-          value: mockAuthCubit,
-          child: MaterialApp.router(routerConfig: appRouter),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      // Then — the initial navigation lands on /login and renders the page.
-      // This exercises the `redirect` callback (lines 26-35) and the
-      // `/login` route builder (line 40) in app_router.dart.
-      expect(find.byType(LoginPage), findsOneWidget);
-
-      // Cleanup: unregister the stub so later tests get a fresh container.
-      await getIt.unregister<AuthRepository>();
-    });
+      },
+    );
   });
 }

@@ -45,6 +45,11 @@ enum CivilStatus {
   STABLE_UNION
 }
 
+enum EbdQuarterStatus {
+  ACTIVE
+  FINISHED
+}
+
 // ── Module 1: Core & Auth ───────────────────────────────────────────────────
 
 /// The top-level tenant entity. All data isolation is scoped to a Church.
@@ -59,6 +64,7 @@ model Church {
   memberPositions       MemberPosition[]
   events                Event[]
   visitors              Visitor[]
+  ebdQuarters           EbdQuarter[]
   ebdClasses            EbdClass[]
   campaigns             Campaign[]
   financialTransactions FinancialTransaction[]
@@ -113,6 +119,7 @@ model User {
   memberships       Membership[]
   memberProfiles    MemberProfile[]
   positions         PositionUser[]
+  ebdClassTeachers  EbdClassTeacher[]
   eventSchedules    EventSchedule[]
   ebdEnrollments    EbdEnrollment[]
   ebdAttendances    EbdAttendance[]
@@ -230,7 +237,6 @@ model Event {
   type               EventType
   schedules          EventSchedule[]
   visitorAttendances VisitorAttendance[]
-  ebdAttendances     EbdAttendance[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 
@@ -281,20 +287,70 @@ model VisitorAttendance {
 
 // ── Module 4: Sunday School (EBD) ──────────────────────────────────────────
 
+/// A Sunday School quarter grouping the classes and lessons for a period.
+model EbdQuarter {
+  id        String           @id @default(uuid())
+  churchId  String
+  church    Church           @relation(fields: [churchId], references: [id])
+  name      String
+  status    EbdQuarterStatus @default(ACTIVE)
+  classes   EbdClass[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("ebd_quarters")
+}
+
 /// A Sunday School class within a branch.
 model EbdClass {
-  id          String          @id @default(uuid())
-  churchId    String
-  church      Church          @relation(fields: [churchId], references: [id])
-  branchId    String
-  branch      Branch          @relation(fields: [branchId], references: [id])
-  name        String
-  enrollments EbdEnrollment[]
-  attendances EbdAttendance[]
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id             String            @id @default(uuid())
+  churchId       String
+  church         Church            @relation(fields: [churchId], references: [id])
+  branchId       String
+  branch         Branch            @relation(fields: [branchId], references: [id])
+  quarterId      String
+  quarter        EbdQuarter        @relation(fields: [quarterId], references: [id], onDelete: Cascade)
+  name           String
+  targetAudience String
+  status         Boolean           @default(true)
+  teachers       EbdClassTeacher[]
+  lessons        EbdLesson[]
+  enrollments    EbdEnrollment[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@map("ebd_classes")
+}
+
+/// A teacher assigned to an EBD class.
+model EbdClassTeacher {
+  id        String   @id @default(uuid())
+  classId   String
+  class_    EbdClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([classId, userId])
+  @@map("ebd_class_teachers")
+}
+
+/// A planned lesson for an EBD class.
+model EbdLesson {
+  id            String          @id @default(uuid())
+  classId       String
+  class_        EbdClass        @relation(fields: [classId], references: [id], onDelete: Cascade)
+  number        Int
+  theme         String
+  scheduledDate DateTime        @db.Date
+  isCompleted   Boolean         @default(false)
+  journal       EbdJournal?
+  attendances   EbdAttendance[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@unique([classId, number])
+  @@map("ebd_lessons")
 }
 
 /// A student enrolled in an EBD class.
@@ -310,19 +366,31 @@ model EbdEnrollment {
   @@map("ebd_enrollments")
 }
 
-/// Attendance record for a student in a class session (linked to an event).
-model EbdAttendance {
-  id        String   @id @default(uuid())
-  classId   String
-  class_    EbdClass @relation(fields: [classId], references: [id], onDelete: Cascade)
-  eventId   String
-  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  isPresent Boolean
-  createdAt DateTime @default(now())
+/// Closing journal for an EBD lesson.
+model EbdJournal {
+  id             String    @id @default(uuid())
+  lessonId       String    @unique
+  lesson         EbdLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  visitorCount   Int       @default(0)
+  offeringAmount Decimal   @default(0) @db.Decimal(10, 2)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  @@unique([classId, eventId, userId])
+  @@map("ebd_journals")
+}
+
+/// Attendance record for a student in an EBD lesson.
+model EbdAttendance {
+  id        String    @id @default(uuid())
+  lessonId  String
+  lesson    EbdLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  isPresent Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([lessonId, userId])
   @@map("ebd_attendances")
 }
 

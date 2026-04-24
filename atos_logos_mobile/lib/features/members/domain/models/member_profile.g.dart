@@ -48,6 +48,27 @@ Map<String, dynamic> _$MemberProfileUserToJson(_MemberProfileUser instance) =>
       'complement': instance.complement,
     };
 
+_MemberProfileBranch _$MemberProfileBranchFromJson(Map<String, dynamic> json) =>
+    _MemberProfileBranch(
+      id: json['id'] as String,
+      name: json['name'] as String,
+    );
+
+Map<String, dynamic> _$MemberProfileBranchToJson(
+  _MemberProfileBranch instance,
+) => <String, dynamic>{'id': instance.id, 'name': instance.name};
+
+_MemberProfilePosition _$MemberProfilePositionFromJson(
+  Map<String, dynamic> json,
+) => _MemberProfilePosition(
+  id: json['id'] as String,
+  name: json['name'] as String,
+);
+
+Map<String, dynamic> _$MemberProfilePositionToJson(
+  _MemberProfilePosition instance,
+) => <String, dynamic>{'id': instance.id, 'name': instance.name};
+
 _MemberProfile _$MemberProfileFromJson(Map<String, dynamic> json) =>
     _MemberProfile(
       id: json['id'] as String?,
@@ -59,6 +80,18 @@ _MemberProfile _$MemberProfileFromJson(Map<String, dynamic> json) =>
       admissionDate: json['admissionDate'] as String?,
       consecrationDate: json['consecrationDate'] as String?,
       photoUrl: json['photoUrl'] as String?,
+      branchId: json['branchId'] as String?,
+      branch: json['branch'] == null
+          ? null
+          : MemberProfileBranch.fromJson(
+              json['branch'] as Map<String, dynamic>,
+            ),
+      positionId: json['positionId'] as String?,
+      position: json['position'] == null
+          ? null
+          : MemberProfilePosition.fromJson(
+              json['position'] as Map<String, dynamic>,
+            ),
       user: json['user'] == null
           ? null
           : MemberProfileUser.fromJson(json['user'] as Map<String, dynamic>),
@@ -75,5 +108,9 @@ Map<String, dynamic> _$MemberProfileToJson(_MemberProfile instance) =>
       'admissionDate': instance.admissionDate,
       'consecrationDate': instance.consecrationDate,
       'photoUrl': instance.photoUrl,
+      'branchId': instance.branchId,
+      'branch': instance.branch,
+      'positionId': instance.positionId,
+      'position': instance.position,
       'user': instance.user,
     };

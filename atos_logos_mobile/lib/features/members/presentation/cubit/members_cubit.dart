@@ -13,8 +13,8 @@ class MembersCubit extends Cubit<MembersState> {
   final MembersRepository _repository;
 
   MembersCubit({required MembersRepository repository})
-      : _repository = repository,
-        super(const MembersState.initial());
+    : _repository = repository,
+      super(const MembersState.initial());
 
   /// Current server-side search term. Preserved across [loadMembers] calls
   /// so pulling to refresh doesn't blow away the active filter.
@@ -39,12 +39,14 @@ class MembersCubit extends Cubit<MembersState> {
         page: page,
         q: _currentQuery.isEmpty ? null : _currentQuery,
       );
-      emit(MembersState.loaded(
-        members: result.data,
-        total: result.total,
-        page: result.page,
-        searchQuery: _currentQuery,
-      ));
+      emit(
+        MembersState.loaded(
+          members: result.data,
+          total: result.total,
+          page: result.page,
+          searchQuery: _currentQuery,
+        ),
+      );
     } catch (e) {
       final message = e is AppException ? e.message : 'Erro inesperado';
       emit(MembersState.error(message: message));
@@ -158,6 +160,26 @@ class MembersCubit extends Cubit<MembersState> {
   }) async {
     await _repository.updateMemberProfile(
       profileId: profileId,
+      birthDate: birthDate,
+      baptismDate: baptismDate,
+      admissionDate: admissionDate,
+      consecrationDate: consecrationDate,
+    );
+  }
+
+  /// Creates the MemberProfile row from the edit screen when the member was
+  /// originally onboarded without enough date data to create one.
+  Future<void> createMemberProfile({
+    required String userId,
+    required String branchId,
+    required String birthDate,
+    required String admissionDate,
+    String? baptismDate,
+    String? consecrationDate,
+  }) async {
+    await _repository.createMemberProfile(
+      userId: userId,
+      branchId: branchId,
       birthDate: birthDate,
       baptismDate: baptismDate,
       admissionDate: admissionDate,

@@ -281,7 +281,7 @@ as String,
 /// @nodoc
 mixin _$EbdClass {
 
- String get id; String get churchId; String get branchId; String get name; EbdClassBranch? get branch;
+ String get id; String get churchId; String get branchId; String get name; EbdClassBranch? get branch; String? get targetAudience; bool? get status; String? get teacherName; int get enrolledCount; bool get certificateAvailable;
 /// Create a copy of EbdClass
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -294,16 +294,16 @@ $EbdClassCopyWith<EbdClass> get copyWith => _$EbdClassCopyWithImpl<EbdClass>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EbdClass&&(identical(other.id, id) || other.id == id)&&(identical(other.churchId, churchId) || other.churchId == churchId)&&(identical(other.branchId, branchId) || other.branchId == branchId)&&(identical(other.name, name) || other.name == name)&&(identical(other.branch, branch) || other.branch == branch));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EbdClass&&(identical(other.id, id) || other.id == id)&&(identical(other.churchId, churchId) || other.churchId == churchId)&&(identical(other.branchId, branchId) || other.branchId == branchId)&&(identical(other.name, name) || other.name == name)&&(identical(other.branch, branch) || other.branch == branch)&&(identical(other.targetAudience, targetAudience) || other.targetAudience == targetAudience)&&(identical(other.status, status) || other.status == status)&&(identical(other.teacherName, teacherName) || other.teacherName == teacherName)&&(identical(other.enrolledCount, enrolledCount) || other.enrolledCount == enrolledCount)&&(identical(other.certificateAvailable, certificateAvailable) || other.certificateAvailable == certificateAvailable));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,churchId,branchId,name,branch);
+int get hashCode => Object.hash(runtimeType,id,churchId,branchId,name,branch,targetAudience,status,teacherName,enrolledCount,certificateAvailable);
 
 @override
 String toString() {
-  return 'EbdClass(id: $id, churchId: $churchId, branchId: $branchId, name: $name, branch: $branch)';
+  return 'EbdClass(id: $id, churchId: $churchId, branchId: $branchId, name: $name, branch: $branch, targetAudience: $targetAudience, status: $status, teacherName: $teacherName, enrolledCount: $enrolledCount, certificateAvailable: $certificateAvailable)';
 }
 
 
@@ -314,7 +314,7 @@ abstract mixin class $EbdClassCopyWith<$Res>  {
   factory $EbdClassCopyWith(EbdClass value, $Res Function(EbdClass) _then) = _$EbdClassCopyWithImpl;
 @useResult
 $Res call({
- String id, String churchId, String branchId, String name, EbdClassBranch? branch
+ String id, String churchId, String branchId, String name, EbdClassBranch? branch, String? targetAudience, bool? status, String? teacherName, int enrolledCount, bool certificateAvailable
 });
 
 
@@ -331,14 +331,19 @@ class _$EbdClassCopyWithImpl<$Res>
 
 /// Create a copy of EbdClass
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? churchId = null,Object? branchId = null,Object? name = null,Object? branch = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? churchId = null,Object? branchId = null,Object? name = null,Object? branch = freezed,Object? targetAudience = freezed,Object? status = freezed,Object? teacherName = freezed,Object? enrolledCount = null,Object? certificateAvailable = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,churchId: null == churchId ? _self.churchId : churchId // ignore: cast_nullable_to_non_nullable
 as String,branchId: null == branchId ? _self.branchId : branchId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,branch: freezed == branch ? _self.branch : branch // ignore: cast_nullable_to_non_nullable
-as EbdClassBranch?,
+as EbdClassBranch?,targetAudience: freezed == targetAudience ? _self.targetAudience : targetAudience // ignore: cast_nullable_to_non_nullable
+as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as bool?,teacherName: freezed == teacherName ? _self.teacherName : teacherName // ignore: cast_nullable_to_non_nullable
+as String?,enrolledCount: null == enrolledCount ? _self.enrolledCount : enrolledCount // ignore: cast_nullable_to_non_nullable
+as int,certificateAvailable: null == certificateAvailable ? _self.certificateAvailable : certificateAvailable // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of EbdClass
@@ -435,10 +440,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String churchId,  String branchId,  String name,  EbdClassBranch? branch)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String churchId,  String branchId,  String name,  EbdClassBranch? branch,  String? targetAudience,  bool? status,  String? teacherName,  int enrolledCount,  bool certificateAvailable)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EbdClass() when $default != null:
-return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch);case _:
+return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch,_that.targetAudience,_that.status,_that.teacherName,_that.enrolledCount,_that.certificateAvailable);case _:
   return orElse();
 
 }
@@ -456,10 +461,10 @@ return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch);
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String churchId,  String branchId,  String name,  EbdClassBranch? branch)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String churchId,  String branchId,  String name,  EbdClassBranch? branch,  String? targetAudience,  bool? status,  String? teacherName,  int enrolledCount,  bool certificateAvailable)  $default,) {final _that = this;
 switch (_that) {
 case _EbdClass():
-return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch);case _:
+return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch,_that.targetAudience,_that.status,_that.teacherName,_that.enrolledCount,_that.certificateAvailable);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -476,10 +481,10 @@ return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch);
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String churchId,  String branchId,  String name,  EbdClassBranch? branch)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String churchId,  String branchId,  String name,  EbdClassBranch? branch,  String? targetAudience,  bool? status,  String? teacherName,  int enrolledCount,  bool certificateAvailable)?  $default,) {final _that = this;
 switch (_that) {
 case _EbdClass() when $default != null:
-return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch);case _:
+return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch,_that.targetAudience,_that.status,_that.teacherName,_that.enrolledCount,_that.certificateAvailable);case _:
   return null;
 
 }
@@ -491,7 +496,7 @@ return $default(_that.id,_that.churchId,_that.branchId,_that.name,_that.branch);
 @JsonSerializable()
 
 class _EbdClass implements EbdClass {
-  const _EbdClass({required this.id, required this.churchId, required this.branchId, required this.name, this.branch});
+  const _EbdClass({required this.id, required this.churchId, required this.branchId, required this.name, this.branch, this.targetAudience, this.status, this.teacherName, this.enrolledCount = 0, this.certificateAvailable = false});
   factory _EbdClass.fromJson(Map<String, dynamic> json) => _$EbdClassFromJson(json);
 
 @override final  String id;
@@ -499,6 +504,11 @@ class _EbdClass implements EbdClass {
 @override final  String branchId;
 @override final  String name;
 @override final  EbdClassBranch? branch;
+@override final  String? targetAudience;
+@override final  bool? status;
+@override final  String? teacherName;
+@override@JsonKey() final  int enrolledCount;
+@override@JsonKey() final  bool certificateAvailable;
 
 /// Create a copy of EbdClass
 /// with the given fields replaced by the non-null parameter values.
@@ -513,16 +523,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EbdClass&&(identical(other.id, id) || other.id == id)&&(identical(other.churchId, churchId) || other.churchId == churchId)&&(identical(other.branchId, branchId) || other.branchId == branchId)&&(identical(other.name, name) || other.name == name)&&(identical(other.branch, branch) || other.branch == branch));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EbdClass&&(identical(other.id, id) || other.id == id)&&(identical(other.churchId, churchId) || other.churchId == churchId)&&(identical(other.branchId, branchId) || other.branchId == branchId)&&(identical(other.name, name) || other.name == name)&&(identical(other.branch, branch) || other.branch == branch)&&(identical(other.targetAudience, targetAudience) || other.targetAudience == targetAudience)&&(identical(other.status, status) || other.status == status)&&(identical(other.teacherName, teacherName) || other.teacherName == teacherName)&&(identical(other.enrolledCount, enrolledCount) || other.enrolledCount == enrolledCount)&&(identical(other.certificateAvailable, certificateAvailable) || other.certificateAvailable == certificateAvailable));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,churchId,branchId,name,branch);
+int get hashCode => Object.hash(runtimeType,id,churchId,branchId,name,branch,targetAudience,status,teacherName,enrolledCount,certificateAvailable);
 
 @override
 String toString() {
-  return 'EbdClass(id: $id, churchId: $churchId, branchId: $branchId, name: $name, branch: $branch)';
+  return 'EbdClass(id: $id, churchId: $churchId, branchId: $branchId, name: $name, branch: $branch, targetAudience: $targetAudience, status: $status, teacherName: $teacherName, enrolledCount: $enrolledCount, certificateAvailable: $certificateAvailable)';
 }
 
 
@@ -533,7 +543,7 @@ abstract mixin class _$EbdClassCopyWith<$Res> implements $EbdClassCopyWith<$Res>
   factory _$EbdClassCopyWith(_EbdClass value, $Res Function(_EbdClass) _then) = __$EbdClassCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String churchId, String branchId, String name, EbdClassBranch? branch
+ String id, String churchId, String branchId, String name, EbdClassBranch? branch, String? targetAudience, bool? status, String? teacherName, int enrolledCount, bool certificateAvailable
 });
 
 
@@ -550,14 +560,19 @@ class __$EbdClassCopyWithImpl<$Res>
 
 /// Create a copy of EbdClass
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? churchId = null,Object? branchId = null,Object? name = null,Object? branch = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? churchId = null,Object? branchId = null,Object? name = null,Object? branch = freezed,Object? targetAudience = freezed,Object? status = freezed,Object? teacherName = freezed,Object? enrolledCount = null,Object? certificateAvailable = null,}) {
   return _then(_EbdClass(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,churchId: null == churchId ? _self.churchId : churchId // ignore: cast_nullable_to_non_nullable
 as String,branchId: null == branchId ? _self.branchId : branchId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,branch: freezed == branch ? _self.branch : branch // ignore: cast_nullable_to_non_nullable
-as EbdClassBranch?,
+as EbdClassBranch?,targetAudience: freezed == targetAudience ? _self.targetAudience : targetAudience // ignore: cast_nullable_to_non_nullable
+as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as bool?,teacherName: freezed == teacherName ? _self.teacherName : teacherName // ignore: cast_nullable_to_non_nullable
+as String?,enrolledCount: null == enrolledCount ? _self.enrolledCount : enrolledCount // ignore: cast_nullable_to_non_nullable
+as int,certificateAvailable: null == certificateAvailable ? _self.certificateAvailable : certificateAvailable // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

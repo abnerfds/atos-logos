@@ -41,8 +41,7 @@ class AppDrawer extends StatelessWidget {
                     height: 48,
                     decoration: BoxDecoration(
                       color: AppTheme.primaryContainer,
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusLg),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
                     child: const Icon(
                       Icons.church,
@@ -101,6 +100,11 @@ class AppDrawer extends StatelessWidget {
                     icon: Icons.church,
                     label: 'Congregações',
                     onTap: () => _navigate(context, 'congregacoes'),
+                  ),
+                  _DrawerItem(
+                    icon: Icons.menu_book_outlined,
+                    label: 'EBD',
+                    onTap: () => _navigate(context, 'ebd'),
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -5,8 +5,10 @@ part 'ebd_class.g.dart';
 
 @freezed
 abstract class EbdClassBranch with _$EbdClassBranch {
-  const factory EbdClassBranch({required String id, required String name}) = _EbdClassBranch;
-  factory EbdClassBranch.fromJson(Map<String, dynamic> json) => _$EbdClassBranchFromJson(json);
+  const factory EbdClassBranch({required String id, required String name}) =
+      _EbdClassBranch;
+  factory EbdClassBranch.fromJson(Map<String, dynamic> json) =>
+      _$EbdClassBranchFromJson(json);
 }
 
 @freezed
@@ -17,8 +19,14 @@ abstract class EbdClass with _$EbdClass {
     required String branchId,
     required String name,
     EbdClassBranch? branch,
+    String? targetAudience,
+    bool? status,
+    String? teacherName,
+    @Default(0) int enrolledCount,
+    @Default(false) bool certificateAvailable,
   }) = _EbdClass;
-  factory EbdClass.fromJson(Map<String, dynamic> json) => _$EbdClassFromJson(json);
+  factory EbdClass.fromJson(Map<String, dynamic> json) =>
+      _$EbdClassFromJson(json);
 }
 
 @freezed
@@ -31,5 +39,6 @@ abstract class EbdFrequency with _$EbdFrequency {
     required double frequency,
     required bool certificateEligible,
   }) = _EbdFrequency;
-  factory EbdFrequency.fromJson(Map<String, dynamic> json) => _$EbdFrequencyFromJson(json);
+  factory EbdFrequency.fromJson(Map<String, dynamic> json) =>
+      _$EbdFrequencyFromJson(json);
 }

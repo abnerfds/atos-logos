@@ -58,6 +58,8 @@ class _AuthenticatedShellState extends State<AuthenticatedShell> {
         context.push('/secretaria');
       case 'congregacoes':
         context.push('/branches');
+      case 'ebd':
+        context.push('/ebd');
       default:
         context.push('/coming-soon');
     }

@@ -164,14 +164,14 @@ class _EditMemberPageState extends State<EditMemberPage> {
         _birthDateController.text = _isoToDisplay(profile.birthDate);
         _baptismDateController.text = _isoToDisplay(profile.baptismDate);
         _admissionDateController.text = _isoToDisplay(profile.admissionDate);
-        _consecrationDateController.text =
-            _isoToDisplay(profile.consecrationDate);
+        _consecrationDateController.text = _isoToDisplay(
+          profile.consecrationDate,
+        );
         _rgController.text = profile.user?.rg ?? '';
         _fatherNameController.text = profile.user?.fatherName ?? '';
         _motherNameController.text = profile.user?.motherName ?? '';
         _selectedSex = _sexFromWire(profile.user?.sex);
-        _selectedCivilStatus =
-            _civilStatusFromWire(profile.user?.civilStatus);
+        _selectedCivilStatus = _civilStatusFromWire(profile.user?.civilStatus);
         _countryController.text = profile.user?.country ?? '';
         _stateController.text = profile.user?.state ?? '';
         _cityController.text = profile.user?.city ?? '';
@@ -179,6 +179,8 @@ class _EditMemberPageState extends State<EditMemberPage> {
         _streetController.text = profile.user?.street ?? '';
         _numberController.text = profile.user?.number ?? '';
         _complementController.text = profile.user?.complement ?? '';
+        _selectedBranch = profile.branchId;
+        _selectedPosition = profile.positionId;
         _controllersPopulated = true;
       },
     );
@@ -214,19 +216,20 @@ class _EditMemberPageState extends State<EditMemberPage> {
     );
   }
 
-  /// Backend sends `yyyy-MM-dd`; the form shows `dd/MM/yyyy`. Returns the
-  /// empty string when raw is null/invalid so the TextField stays empty.
+  /// Backend may send `yyyy-MM-dd` or a full ISO DateTime; the form shows
+  /// `dd/MM/yyyy`. Returns the empty string when raw is null/invalid so
+  /// the TextField stays empty.
   String _isoToDisplay(String? raw) {
     if (raw == null || raw.isEmpty) return '';
-    final parts = raw.split('-');
-    if (parts.length != 3) return '';
-    final year = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final day = int.tryParse(parts[2]);
-    if (year == null || month == null || day == null) return '';
-    final dd = day.toString().padLeft(2, '0');
-    final mm = month.toString().padLeft(2, '0');
-    return '$dd/$mm/$year';
+    final date = DateTime.tryParse(raw);
+    if (date != null) {
+      final dd = date.day.toString().padLeft(2, '0');
+      final mm = date.month.toString().padLeft(2, '0');
+      return '$dd/$mm/${date.year}';
+    }
+    final dateOnly = RegExp(r'^(\d{4})-(\d{2})-(\d{2})').firstMatch(raw);
+    if (dateOnly == null) return '';
+    return '${dateOnly.group(3)}/${dateOnly.group(2)}/${dateOnly.group(1)}';
   }
 
   /// Converts a dd/MM/yyyy string (from the date picker or the pre-fill)
@@ -269,6 +272,11 @@ class _EditMemberPageState extends State<EditMemberPage> {
     try {
       final cubit = context.read<MembersCubit>();
       final profileId = _profileId;
+      final birthDate = _toIsoDate(_birthDateController.text);
+      final baptismDate = _toIsoDate(_baptismDateController.text);
+      final admissionDate = _toIsoDate(_admissionDateController.text);
+      final consecrationDate = _toIsoDate(_consecrationDateController.text);
+      final branchIdForProfile = _selectedBranch;
       // User-level columns (name, contact, identity, address, cargo,
       // branch) go through /memberships/by-user/:userId/user-data.
       // Ecclesiastical dates live on a separate table (MemberProfile),
@@ -304,10 +312,21 @@ class _EditMemberPageState extends State<EditMemberPage> {
         if (profileId != null)
           cubit.updateMemberProfile(
             profileId: profileId,
-            birthDate: _toIsoDate(_birthDateController.text),
-            baptismDate: _toIsoDate(_baptismDateController.text),
-            admissionDate: _toIsoDate(_admissionDateController.text),
-            consecrationDate: _toIsoDate(_consecrationDateController.text),
+            birthDate: birthDate,
+            baptismDate: baptismDate,
+            admissionDate: admissionDate,
+            consecrationDate: consecrationDate,
+          )
+        else if (birthDate != null &&
+            admissionDate != null &&
+            branchIdForProfile != null)
+          cubit.createMemberProfile(
+            userId: widget.userId,
+            branchId: branchIdForProfile,
+            birthDate: birthDate,
+            baptismDate: baptismDate,
+            admissionDate: admissionDate,
+            consecrationDate: consecrationDate,
           ),
       ]);
       if (!mounted) return;
@@ -317,9 +336,9 @@ class _EditMemberPageState extends State<EditMemberPage> {
       Navigator.of(context).pop();
     } on AppException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -334,19 +353,19 @@ class _EditMemberPageState extends State<EditMemberPage> {
     if (_inactivating) return;
     setState(() => _inactivating = true);
     try {
-      await context
-          .read<MembersCubit>()
-          .inactivateMemberByUserId(widget.userId);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Membro inativado.')),
+      await context.read<MembersCubit>().inactivateMemberByUserId(
+        widget.userId,
       );
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Membro inativado.')));
       Navigator.of(context).pop();
     } on AppException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -400,6 +419,15 @@ class _EditMemberPageState extends State<EditMemberPage> {
   }
 
   Widget _buildForm(String memberName) {
+    final selectedPosition =
+        _availablePositions.any((position) => position.id == _selectedPosition)
+        ? _selectedPosition
+        : null;
+    final selectedBranch =
+        _availableBranches.any((branch) => branch.id == _selectedBranch)
+        ? _selectedBranch
+        : null;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Form(
@@ -512,8 +540,9 @@ class _EditMemberPageState extends State<EditMemberPage> {
                             TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
-                              decoration:
-                                  _inputDecoration(hint: 'email@exemplo.com'),
+                              decoration: _inputDecoration(
+                                hint: 'email@exemplo.com',
+                              ),
                               style: GoogleFonts.inter(fontSize: 14),
                             ),
                           ],
@@ -530,8 +559,9 @@ class _EditMemberPageState extends State<EditMemberPage> {
                               controller: _cpfController,
                               keyboardType: TextInputType.number,
                               inputFormatters: [_cpfMask],
-                              decoration:
-                                  _inputDecoration(hint: '000.000.000-00'),
+                              decoration: _inputDecoration(
+                                hint: '000.000.000-00',
+                              ),
                               style: GoogleFonts.inter(fontSize: 14),
                             ),
                           ],
@@ -551,8 +581,9 @@ class _EditMemberPageState extends State<EditMemberPage> {
                             TextFormField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
-                              decoration:
-                                  _inputDecoration(hint: '(00) 00000-0000'),
+                              decoration: _inputDecoration(
+                                hint: '(00) 00000-0000',
+                              ),
                               style: GoogleFonts.inter(fontSize: 14),
                             ),
                           ],
@@ -618,10 +649,12 @@ class _EditMemberPageState extends State<EditMemberPage> {
                                 color: const Color(0xFF2C3338),
                               ),
                               items: Sex.values
-                                  .map((s) => DropdownMenuItem(
-                                        value: s,
-                                        child: Text(s.label),
-                                      ))
+                                  .map(
+                                    (s) => DropdownMenuItem(
+                                      value: s,
+                                      child: Text(s.label),
+                                    ),
+                                  )
                                   .toList(),
                               onChanged: (v) =>
                                   setState(() => _selectedSex = v),
@@ -642,13 +675,12 @@ class _EditMemberPageState extends State<EditMemberPage> {
                       color: const Color(0xFF2C3338),
                     ),
                     items: CivilStatus.values
-                        .map((c) => DropdownMenuItem(
-                              value: c,
-                              child: Text(c.label),
-                            ))
+                        .map(
+                          (c) =>
+                              DropdownMenuItem(value: c, child: Text(c.label)),
+                        )
                         .toList(),
-                    onChanged: (v) =>
-                        setState(() => _selectedCivilStatus = v),
+                    onChanged: (v) => setState(() => _selectedCivilStatus = v),
                   ),
                 ],
               ),
@@ -743,7 +775,7 @@ class _EditMemberPageState extends State<EditMemberPage> {
                   _buildLabel('CARGO'),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
-                    initialValue: _selectedPosition,
+                    initialValue: selectedPosition,
                     decoration: _inputDecoration(hint: 'Selecione o cargo'),
                     style: GoogleFonts.inter(
                       fontSize: 14,
@@ -763,7 +795,7 @@ class _EditMemberPageState extends State<EditMemberPage> {
                   _buildLabel('CONGREGAÇÃO'),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
-                    initialValue: _selectedBranch,
+                    initialValue: selectedBranch,
                     decoration: _inputDecoration(
                       hint: 'Selecione a congregação',
                     ),

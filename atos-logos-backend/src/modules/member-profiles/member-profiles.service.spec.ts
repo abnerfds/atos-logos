@@ -15,6 +15,7 @@ const mockPrismaService = {
   forTenant: jest.fn(() => ({
     memberProfile: mockMemberProfile,
     membership: { findFirst: jest.fn() },
+    positionUser: { findFirst: jest.fn() },
   })),
   memberProfile: mockMemberProfile,
 };
@@ -183,9 +184,23 @@ describe('MemberProfilesService', () => {
             user: fullUser,
           }),
         },
-        membership: { findFirst: jest.fn() },
+        membership: {
+          findFirst: jest.fn().mockResolvedValue({
+            id: 'membership-1',
+            userId,
+            churchId,
+            branchId: 'branch-1',
+            branch: { id: 'branch-1', name: 'Sede' },
+          }),
+        },
+        positionUser: {
+          findFirst: jest.fn().mockResolvedValue({
+            positionId: 'position-1',
+            position: { id: 'position-1', name: 'Pastor' },
+          }),
+        },
       };
-      mockPrismaService.forTenant.mockReturnValueOnce(tenantClient);
+      mockPrismaService.forTenant.mockReturnValue(tenantClient);
 
       const result = await service.findByUserId(churchId, userId);
 
@@ -199,6 +214,12 @@ describe('MemberProfilesService', () => {
       });
       // consecrationDate must also be present
       expect(result.consecrationDate).toEqual(new Date('2022-11-30'));
+      expect(result).toMatchObject({
+        branchId: 'branch-1',
+        branch: { id: 'branch-1', name: 'Sede' },
+        positionId: 'position-1',
+        position: { id: 'position-1', name: 'Pastor' },
+      });
     });
 
     it('should return identity fields from the membership fallback when no MemberProfile exists yet', async () => {
@@ -230,11 +251,16 @@ describe('MemberProfilesService', () => {
             id: 'membership-1',
             userId,
             churchId,
+            branchId: 'branch-1',
+            branch: { id: 'branch-1', name: 'Sede' },
             user: fullUser,
           }),
         },
+        positionUser: {
+          findFirst: jest.fn().mockResolvedValue(null),
+        },
       };
-      mockPrismaService.forTenant.mockReturnValueOnce(tenantClient);
+      mockPrismaService.forTenant.mockReturnValue(tenantClient);
 
       const result = await service.findByUserId(churchId, userId);
 

@@ -58,38 +58,64 @@ void main() {
     mockPositions = MockPositionsRepo();
     mockBranches = MockBranchesRepo();
 
-    when(() => mockProfile.state)
-        .thenReturn(const ProfileState.loaded(profile: profile));
-    when(() => mockProfile.loadMemberProfileByUserId(any()))
-        .thenAnswer((_) async {});
+    when(
+      () => mockProfile.state,
+    ).thenReturn(const ProfileState.loaded(profile: profile));
+    when(
+      () => mockProfile.loadMemberProfileByUserId(any()),
+    ).thenAnswer((_) async {});
     when(() => mockMembers.state).thenReturn(const MembersState.initial());
-    when(() => mockMembers.updateMemberUserData(
-          userId: any(named: 'userId'),
-          name: any(named: 'name'),
-          email: any(named: 'email'),
-          phone: any(named: 'phone'),
-          cpf: any(named: 'cpf'),
-          rg: any(named: 'rg'),
-          sex: any(named: 'sex'),
-          civilStatus: any(named: 'civilStatus'),
-          fatherName: any(named: 'fatherName'),
-          motherName: any(named: 'motherName'),
-        )).thenAnswer((_) async {});
-    when(() => mockMembers.updateMemberProfile(
-          profileId: any(named: 'profileId'),
-          birthDate: any(named: 'birthDate'),
-          baptismDate: any(named: 'baptismDate'),
-          admissionDate: any(named: 'admissionDate'),
-          consecrationDate: any(named: 'consecrationDate'),
-        )).thenAnswer((_) async {});
-    when(() => mockMembers.inactivateMemberByUserId(any()))
-        .thenAnswer((_) async {});
-    when(() => mockPositions.getPositions()).thenAnswer((_) async => const [
-          Position(id: 'p1', churchId: 'c1', name: 'Pastor'),
-        ]);
-    when(() => mockBranches.getBranches()).thenAnswer((_) async => const [
-          Branch(id: 'b1', name: 'Sede', isHeadquarters: true),
-        ]);
+    when(
+      () => mockMembers.updateMemberUserData(
+        userId: any(named: 'userId'),
+        name: any(named: 'name'),
+        email: any(named: 'email'),
+        phone: any(named: 'phone'),
+        cpf: any(named: 'cpf'),
+        rg: any(named: 'rg'),
+        sex: any(named: 'sex'),
+        civilStatus: any(named: 'civilStatus'),
+        fatherName: any(named: 'fatherName'),
+        motherName: any(named: 'motherName'),
+        country: any(named: 'country'),
+        state: any(named: 'state'),
+        city: any(named: 'city'),
+        neighborhood: any(named: 'neighborhood'),
+        street: any(named: 'street'),
+        number: any(named: 'number'),
+        complement: any(named: 'complement'),
+        branchId: any(named: 'branchId'),
+        positionId: any(named: 'positionId'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockMembers.updateMemberProfile(
+        profileId: any(named: 'profileId'),
+        birthDate: any(named: 'birthDate'),
+        baptismDate: any(named: 'baptismDate'),
+        admissionDate: any(named: 'admissionDate'),
+        consecrationDate: any(named: 'consecrationDate'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockMembers.createMemberProfile(
+        userId: any(named: 'userId'),
+        branchId: any(named: 'branchId'),
+        birthDate: any(named: 'birthDate'),
+        baptismDate: any(named: 'baptismDate'),
+        admissionDate: any(named: 'admissionDate'),
+        consecrationDate: any(named: 'consecrationDate'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockMembers.inactivateMemberByUserId(any()),
+    ).thenAnswer((_) async {});
+    when(() => mockPositions.getPositions()).thenAnswer(
+      (_) async => const [Position(id: 'p1', churchId: 'c1', name: 'Pastor')],
+    );
+    when(() => mockBranches.getBranches()).thenAnswer(
+      (_) async => const [Branch(id: 'b1', name: 'Sede', isHeadquarters: true)],
+    );
 
     final getIt = GetIt.instance;
     if (getIt.isRegistered<PositionsRepository>()) {
@@ -128,46 +154,49 @@ void main() {
 
   group('EditMemberPage - Layout', () {
     testWidgets(
-        'should populate the form controllers with the loaded member user fields',
-        (tester) async {
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+      'should populate the form controllers with the loaded member user fields',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(TextFormField, 'Ana Silva'), findsOneWidget);
-      expect(
-        find.widgetWithText(TextFormField, 'ana@example.com'),
-        findsOneWidget,
-      );
-      expect(
-        find.widgetWithText(TextFormField, '+5511999999999'),
-        findsOneWidget,
-      );
-    });
+        expect(find.widgetWithText(TextFormField, 'Ana Silva'), findsOneWidget);
+        expect(
+          find.widgetWithText(TextFormField, 'ana@example.com'),
+          findsOneWidget,
+        );
+        expect(
+          find.widgetWithText(TextFormField, '+5511999999999'),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets(
-        'should render the "Zona de Perigo" section with an "Inativar Membro" button',
-        (tester) async {
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+      'should render the "Zona de Perigo" section with an "Inativar Membro" button',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
 
-      expect(find.text('Zona de Perigo'), findsOneWidget);
-      expect(find.text('Inativar Membro'), findsOneWidget);
-    });
+        expect(find.text('Zona de Perigo'), findsOneWidget);
+        expect(find.text('Inativar Membro'), findsOneWidget);
+      },
+    );
   });
 
   group('EditMemberPage - Save', () {
     testWidgets(
-        'should call MembersCubit.updateMemberUserData with the trimmed form values when Salvar Registro is tapped',
-        (tester) async {
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+      'should call MembersCubit.updateMemberUserData with the trimmed form values when Salvar Registro is tapped',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
 
-      await tester.ensureVisible(find.text('Salvar Registro'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Salvar Registro'));
-      await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Salvar Registro'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Salvar Registro'));
+        await tester.pumpAndSettle();
 
-      verify(() => mockMembers.updateMemberUserData(
+        verify(
+          () => mockMembers.updateMemberUserData(
             userId: userId,
             name: 'Ana Silva',
             email: 'ana@example.com',
@@ -178,13 +207,25 @@ void main() {
             civilStatus: any(named: 'civilStatus'),
             fatherName: any(named: 'fatherName'),
             motherName: any(named: 'motherName'),
-          )).called(1);
-    });
+            country: any(named: 'country'),
+            state: any(named: 'state'),
+            city: any(named: 'city'),
+            neighborhood: any(named: 'neighborhood'),
+            street: any(named: 'street'),
+            number: any(named: 'number'),
+            complement: any(named: 'complement'),
+            branchId: any(named: 'branchId'),
+            positionId: any(named: 'positionId'),
+          ),
+        ).called(1);
+      },
+    );
 
     testWidgets(
-        'should show a SnackBar with the backend message when the save fails with an AppException',
-        (tester) async {
-      when(() => mockMembers.updateMemberUserData(
+      'should show a SnackBar with the backend message when the save fails with an AppException',
+      (tester) async {
+        when(
+          () => mockMembers.updateMemberUserData(
             userId: any(named: 'userId'),
             name: any(named: 'name'),
             email: any(named: 'email'),
@@ -195,21 +236,32 @@ void main() {
             civilStatus: any(named: 'civilStatus'),
             fatherName: any(named: 'fatherName'),
             motherName: any(named: 'motherName'),
-          )).thenThrow(NetworkException('E-mail já cadastrado'));
+            country: any(named: 'country'),
+            state: any(named: 'state'),
+            city: any(named: 'city'),
+            neighborhood: any(named: 'neighborhood'),
+            street: any(named: 'street'),
+            number: any(named: 'number'),
+            complement: any(named: 'complement'),
+            branchId: any(named: 'branchId'),
+            positionId: any(named: 'positionId'),
+          ),
+        ).thenThrow(NetworkException('E-mail já cadastrado'));
 
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Salvar Registro'));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Salvar Registro'));
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Salvar Registro'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
+        await tester.tap(find.text('Salvar Registro'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 50));
 
-      expect(find.text('E-mail já cadastrado'), findsOneWidget);
-      // Page stays mounted — no silent pop on error
-      expect(find.text('Editar Membro'), findsOneWidget);
-    });
+        expect(find.text('E-mail já cadastrado'), findsOneWidget);
+        // Page stays mounted — no silent pop on error
+        expect(find.text('Editar Membro'), findsOneWidget);
+      },
+    );
   });
 
   group('EditMemberPage - Identity fields', () {
@@ -220,6 +272,8 @@ void main() {
       birthDate: '1990-05-20',
       admissionDate: '2020-03-15',
       consecrationDate: '2022-11-30',
+      branchId: 'b1',
+      positionId: 'p1',
       user: MemberProfileUser(
         id: userId,
         name: 'Ana Silva',
@@ -243,93 +297,111 @@ void main() {
 
     setUp(() {
       // Override the file-level mock so the page receives the richer profile.
-      when(() => mockProfile.state)
-          .thenReturn(const ProfileState.loaded(profile: richProfile));
+      when(
+        () => mockProfile.state,
+      ).thenReturn(const ProfileState.loaded(profile: richProfile));
     });
 
     testWidgets(
-        'should pre-fill RG, Pai, Mae and Data de Consagracao from the loaded profile',
-        (tester) async {
+      'should pre-fill RG, Pai, Mae and Data de Consagracao from the loaded profile',
+      (tester) async {
+        useTallViewport(tester);
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        expect(
+          find.widgetWithText(TextFormField, 'MG-9876543'),
+          findsOneWidget,
+        );
+        expect(
+          find.widgetWithText(TextFormField, 'Carlos Silva'),
+          findsOneWidget,
+        );
+        expect(
+          find.widgetWithText(TextFormField, 'Beatriz Silva'),
+          findsOneWidget,
+        );
+        expect(
+          // The edit page renders dates in Brazilian dd/MM/yyyy so the
+          // secretary reads them naturally; `_toIsoDate` converts back to
+          // ISO on save.
+          find.widgetWithText(TextFormField, '30/11/2022'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'should pre-fill Sexo and Estado Civil dropdowns with the wire-mapped labels',
+      (tester) async {
+        useTallViewport(tester);
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        // The selected dropdown value renders its label inline.
+        expect(find.text('Feminino'), findsWidgets);
+        expect(find.text('Casado(a)'), findsWidgets);
+      },
+    );
+
+    testWidgets('should pre-fill Cargo and Congregacao dropdowns', (
+      tester,
+    ) async {
       useTallViewport(tester);
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(TextFormField, 'MG-9876543'), findsOneWidget);
-      expect(
-        find.widgetWithText(TextFormField, 'Carlos Silva'),
-        findsOneWidget,
-      );
-      expect(
-        find.widgetWithText(TextFormField, 'Beatriz Silva'),
-        findsOneWidget,
-      );
-      expect(
-        // The edit page renders dates in Brazilian dd/MM/yyyy so the
-        // secretary reads them naturally; `_toIsoDate` converts back to
-        // ISO on save.
-        find.widgetWithText(TextFormField, '30/11/2022'),
-        findsOneWidget,
-      );
+      expect(find.text('Pastor'), findsWidgets);
+      expect(find.text('Sede'), findsWidgets);
     });
 
     testWidgets(
-        'should pre-fill Sexo and Estado Civil dropdowns with the wire-mapped labels',
-        (tester) async {
-      useTallViewport(tester);
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+      'should forward edited identity fields to MembersCubit.updateMemberUserData',
+      (tester) async {
+        useTallViewport(tester);
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
 
-      // The selected dropdown value renders its label inline.
-      expect(find.text('Feminino'), findsWidgets);
-      expect(find.text('Casado(a)'), findsWidgets);
-    });
+        // Edit RG.
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'MG-9876543'),
+          'SP-1112223',
+        );
+        // Edit Pai / Mae.
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'Carlos Silva'),
+          'Carlos Silva Jr.',
+        );
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'Beatriz Silva'),
+          'Beatriz Silva Jr.',
+        );
 
-    testWidgets(
-        'should forward edited identity fields to MembersCubit.updateMemberUserData',
-        (tester) async {
-      useTallViewport(tester);
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+        // Switch Sex from Feminino to Masculino.
+        await tester.ensureVisible(find.byType(DropdownButtonFormField<Sex>));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(DropdownButtonFormField<Sex>));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Masculino').last);
+        await tester.pumpAndSettle();
 
-      // Edit RG.
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'MG-9876543'),
-        'SP-1112223',
-      );
-      // Edit Pai / Mae.
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Carlos Silva'),
-        'Carlos Silva Jr.',
-      );
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Beatriz Silva'),
-        'Beatriz Silva Jr.',
-      );
+        // Switch CivilStatus from Casado(a) to Solteiro(a).
+        await tester.ensureVisible(
+          find.byType(DropdownButtonFormField<CivilStatus>),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(DropdownButtonFormField<CivilStatus>));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Solteiro(a)').last);
+        await tester.pumpAndSettle();
 
-      // Switch Sex from Feminino to Masculino.
-      await tester
-          .ensureVisible(find.byType(DropdownButtonFormField<Sex>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byType(DropdownButtonFormField<Sex>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Masculino').last);
-      await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Salvar Registro'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Salvar Registro'));
+        await tester.pumpAndSettle();
 
-      // Switch CivilStatus from Casado(a) to Solteiro(a).
-      await tester.ensureVisible(
-          find.byType(DropdownButtonFormField<CivilStatus>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byType(DropdownButtonFormField<CivilStatus>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Solteiro(a)').last);
-      await tester.pumpAndSettle();
-
-      await tester.ensureVisible(find.text('Salvar Registro'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Salvar Registro'));
-      await tester.pumpAndSettle();
-
-      verify(() => mockMembers.updateMemberUserData(
+        verify(
+          () => mockMembers.updateMemberUserData(
             userId: userId,
             name: 'Ana Silva',
             email: 'ana@example.com',
@@ -340,12 +412,259 @@ void main() {
             civilStatus: 'SINGLE',
             fatherName: 'Carlos Silva Jr.',
             motherName: 'Beatriz Silva Jr.',
-          )).called(1);
-    });
+            country: any(named: 'country'),
+            state: any(named: 'state'),
+            city: any(named: 'city'),
+            neighborhood: any(named: 'neighborhood'),
+            street: any(named: 'street'),
+            number: any(named: 'number'),
+            complement: any(named: 'complement'),
+            branchId: any(named: 'branchId'),
+            positionId: any(named: 'positionId'),
+          ),
+        ).called(1);
+      },
+    );
   });
 
-  group('EditMemberPage - Date fields (regression: dates were silently dropped on save)',
-      () {
+  group(
+    'EditMemberPage - Date fields (regression: dates were silently dropped on save)',
+    () {
+      void useTallViewport(WidgetTester tester) {
+        tester.view.physicalSize = const Size(800, 2000);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+      }
+
+      testWidgets(
+        'should pre-fill the date TextFields in Brazilian dd/MM/yyyy so the secretary reads them naturally',
+        (tester) async {
+          useTallViewport(tester);
+          await tester.pumpWidget(buildSubject());
+          await tester.pumpAndSettle();
+
+          // Profile ships birthDate='1990-05-20' and admissionDate='2020-03-15';
+          // the page must render them as '20/05/1990' and '15/03/2020'.
+          expect(
+            find.widgetWithText(TextFormField, '20/05/1990'),
+            findsOneWidget,
+          );
+          expect(
+            find.widgetWithText(TextFormField, '15/03/2020'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'should pre-fill dates when the backend returns full ISO DateTime strings',
+        (tester) async {
+          const isoDateTimeProfile = MemberProfile(
+            id: profileId,
+            userId: userId,
+            churchId: 'c1',
+            birthDate: '1990-05-20T00:00:00.000Z',
+            baptismDate: '2010-06-12T00:00:00.000Z',
+            admissionDate: '2020-03-15T00:00:00.000Z',
+            consecrationDate: '2022-11-30T00:00:00.000Z',
+            user: MemberProfileUser(
+              id: userId,
+              name: 'Ana Silva',
+              email: 'ana@example.com',
+              phone: '+5511999999999',
+              cpf: '12345678900',
+            ),
+          );
+          when(
+            () => mockProfile.state,
+          ).thenReturn(const ProfileState.loaded(profile: isoDateTimeProfile));
+
+          useTallViewport(tester);
+          await tester.pumpWidget(buildSubject());
+          await tester.pumpAndSettle();
+
+          expect(
+            find.widgetWithText(TextFormField, '20/05/1990'),
+            findsOneWidget,
+          );
+          expect(
+            find.widgetWithText(TextFormField, '12/06/2010'),
+            findsOneWidget,
+          );
+          expect(
+            find.widgetWithText(TextFormField, '15/03/2020'),
+            findsOneWidget,
+          );
+          expect(
+            find.widgetWithText(TextFormField, '30/11/2022'),
+            findsOneWidget,
+          );
+        },
+      );
+
+      testWidgets(
+        'tapping Salvar with unchanged dates issues PATCH /member-profiles/:profileId with the SAME ISO values (round-trip, not silent drop)',
+        (tester) async {
+          useTallViewport(tester);
+          await tester.pumpWidget(buildSubject());
+          await tester.pumpAndSettle();
+
+          await tester.ensureVisible(find.text('Salvar Registro'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Salvar Registro'));
+          await tester.pumpAndSettle();
+
+          // Even when the secretary does not re-tap a date, the pre-filled
+          // dd/MM/yyyy is re-converted to ISO and forwarded — so the date
+          // columns survive every save instead of being silently wiped.
+          verify(
+            () => mockMembers.updateMemberProfile(
+              profileId: profileId,
+              birthDate: '1990-05-20',
+              baptismDate: null,
+              admissionDate: '2020-03-15',
+              consecrationDate: null,
+            ),
+          ).called(1);
+        },
+      );
+
+      testWidgets(
+        'should create a MemberProfile from the edit screen when the member does not have one yet',
+        (tester) async {
+          const profileWithoutMemberProfile = MemberProfile(
+            id: null,
+            userId: userId,
+            churchId: 'c1',
+            branchId: 'b1',
+            birthDate: '1990-05-20',
+            admissionDate: '2020-03-15',
+            user: MemberProfileUser(
+              id: userId,
+              name: 'Ana Silva',
+              email: 'ana@example.com',
+              phone: '+5511999999999',
+              cpf: '12345678900',
+            ),
+          );
+          when(() => mockProfile.state).thenReturn(
+            const ProfileState.loaded(profile: profileWithoutMemberProfile),
+          );
+
+          useTallViewport(tester);
+          await tester.pumpWidget(buildSubject());
+          await tester.pumpAndSettle();
+
+          await tester.ensureVisible(find.text('Salvar Registro'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Salvar Registro'));
+          await tester.pumpAndSettle();
+
+          verify(
+            () => mockMembers.createMemberProfile(
+              userId: userId,
+              branchId: 'b1',
+              birthDate: '1990-05-20',
+              baptismDate: null,
+              admissionDate: '2020-03-15',
+              consecrationDate: null,
+            ),
+          ).called(1);
+          verifyNever(
+            () => mockMembers.updateMemberProfile(
+              profileId: any(named: 'profileId'),
+              birthDate: any(named: 'birthDate'),
+              baptismDate: any(named: 'baptismDate'),
+              admissionDate: any(named: 'admissionDate'),
+              consecrationDate: any(named: 'consecrationDate'),
+            ),
+          );
+        },
+      );
+    },
+  );
+
+  group('EditMemberPage - Inactivate', () {
+    testWidgets(
+      'should open the confirmation dialog and call MembersCubit.inactivateMemberByUserId when confirmed',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        await tester.ensureVisible(find.text('Inativar Membro'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Inativar Membro'));
+        await tester.pumpAndSettle();
+
+        // Dialog is open — confirm the action
+        expect(find.text('Inativar Membro?'), findsOneWidget);
+        await tester.tap(find.widgetWithText(ElevatedButton, 'Inativar'));
+        await tester.pumpAndSettle();
+
+        verify(() => mockMembers.inactivateMemberByUserId(userId)).called(1);
+      },
+    );
+
+    testWidgets(
+      'should show the backend guard message when the Last-Admin guard blocks inactivation',
+      (tester) async {
+        when(() => mockMembers.inactivateMemberByUserId(userId)).thenThrow(
+          NetworkException(
+            'Cannot remove or demote the last admin of this church',
+          ),
+        );
+
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        await tester.ensureVisible(find.text('Inativar Membro'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Inativar Membro'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.widgetWithText(ElevatedButton, 'Inativar'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 50));
+
+        expect(
+          find.text('Cannot remove or demote the last admin of this church'),
+          findsOneWidget,
+        );
+        // Page stays mounted so the secretary can take another action
+        expect(find.text('Editar Membro'), findsOneWidget);
+      },
+    );
+  });
+
+  // ---------------------------------------------------------------------------
+  // Regression: dropdowns were not reliably pre-filled after loading -> loaded.
+  //
+  // Property 1: Bug Condition — Dropdowns de Sexo e Estado Civil não
+  // pré-preenchidos após transição loading → loaded.
+  //
+  // Validates: Requirements 1.1, 1.2, 2.1, 2.2
+  //
+  // ---------------------------------------------------------------------------
+  group('EditMemberPage - Regression (dropdowns não pré-preenchidos)', () {
+    // Profile concreto com sex: 'FEMALE' e civilStatus: 'MARRIED' para
+    // demonstrar o bug de forma determinística.
+    const richProfile = MemberProfile(
+      id: profileId,
+      userId: userId,
+      churchId: 'c1',
+      birthDate: '1990-05-20',
+      admissionDate: '2020-03-15',
+      user: MemberProfileUser(
+        id: userId,
+        name: 'Ana Silva',
+        email: 'ana@example.com',
+        phone: '+5511999999999',
+        cpf: '12345678900',
+        sex: 'FEMALE',
+        civilStatus: 'MARRIED',
+      ),
+    );
+
     void useTallViewport(WidgetTester tester) {
       tester.view.physicalSize = const Size(800, 2000);
       tester.view.devicePixelRatio = 1.0;
@@ -354,93 +673,65 @@ void main() {
     }
 
     testWidgets(
-        'should pre-fill the date TextFields in Brazilian dd/MM/yyyy so the secretary reads them naturally',
-        (tester) async {
-      useTallViewport(tester);
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+      // Validates: Requirements 1.1, 1.2, 2.1, 2.2
+      'dropdown Sexo deve exibir "Feminino" após transição loading → loaded com sex: FEMALE',
+      (tester) async {
+        useTallViewport(tester);
 
-      // Profile ships birthDate='1990-05-20' and admissionDate='2020-03-15';
-      // the page must render them as '20/05/1990' and '15/03/2020'.
-      expect(
-        find.widgetWithText(TextFormField, '20/05/1990'),
-        findsOneWidget,
-      );
-      expect(
-        find.widgetWithText(TextFormField, '15/03/2020'),
-        findsOneWidget,
-      );
-    });
+        // Simula a transição loading → loaded usando whenListen do bloc_test.
+        // O initialState é loading() para reproduzir o cenário real de abertura
+        // da tela: o cubit começa em loading enquanto a API é chamada, depois
+        // transita para loaded quando os dados chegam.
+        whenListen(
+          mockProfile,
+          Stream.fromIterable([
+            const ProfileState.loaded(profile: richProfile),
+          ]),
+          initialState: const ProfileState.loading(),
+        );
 
-    testWidgets(
-        'tapping Salvar with unchanged dates issues PATCH /member-profiles/:profileId with the SAME ISO values (round-trip, not silent drop)',
-        (tester) async {
-      useTallViewport(tester);
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(buildSubject());
+        // Primeiro pump: estado loading → CircularProgressIndicator visível
+        await tester.pump();
+        // pumpAndSettle: aguarda a transição para loaded e todos os rebuilds
+        await tester.pumpAndSettle();
 
-      await tester.ensureVisible(find.text('Salvar Registro'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Salvar Registro'));
-      await tester.pumpAndSettle();
-
-      // Even when the secretary does not re-tap a date, the pre-filled
-      // dd/MM/yyyy is re-converted to ISO and forwarded — so the date
-      // columns survive every save instead of being silently wiped.
-      verify(() => mockMembers.updateMemberProfile(
-            profileId: profileId,
-            birthDate: '1990-05-20',
-            baptismDate: null,
-            admissionDate: '2020-03-15',
-            consecrationDate: null,
-          )).called(1);
-    });
-  });
-
-  group('EditMemberPage - Inactivate', () {
-    testWidgets(
-        'should open the confirmation dialog and call MembersCubit.inactivateMemberByUserId when confirmed',
-        (tester) async {
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
-
-      await tester.ensureVisible(find.text('Inativar Membro'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Inativar Membro'));
-      await tester.pumpAndSettle();
-
-      // Dialog is open — confirm the action
-      expect(find.text('Inativar Membro?'), findsOneWidget);
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Inativar'));
-      await tester.pumpAndSettle();
-
-      verify(() => mockMembers.inactivateMemberByUserId(userId)).called(1);
-    });
+        expect(
+          find.text('Feminino'),
+          findsWidgets,
+          reason:
+              'Dropdown Sexo deve exibir "Feminino" após loading→loaded com sex=FEMALE. '
+              'Isso garante que os dados carregados aparecem na tela de edição.',
+        );
+      },
+    );
 
     testWidgets(
-        'should show the backend guard message when the Last-Admin guard blocks inactivation',
-        (tester) async {
-      when(() => mockMembers.inactivateMemberByUserId(userId)).thenThrow(
-        NetworkException('Cannot remove or demote the last admin of this church'),
-      );
+      // Validates: Requirements 1.1, 1.2, 2.1, 2.2
+      'dropdown Estado Civil deve exibir "Casado(a)" após transição loading → loaded com civilStatus: MARRIED',
+      (tester) async {
+        useTallViewport(tester);
 
-      await tester.pumpWidget(buildSubject());
-      await tester.pumpAndSettle();
+        whenListen(
+          mockProfile,
+          Stream.fromIterable([
+            const ProfileState.loaded(profile: richProfile),
+          ]),
+          initialState: const ProfileState.loading(),
+        );
 
-      await tester.ensureVisible(find.text('Inativar Membro'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Inativar Membro'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Inativar'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
+        await tester.pumpWidget(buildSubject());
+        await tester.pump();
+        await tester.pumpAndSettle();
 
-      expect(
-        find.text('Cannot remove or demote the last admin of this church'),
-        findsOneWidget,
-      );
-      // Page stays mounted so the secretary can take another action
-      expect(find.text('Editar Membro'), findsOneWidget);
-    });
+        expect(
+          find.text('Casado(a)'),
+          findsWidgets,
+          reason:
+              'Dropdown Estado Civil deve exibir "Casado(a)" após loading→loaded com civilStatus=MARRIED. '
+              'Isso garante que os dados carregados aparecem na tela de edição.',
+        );
+      },
+    );
   });
 }

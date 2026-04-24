@@ -1,22 +1,36 @@
-import { IsUUID, IsNotEmpty, IsBoolean, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsUUID,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 export class AttendanceEntry {
   @IsUUID()
   @IsNotEmpty()
-  userId!: string;
+  memberId!: string;
 
   @IsBoolean()
   isPresent!: boolean;
 }
 
-export class RecordAttendanceDto {
-  @IsUUID()
-  @IsNotEmpty()
-  eventId!: string;
+export class SaveLessonAttendanceDto {
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  visitorCount!: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  offeringAmount!: number;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AttendanceEntry)
-  entries!: AttendanceEntry[];
+  attendances!: AttendanceEntry[];
 }
