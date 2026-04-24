@@ -20,6 +20,10 @@ import '../../features/branches/data/branches_repository.dart' as _i49;
 import '../../features/branches/presentation/cubit/branches_cubit.dart'
     as _i822;
 import '../../features/ebd/data/ebd_repository.dart' as _i605;
+import '../../features/ebd/presentation/cubit/ebd_attendance_cubit.dart'
+    as _i201;
+import '../../features/ebd/presentation/cubit/ebd_class_details_cubit.dart'
+    as _i202;
 import '../../features/ebd/presentation/cubit/ebd_cubit.dart' as _i1013;
 import '../../features/events/data/events_repository.dart' as _i595;
 import '../../features/events/presentation/cubit/events_cubit.dart' as _i496;
@@ -78,6 +82,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1013.EbdCubit>(
       () => _i1013.EbdCubit(repository: gh<_i605.EbdRepository>()),
+    );
+    gh.factory<_i201.EbdAttendanceCubit>(
+      () => _i201.EbdAttendanceCubit(repository: gh<_i605.EbdRepository>()),
+    );
+    gh.factory<_i202.EbdClassDetailsCubit>(
+      () => _i202.EbdClassDetailsCubit(repository: gh<_i605.EbdRepository>()),
     );
     gh.lazySingleton<_i726.AuthRepository>(
       () => _i726.AuthRepository(

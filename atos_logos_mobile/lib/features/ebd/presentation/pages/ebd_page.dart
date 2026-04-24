@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../data/ebd_repository.dart';
 import '../../domain/models/ebd_class.dart';
 import '../cubit/ebd_cubit.dart';
 import '../cubit/ebd_state.dart';
@@ -105,15 +106,37 @@ class _EbdPageState extends State<EbdPage> {
   }
 }
 
-class _EbdDashboard extends StatelessWidget {
+class _EbdDashboard extends StatefulWidget {
   const _EbdDashboard({required this.classes});
 
   final List<EbdClass> classes;
 
   @override
+  State<_EbdDashboard> createState() => _EbdDashboardState();
+}
+
+class _EbdDashboardState extends State<_EbdDashboard> {
+  EbdQuarterSummary? _summary;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSummary();
+  }
+
+  Future<void> _loadSummary() async {
+    try {
+      final summary = await getIt<EbdRepository>().getQuarterSummary();
+      if (mounted) setState(() => _summary = summary);
+    } catch (_) {
+      // Summary is non-critical — silently ignore errors
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final cards = classes.map(_ClassOverview.fromClass).toList();
-    final activeClasses = classes.length;
+    final cards = widget.classes.map(_ClassOverview.fromClass).toList();
+    final activeClasses = widget.classes.length;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 120),
@@ -176,7 +199,10 @@ class _EbdDashboard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        _QuarterSummary(activeClasses: activeClasses),
+        _QuarterSummary(
+          activeClasses: activeClasses,
+          summary: _summary,
+        ),
       ],
     );
   }
@@ -391,12 +417,18 @@ class _ClassCard extends StatelessWidget {
 }
 
 class _QuarterSummary extends StatelessWidget {
-  const _QuarterSummary({required this.activeClasses});
+  const _QuarterSummary({required this.activeClasses, this.summary});
 
   final int activeClasses;
+  final EbdQuarterSummary? summary;
 
   @override
   Widget build(BuildContext context) {
+    final totalStudents = summary?.totalStudents ?? activeClasses * 0;
+    final frequency = summary?.averageFrequency ?? 0.0;
+    final teachers = summary?.totalTeachers ?? 0;
+    final hasData = summary != null;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
       decoration: BoxDecoration(
@@ -415,34 +447,6 @@ class _QuarterSummary extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          const SizedBox(height: 16),
-          Text(
-            'O engajamento deste trimestre superou em 15% o período anterior. O foco em classes temáticas tem atraído novos membros.',
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              height: 1.55,
-              color: AppTheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 22),
-          TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              backgroundColor: AppTheme.surfaceContainerLowest,
-              foregroundColor: AppTheme.primary,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(999),
-              ),
-            ),
-            child: Text(
-              'Ver Relatório Completo',
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
           const SizedBox(height: 28),
           GridView.count(
             crossAxisCount: 2,
@@ -452,10 +456,22 @@ class _QuarterSummary extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              const _MetricTile(value: '141', label: 'Total\nAlunos'),
+              _MetricTile(
+                value: hasData ? '$totalStudents' : '—',
+                label: 'Total\nAlunos',
+                loading: !hasData,
+              ),
               _MetricTile(value: '$activeClasses', label: 'Classes\nAtivas'),
-              const _MetricTile(value: '82%', label: 'Frequência'),
-              const _MetricTile(value: '12', label: 'Professores'),
+              _MetricTile(
+                value: hasData ? '${frequency.toStringAsFixed(0)}%' : '—',
+                label: 'Frequência',
+                loading: !hasData,
+              ),
+              _MetricTile(
+                value: hasData ? '$teachers' : '—',
+                label: 'Professores',
+                loading: !hasData,
+              ),
             ],
           ),
         ],
@@ -465,10 +481,15 @@ class _QuarterSummary extends StatelessWidget {
 }
 
 class _MetricTile extends StatelessWidget {
-  const _MetricTile({required this.value, required this.label});
+  const _MetricTile({
+    required this.value,
+    required this.label,
+    this.loading = false,
+  });
 
   final String value;
   final String label;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -482,15 +503,25 @@ class _MetricTile extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            value,
-            style: GoogleFonts.manrope(
-              fontSize: 26,
-              fontWeight: FontWeight.w800,
-              height: 1,
-              color: AppTheme.primary,
+          if (loading)
+            const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppTheme.primary,
+              ),
+            )
+          else
+            Text(
+              value,
+              style: GoogleFonts.manrope(
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                height: 1,
+                color: AppTheme.primary,
+              ),
             ),
-          ),
           const SizedBox(height: 7),
           Text(
             label.toUpperCase(),

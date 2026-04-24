@@ -1,88 +1,154 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../domain/models/ebd_class.dart';
+import '../cubit/ebd_class_details_cubit.dart';
 
-class EbdClassDetailsPage extends StatelessWidget {
-  const EbdClassDetailsPage({super.key, this.classId = 'parabolas'});
+class EbdClassDetailsPage extends StatefulWidget {
+  const EbdClassDetailsPage({super.key, required this.classId});
 
   final String classId;
 
-  static const _lessons = [
-    _LessonOverview(
-      number: '01',
-      date: '01 Outubro, 2023',
-      title: 'O Semeador e os Solos',
-      status: _LessonStatus.done,
-    ),
-    _LessonOverview(
-      number: '02',
-      date: '08 Outubro, 2023',
-      title: 'O Joio e o Trigo',
-      status: _LessonStatus.done,
-    ),
-    _LessonOverview(
-      number: '03',
-      date: 'HOJE • 15 Outubro, 2023',
-      title: 'A Pérola de Grande Valor',
-      subtitle: 'Tema central: O valor incomparável do Reino de Deus.',
-      status: _LessonStatus.today,
-    ),
-    _LessonOverview(
-      number: '04',
-      date: '22 Outubro, 2023',
-      title: 'O Credor Incompassivo',
-      status: _LessonStatus.pending,
-    ),
-    _LessonOverview(
-      number: '05',
-      date: '29 Outubro, 2023',
-      title: 'O Bom Samaritano',
-      status: _LessonStatus.pending,
-    ),
-    _LessonOverview(
-      number: '06',
-      date: '05 Novembro, 2023',
-      title: 'O Amigo Importuno',
-      status: _LessonStatus.pending,
-    ),
-  ];
+  @override
+  State<EbdClassDetailsPage> createState() => _EbdClassDetailsPageState();
+}
+
+class _EbdClassDetailsPageState extends State<EbdClassDetailsPage> {
+  late final EbdClassDetailsCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = getIt<EbdClassDetailsCubit>()..loadDetails(widget.classId);
+  }
+
+  @override
+  void dispose() {
+    _cubit.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(22, 18, 22, 120),
+    return BlocProvider.value(
+      value: _cubit,
+      child: BlocBuilder<EbdClassDetailsCubit, EbdClassDetailsState>(
+        builder: (context, state) {
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(22, 18, 22, 120),
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  key: const Key('ebd_class_details_back_button'),
+                  onPressed: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/ebd');
+                    }
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                  color: AppTheme.primary,
+                  tooltip: 'Voltar',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'ESCOLA BÍBLICA DOMINICAL',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.7,
+                  color: AppTheme.primary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              if (state is EbdClassDetailsLoading)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: CircularProgressIndicator(color: AppTheme.primary),
+                  ),
+                )
+              else if (state is EbdClassDetailsError)
+                _ErrorView(
+                  message: state.message,
+                  onRetry: () => _cubit.loadDetails(widget.classId),
+                )
+              else if (state is EbdClassDetailsLoaded)
+                _LessonList(
+                  classDetail: state.classDetail,
+                  lessons: state.lessons,
+                  classId: widget.classId,
+                )
+              else
+                const SizedBox.shrink(),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  const _ErrorView({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 40),
+      child: Column(
+        children: [
+          const Icon(Icons.error_outline, size: 48, color: AppTheme.error),
+          const SizedBox(height: 16),
+          Text(message, style: GoogleFonts.inter(color: AppTheme.error)),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: onRetry,
+            child: const Text('Tentar novamente'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LessonList extends StatelessWidget {
+  const _LessonList({
+    required this.classDetail,
+    required this.lessons,
+    required this.classId,
+  });
+
+  final EbdClassDetail classDetail;
+  final List<EbdLesson> lessons;
+  final String classId;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    final nextLesson = lessons.firstWhere(
+      (l) => !l.isCompleted,
+      orElse: () => lessons.last,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: IconButton(
-            key: const Key('ebd_class_details_back_button'),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/ebd');
-              }
-            },
-            icon: const Icon(Icons.arrow_back),
-            color: AppTheme.primary,
-            tooltip: 'Voltar',
-          ),
-        ),
-        const SizedBox(height: 12),
+        // ── Nome da classe ──────────────────────────────────────────────
         Text(
-          'ESCOLA BÍBLICA DOMINICAL',
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.7,
-            color: AppTheme.primary,
-          ),
-        ),
-        const SizedBox(height: 14),
-        Text(
-          'As Parábolas de Jesus',
+          classDetail.name,
           style: GoogleFonts.manrope(
             fontSize: 35,
             fontWeight: FontWeight.w800,
@@ -91,17 +157,27 @@ class EbdClassDetailsPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        const Wrap(
+        // ── Pills: professor e trimestre ────────────────────────────────
+        Wrap(
           spacing: 12,
           runSpacing: 12,
           children: [
-            _InfoPill(icon: Icons.person, label: 'Prof. Ricardo Mendes'),
-            _InfoPill(icon: Icons.calendar_today, label: '4º Trimestre 2023'),
+            if (classDetail.teacherName != null)
+              _InfoPill(
+                icon: Icons.person,
+                label: classDetail.teacherName!,
+              ),
+            if (classDetail.quarterName != null)
+              _InfoPill(
+                icon: Icons.calendar_today,
+                label: classDetail.quarterName!,
+              ),
           ],
         ),
         const SizedBox(height: 34),
         const _MagazineHero(),
         const SizedBox(height: 46),
+        // ── Cronograma ──────────────────────────────────────────────────
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -128,7 +204,7 @@ class EbdClassDetailsPage extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Próxima aula:\nLição 08',
+                  'Próxima aula:\nLição ${nextLesson.number.toString().padLeft(2, '0')}',
                   style: GoogleFonts.inter(
                     fontSize: 13,
                     height: 1.25,
@@ -140,34 +216,30 @@ class EbdClassDetailsPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 22),
-        ..._lessons.map(
-          (lesson) => Padding(
+        ...lessons.map((lesson) {
+          final lessonDay = DateTime(
+            lesson.scheduledDate.year,
+            lesson.scheduledDate.month,
+            lesson.scheduledDate.day,
+          );
+          final isToday = lessonDay == today;
+          final status = lesson.isCompleted
+              ? _LessonStatus.done
+              : isToday
+              ? _LessonStatus.today
+              : _LessonStatus.pending;
+
+          return Padding(
             padding: const EdgeInsets.only(bottom: 14),
-            child: _LessonCard(lesson: lesson, classId: classId),
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextButton.icon(
-          onPressed: () {},
-          label: Text(
-            'Ver todas as 13 lições',
-            style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w800),
-          ),
-          icon: const Icon(Icons.expand_more),
-          iconAlignment: IconAlignment.end,
-        ),
+            child: _LessonCard(
+              lesson: lesson,
+              status: status,
+              classId: classId,
+            ),
+          );
+        }),
       ],
     );
-  }
-}
-
-void _openAttendance(BuildContext context, String classId, String lessonId) {
-  final router = GoRouter.maybeOf(context);
-  final route = '/ebd/classes/$classId/lessons/$lessonId/attendance';
-  if (router != null) {
-    context.push(route);
-  } else {
-    context.push('/attendance');
   }
 }
 
@@ -269,20 +341,29 @@ class _MagazineHero extends StatelessWidget {
 }
 
 class _LessonCard extends StatelessWidget {
-  const _LessonCard({required this.lesson, required this.classId});
+  const _LessonCard({
+    required this.lesson,
+    required this.status,
+    required this.classId,
+  });
 
-  final _LessonOverview lesson;
+  final EbdLesson lesson;
+  final _LessonStatus status;
   final String classId;
 
   @override
   Widget build(BuildContext context) {
-    final isToday = lesson.status == _LessonStatus.today;
-    final isPending = lesson.status == _LessonStatus.pending;
+    final isToday = status == _LessonStatus.today;
+    final isPending = status == _LessonStatus.pending;
     final activeColor = isToday ? AppTheme.primary : AppTheme.outlineVariant;
+    final numberStr = lesson.number.toString().padLeft(2, '0');
+    final dateStr = _formatDate(lesson.scheduledDate);
 
     return InkWell(
       key: isToday ? const Key('take_attendance_button') : null,
-      onTap: () => _openAttendance(context, classId, lesson.number),
+      onTap: () => context.push(
+        '/ebd/classes/$classId/lessons/${lesson.id}/attendance',
+      ),
       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         padding: EdgeInsets.all(isToday ? 22 : 18),
@@ -298,14 +379,15 @@ class _LessonCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _LessonBadge(
-              number: lesson.number,
-              active: isToday,
-              muted: isPending,
-            ),
+            _LessonBadge(number: numberStr, active: isToday, muted: isPending),
             SizedBox(width: isToday ? 18 : 18),
             Expanded(
-              child: _LessonText(lesson: lesson, active: isToday),
+              child: _LessonText(
+                dateStr: isToday ? 'HOJE • $dateStr' : dateStr,
+                title: lesson.theme,
+                status: status,
+                active: isToday,
+              ),
             ),
             Icon(
               isToday ? Icons.arrow_forward : Icons.chevron_right,
@@ -368,14 +450,21 @@ class _LessonBadge extends StatelessWidget {
 }
 
 class _LessonText extends StatelessWidget {
-  const _LessonText({required this.lesson, this.active = false});
+  const _LessonText({
+    required this.dateStr,
+    required this.title,
+    required this.status,
+    this.active = false,
+  });
 
-  final _LessonOverview lesson;
+  final String dateStr;
+  final String title;
+  final _LessonStatus status;
   final bool active;
 
   @override
   Widget build(BuildContext context) {
-    final statusLabel = switch (lesson.status) {
+    final statusLabel = switch (status) {
       _LessonStatus.done => 'CONCLUÍDA',
       _LessonStatus.pending => 'PENDENTE',
       _LessonStatus.today => null,
@@ -390,7 +479,7 @@ class _LessonText extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(
-              lesson.date,
+              dateStr,
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: active ? FontWeight.w800 : FontWeight.w500,
@@ -399,9 +488,12 @@ class _LessonText extends StatelessWidget {
             ),
             if (statusLabel != null)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3,
+                ),
                 decoration: BoxDecoration(
-                  color: lesson.status == _LessonStatus.done
+                  color: status == _LessonStatus.done
                       ? const Color(0xFFCFF6D8)
                       : AppTheme.surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(999),
@@ -411,7 +503,7 @@ class _LessonText extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
-                    color: lesson.status == _LessonStatus.done
+                    color: status == _LessonStatus.done
                         ? const Color(0xFF087436)
                         : AppTheme.onSurfaceVariant,
                   ),
@@ -421,7 +513,7 @@ class _LessonText extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         Text(
-          lesson.title,
+          title,
           style: GoogleFonts.manrope(
             fontSize: active ? 21 : 17,
             fontWeight: FontWeight.w800,
@@ -429,36 +521,19 @@ class _LessonText extends StatelessWidget {
             color: active ? AppTheme.onPrimaryContainer : Colors.black,
           ),
         ),
-        if (lesson.subtitle != null) ...[
-          const SizedBox(height: 8),
-          Text(
-            lesson.subtitle!,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              height: 1.35,
-              color: AppTheme.primary,
-            ),
-          ),
-        ],
       ],
     );
   }
 }
 
-class _LessonOverview {
-  const _LessonOverview({
-    required this.number,
-    required this.date,
-    required this.title,
-    required this.status,
-    this.subtitle,
-  });
-
-  final String number;
-  final String date;
-  final String title;
-  final _LessonStatus status;
-  final String? subtitle;
-}
-
 enum _LessonStatus { done, today, pending }
+
+String _formatDate(DateTime date) {
+  const months = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+  ];
+  final day = date.day.toString().padLeft(2, '0');
+  final month = months[date.month - 1];
+  return '$day $month, ${date.year}';
+}

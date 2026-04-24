@@ -31,6 +31,11 @@ export class EbdController {
     return this.ebdService.getSetupOptions(user.churchId);
   }
 
+  @Get('quarter-summary')
+  async getQuarterSummary(@CurrentUser() user: AuthenticatedUser) {
+    return this.ebdService.getQuarterSummary(user.churchId);
+  }
+
   @Get('classes')
   async findAllClasses(
     @CurrentUser() user: AuthenticatedUser,
@@ -52,6 +57,14 @@ export class EbdController {
     @Body() dto: CreateEbdClassDto,
   ) {
     return this.ebdService.createClass(user.churchId, dto);
+  }
+
+  @Get('classes/:id')
+  async findOneClass(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+  ) {
+    return this.ebdService.findOneClass(user.churchId, id);
   }
 
   @Delete('classes/:id')

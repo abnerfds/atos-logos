@@ -88,6 +88,90 @@ class EbdRepository {
       );
     }
   }
+
+  Future<EbdClassDetail> getClassDetail(String classId) async {
+    try {
+      final response = await _dio.get('/ebd/classes/$classId');
+      return EbdClassDetail.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw NetworkException(
+        parseBackendErrorMessage(e.response?.data) ??
+            'Erro ao carregar dados da classe',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  Future<List<EbdLesson>> getLessons(String classId) async {
+    try {
+      final response = await _dio.get('/ebd/classes/$classId/lessons');
+      return (response.data as List)
+          .map((e) => EbdLesson.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw NetworkException(
+        parseBackendErrorMessage(e.response?.data) ?? 'Erro ao carregar lições',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  Future<List<EbdAttendanceEntry>> getLessonAttendance(
+    String lessonId,
+  ) async {
+    try {
+      final response = await _dio.get('/ebd/lessons/$lessonId/attendance');
+      return (response.data as List)
+          .map((e) => EbdAttendanceEntry.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw NetworkException(
+        parseBackendErrorMessage(e.response?.data) ??
+            'Erro ao carregar chamada',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  Future<void> saveLessonAttendance({
+    required String lessonId,
+    required List<EbdAttendanceEntry> attendances,
+    required double offeringAmount,
+    int visitorCount = 0,
+  }) async {
+    try {
+      await _dio.post(
+        '/ebd/lessons/$lessonId/attendance',
+        data: {
+          'visitorCount': visitorCount,
+          'offeringAmount': offeringAmount,
+          'attendances': attendances
+              .map((a) => {'memberId': a.memberId, 'isPresent': a.isPresent})
+              .toList(),
+        },
+      );
+    } on DioException catch (e) {
+      throw NetworkException(
+        parseBackendErrorMessage(e.response?.data) ?? 'Erro ao salvar chamada',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  Future<EbdQuarterSummary> getQuarterSummary() async {
+    try {
+      final response = await _dio.get('/ebd/quarter-summary');
+      return EbdQuarterSummary.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } on DioException catch (e) {
+      throw NetworkException(
+        parseBackendErrorMessage(e.response?.data) ??
+            'Erro ao carregar resumo do trimestre',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
 }
 
 class EbdSetupOptions {

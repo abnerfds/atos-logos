@@ -180,6 +180,37 @@ export class EbdService {
     });
   }
 
+  async findOneClass(churchId: string, classId: string) {
+    const db = this.prisma as PrismaAny;
+    const item = await db.ebdClass.findFirst({
+      where: { id: classId, churchId },
+      include: {
+        branch: { select: { id: true, name: true } },
+        quarter: { select: { id: true, name: true } },
+        teachers: { include: { user: { select: { id: true, name: true } } } },
+        _count: { select: { enrollments: true } },
+      },
+    });
+    if (!item) throw new NotFoundException('EBD class not found');
+
+    return {
+      id: item.id,
+      churchId: item.churchId,
+      branchId: item.branchId,
+      branch: item.branch,
+      name: item.name,
+      targetAudience: item.targetAudience,
+      status: item.status,
+      teacherName: item.teachers[0]?.user.name ?? null,
+      teachers: item.teachers.map((t: any) => ({
+        id: t.user.id,
+        name: t.user.name,
+      })),
+      quarterName: item.quarter?.name ?? null,
+      enrolledCount: item._count.enrollments,
+    };
+  }
+
   async deleteClass(churchId: string, classId: string) {
     await this.findClassOrThrow(churchId, classId);
     return (this.prisma as PrismaAny).ebdClass.delete({
@@ -212,6 +243,62 @@ export class EbdService {
     });
 
     return this.getEnrollments(churchId, classId);
+  }
+
+  // ── Quarter Summary ───────────────────────────────────────────────────
+
+  async getQuarterSummary(churchId: string) {
+    const db = this.prisma as PrismaAny;
+
+    const activeClasses = await db.ebdClass.findMany({
+      where: { churchId, status: true },
+      include: {
+        teachers: { select: { userId: true } },
+        _count: { select: { enrollments: true } },
+        lessons: {
+          where: { isCompleted: true },
+          include: {
+            attendances: {
+              where: { isPresent: true },
+              select: { id: true },
+            },
+          },
+        },
+      },
+    });
+
+    const totalStudents = activeClasses.reduce(
+      (sum: number, cls: any) => sum + cls._count.enrollments,
+      0,
+    );
+
+    const teacherIds = new Set<string>();
+    for (const cls of activeClasses) {
+      for (const t of cls.teachers) {
+        teacherIds.add(t.userId);
+      }
+    }
+
+    let totalPresences = 0;
+    let totalSessions = 0;
+    for (const cls of activeClasses) {
+      for (const lesson of cls.lessons) {
+        totalSessions++;
+        totalPresences += lesson.attendances.length;
+      }
+    }
+
+    const averageFrequency =
+      totalSessions > 0 && totalStudents > 0
+        ? Math.round((totalPresences / (totalSessions * totalStudents)) * 100)
+        : 0;
+
+    return {
+      totalStudents,
+      activeClasses: activeClasses.length,
+      averageFrequency,
+      totalTeachers: teacherIds.size,
+    };
   }
 
   // ── Lessons ───────────────────────────────────────────────────────────
