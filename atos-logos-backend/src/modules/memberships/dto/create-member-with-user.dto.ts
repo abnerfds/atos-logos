@@ -8,7 +8,12 @@ import {
   IsUUID,
   MinLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { CivilStatus, Role, Sex } from '@prisma/client';
+
+/** Strips every non-digit character — used to sanitise CPF and phone. */
+const digitsOnly = ({ value }: { value: unknown }) =>
+  typeof value === 'string' ? value.replace(/\D/g, '') || undefined : value;
 
 /**
  * Secretariat payload that creates a User + Membership (and, when
@@ -35,10 +40,12 @@ export class CreateMemberWithUserDto {
   email?: string;
 
   @IsOptional()
+  @Transform(digitsOnly)
   @IsString()
   phone?: string;
 
   @IsOptional()
+  @Transform(digitsOnly)
   @IsString()
   cpf?: string;
 

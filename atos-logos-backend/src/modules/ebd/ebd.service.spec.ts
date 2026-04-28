@@ -16,7 +16,12 @@ function buildPrismaMock() {
       count: jest.fn(),
       create: jest.fn(),
       findFirst: jest.fn(),
+      update: jest.fn(),
       delete: jest.fn(),
+    },
+    ebdClassTeacher: {
+      deleteMany: jest.fn(),
+      createMany: jest.fn(),
     },
     ebdLesson: {
       findMany: jest.fn(),
@@ -29,6 +34,7 @@ function buildPrismaMock() {
       create: jest.fn(),
       createMany: jest.fn(),
       delete: jest.fn(),
+      deleteMany: jest.fn(),
     },
     ebdAttendance: {
       findMany: jest.fn(),
@@ -334,5 +340,199 @@ describe('EbdService', () => {
 
     // Then
     await expect(attempt).rejects.toThrow(NotFoundException);
+  });
+
+  // ── updateClass ───────────────────────────────────────────────────────────
+
+  describe('updateClass', () => {
+    it('should update name and targetAudience when only scalar fields are provided', async () => {
+      // Given
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdClass.update.mockResolvedValue({
+        id: classId,
+        name: 'Updated Name',
+        targetAudience: 'Youth',
+      });
+
+      // When
+      await service.updateClass(churchId, classId, {
+        name: 'Updated Name',
+        targetAudience: 'Youth',
+      });
+
+      // Then
+      expect(prisma.ebdClass.update).toHaveBeenCalledWith({
+        where: { id: classId },
+        data: { name: 'Updated Name', targetAudience: 'Youth' },
+      });
+      expect(prisma.ebdClassTeacher.deleteMany).not.toHaveBeenCalled();
+      expect(prisma.ebdEnrollment.deleteMany).not.toHaveBeenCalled();
+    });
+
+    it('should link an existing quarter when quarterName matches one already in the church', async () => {
+      // Given
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdClass.update.mockResolvedValue({ id: classId });
+      prisma.ebdQuarter.findFirst.mockResolvedValue({
+        id: 'quarter-existing',
+        churchId,
+        name: '2026.2',
+      });
+
+      // When
+      await service.updateClass(churchId, classId, { quarterName: '2026.2' });
+
+      // Then
+      expect(prisma.ebdQuarter.create).not.toHaveBeenCalled();
+      expect(prisma.ebdClass.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ quarterId: 'quarter-existing' }),
+        }),
+      );
+    });
+
+    it('should create a new quarter when quarterName does not exist yet', async () => {
+      // Given
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdClass.update.mockResolvedValue({ id: classId });
+      prisma.ebdQuarter.findFirst.mockResolvedValue(null);
+      prisma.ebdQuarter.create.mockResolvedValue({
+        id: 'quarter-new',
+        churchId,
+        name: '2026.3',
+      });
+
+      // When
+      await service.updateClass(churchId, classId, { quarterName: '2026.3' });
+
+      // Then
+      expect(prisma.ebdQuarter.create).toHaveBeenCalledWith({
+        data: { churchId, name: '2026.3', status: 'ACTIVE' },
+      });
+      expect(prisma.ebdClass.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ quarterId: 'quarter-new' }),
+        }),
+      );
+    });
+
+    it('should replace teachers when teacherIds is provided', async () => {
+      // Given
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdClass.update.mockResolvedValue({ id: classId });
+      prisma.ebdClassTeacher.deleteMany.mockResolvedValue({ count: 1 });
+      prisma.ebdClassTeacher.createMany.mockResolvedValue({ count: 2 });
+
+      // When
+      await service.updateClass(churchId, classId, {
+        teacherIds: ['teacher-2', 'teacher-3'],
+      });
+
+      // Then
+      expect(prisma.ebdClassTeacher.deleteMany).toHaveBeenCalledWith({
+        where: { classId },
+      });
+      expect(prisma.ebdClassTeacher.createMany).toHaveBeenCalledWith({
+        data: [
+          { classId, userId: 'teacher-2' },
+          { classId, userId: 'teacher-3' },
+        ],
+        skipDuplicates: true,
+      });
+    });
+
+    it('should replace enrollments when studentIds is provided', async () => {
+      // Given
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdClass.update.mockResolvedValue({ id: classId });
+      prisma.ebdEnrollment.deleteMany.mockResolvedValue({ count: 2 });
+      prisma.ebdEnrollment.createMany.mockResolvedValue({ count: 3 });
+
+      // When
+      await service.updateClass(churchId, classId, {
+        studentIds: ['student-1', 'student-2', 'student-3'],
+      });
+
+      // Then
+      expect(prisma.ebdEnrollment.deleteMany).toHaveBeenCalledWith({
+        where: { classId },
+      });
+      expect(prisma.ebdEnrollment.createMany).toHaveBeenCalledWith({
+        data: [
+          { classId, userId: 'student-1' },
+          { classId, userId: 'student-2' },
+          { classId, userId: 'student-3' },
+        ],
+        skipDuplicates: true,
+      });
+    });
+
+    it('should update lesson themes and dates matched by position', async () => {
+      // Given
+      const existingLessons = Array.from({ length: 13 }, (_, i) => ({
+        id: `lesson-${i + 1}`,
+        number: i + 1,
+      }));
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdClass.update.mockResolvedValue({ id: classId });
+      prisma.ebdLesson.findMany.mockResolvedValue(existingLessons);
+      prisma.ebdLesson.update.mockResolvedValue({});
+
+      const updatedLessons = Array.from({ length: 13 }, (_, i) => ({
+        theme: `Updated Theme ${i + 1}`,
+        scheduledDate: `2026-06-${String(i + 1).padStart(2, '0')}`,
+      }));
+
+      // When
+      await service.updateClass(churchId, classId, {
+        lessons: updatedLessons,
+      });
+
+      // Then
+      expect(prisma.ebdLesson.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ orderBy: { number: 'asc' } }),
+      );
+      expect(prisma.ebdLesson.update).toHaveBeenCalledTimes(13);
+      expect(prisma.ebdLesson.update).toHaveBeenCalledWith({
+        where: { id: 'lesson-1' },
+        data: {
+          theme: 'Updated Theme 1',
+          scheduledDate: new Date('2026-06-01'),
+        },
+      });
+    });
+
+    it('should throw NotFoundException when class does not belong to the church', async () => {
+      // Given
+      prisma.ebdClass.findFirst.mockResolvedValue(null);
+
+      // When
+      const attempt = service.updateClass(churchId, classId, {
+        name: 'Should Fail',
+      });
+
+      // Then
+      await expect(attempt).rejects.toThrow(NotFoundException);
+    });
+
+    it('should run all updates inside a single transaction', async () => {
+      // Given
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdClass.update.mockResolvedValue({ id: classId });
+      prisma.ebdClassTeacher.deleteMany.mockResolvedValue({ count: 1 });
+      prisma.ebdClassTeacher.createMany.mockResolvedValue({ count: 1 });
+      prisma.ebdEnrollment.deleteMany.mockResolvedValue({ count: 1 });
+      prisma.ebdEnrollment.createMany.mockResolvedValue({ count: 1 });
+
+      // When
+      await service.updateClass(churchId, classId, {
+        name: 'Full Update',
+        teacherIds: ['teacher-1'],
+        studentIds: ['student-1'],
+      });
+
+      // Then
+      expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    });
   });
 });

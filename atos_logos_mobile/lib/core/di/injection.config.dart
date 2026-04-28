@@ -21,9 +21,9 @@ import '../../features/branches/presentation/cubit/branches_cubit.dart'
     as _i822;
 import '../../features/ebd/data/ebd_repository.dart' as _i605;
 import '../../features/ebd/presentation/cubit/ebd_attendance_cubit.dart'
-    as _i201;
+    as _i71;
 import '../../features/ebd/presentation/cubit/ebd_class_details_cubit.dart'
-    as _i202;
+    as _i330;
 import '../../features/ebd/presentation/cubit/ebd_cubit.dart' as _i1013;
 import '../../features/events/data/events_repository.dart' as _i595;
 import '../../features/events/presentation/cubit/events_cubit.dart' as _i496;
@@ -39,6 +39,10 @@ import '../../features/positions/presentation/cubit/positions_cubit.dart'
     as _i1003;
 import '../../features/profile/data/profile_repository.dart' as _i680;
 import '../../features/profile/presentation/cubit/profile_cubit.dart' as _i36;
+import '../../features/role_permissions/data/repositories/role_permissions_repository.dart'
+    as _i170;
+import '../../features/role_permissions/presentation/cubit/role_permissions_cubit.dart'
+    as _i600;
 import '../../features/visitors/data/visitors_repository.dart' as _i44;
 import '../../features/visitors/presentation/cubit/visitors_cubit.dart' as _i9;
 import 'injection.dart' as _i464;
@@ -77,17 +81,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i680.ProfileRepository>(
       () => _i680.ProfileRepository(dio: gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i170.RolePermissionsRepository>(
+      () => _i170.RolePermissionsRepository(dio: gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i44.VisitorsRepository>(
       () => _i44.VisitorsRepository(dio: gh<_i361.Dio>()),
+    );
+    gh.factory<_i71.EbdAttendanceCubit>(
+      () => _i71.EbdAttendanceCubit(repository: gh<_i605.EbdRepository>()),
+    );
+    gh.factory<_i330.EbdClassDetailsCubit>(
+      () => _i330.EbdClassDetailsCubit(repository: gh<_i605.EbdRepository>()),
     );
     gh.factory<_i1013.EbdCubit>(
       () => _i1013.EbdCubit(repository: gh<_i605.EbdRepository>()),
     );
-    gh.factory<_i201.EbdAttendanceCubit>(
-      () => _i201.EbdAttendanceCubit(repository: gh<_i605.EbdRepository>()),
-    );
-    gh.factory<_i202.EbdClassDetailsCubit>(
-      () => _i202.EbdClassDetailsCubit(repository: gh<_i605.EbdRepository>()),
+    gh.factory<_i600.RolePermissionsCubit>(
+      () => _i600.RolePermissionsCubit(
+        repository: gh<_i170.RolePermissionsRepository>(),
+      ),
     );
     gh.lazySingleton<_i726.AuthRepository>(
       () => _i726.AuthRepository(

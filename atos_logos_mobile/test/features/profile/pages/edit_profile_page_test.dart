@@ -25,8 +25,8 @@ void main() {
       id: 'u1',
       name: 'Ana',
       email: 'ana@test.com',
-      phone: '119',
-      cpf: '123',
+      phone: '11999998888',
+      cpf: '12345678901',
       country: 'Brasil',
       state: 'SP',
       city: 'São Paulo',
@@ -43,6 +43,13 @@ void main() {
   setUp(() {
     mockAuthCubit = MockAuthCubit();
     mockProfileCubit = MockProfileCubit();
+
+    // fetchProfile is always called on initState — stub it to update state
+    when(() => mockAuthCubit.fetchProfile()).thenAnswer((_) async {
+      when(() => mockAuthCubit.state)
+          .thenReturn(AuthState.authenticated(profile: userProfile));
+    });
+
     when(() => mockAuthCubit.state)
         .thenReturn(AuthState.authenticated(profile: userProfile));
     when(() => mockProfileCubit.state)
@@ -63,12 +70,11 @@ void main() {
 
   group('EditProfilePage - Layout', () {
     testWidgets(
-        'should display every personal-data field label when the page renders',
+        'should display every personal-data field label after loading',
         (tester) async {
-      // Given / When — the page is pumped with a known authenticated user
       await tester.pumpWidget(buildSubject());
+      await tester.pump(); // allow fetchProfile to complete
 
-      // Then — all four personal-section labels are visible
       expect(find.text('NOME COMPLETO'), findsOneWidget);
       expect(find.text('CPF'), findsOneWidget);
       expect(find.text('TELEFONE'), findsOneWidget);
@@ -76,12 +82,11 @@ void main() {
     });
 
     testWidgets(
-        'should display every address field label when the page renders',
+        'should display every address field label after loading',
         (tester) async {
-      // Given / When
       await tester.pumpWidget(buildSubject());
+      await tester.pump();
 
-      // Then — all the address-section labels are visible
       expect(find.text('PAÍS'), findsOneWidget);
       expect(find.text('ESTADO'), findsOneWidget);
       expect(find.text('CIDADE'), findsOneWidget);
@@ -89,38 +94,37 @@ void main() {
     });
 
     testWidgets(
-        'should display the SALVAR submit button when the page renders',
+        'should display the SALVAR submit button after loading',
         (tester) async {
-      // Given / When
       await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
       final scrollable = find.byType(Scrollable).first;
       await tester.scrollUntilVisible(
         find.text('SALVAR'),
         200,
         scrollable: scrollable,
       );
-
-      // Then — the button is reachable in the scroll view
       expect(find.text('SALVAR'), findsOneWidget);
     });
   });
 
   group('EditProfilePage - Pre-fill', () {
     testWidgets(
-        'should pre-fill every text field with the authenticated user profile data',
+        'should pre-fill every text field with fresh profile data from fetchProfile',
         (tester) async {
-      // Given / When — the page is pumped and reads the auth profile on init
       await tester.pumpWidget(buildSubject());
+      await tester.pump(); // fetchProfile completes → _populateFromAuthCubit
 
-      // Then — each field's controller value matches the profile we injected
       final textFields = tester
           .widgetList<TextFormField>(find.byType(TextFormField))
           .toList();
       final values = textFields.map((f) => f.controller?.text).toList();
       expect(values, contains('Ana'));
       expect(values, contains('ana@test.com'));
-      expect(values, contains('119'));
-      expect(values, contains('123')); // cpf
+      // CPF and phone are pre-filled with mask applied
+      expect(values, contains('123.456.789-01'));
+      expect(values, contains('(11) 99999-8888'));
       expect(values, contains('Brasil'));
       expect(values, contains('SP'));
       expect(values, contains('São Paulo'));
@@ -133,14 +137,16 @@ void main() {
     testWidgets(
         'should forward trimmed edited values to ProfileCubit.updateMyProfile when SALVAR is tapped',
         (tester) async {
-      // Given — the page is rendered with a stub cubit
       when(() => mockProfileCubit.updateMyProfile(any()))
           .thenAnswer((_) async {});
       await tester.pumpWidget(buildSubject());
-      final scrollable = find.byType(Scrollable).first;
+      await tester.pump();
 
-      // When — the user edits the name (with surrounding whitespace) and taps SALVAR
-      await tester.enterText(find.byType(TextFormField).first, '  Ana Updated  ');
+      final scrollable = find.byType(Scrollable).first;
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        '  Ana Updated  ',
+      );
       await tester.scrollUntilVisible(
         find.text('SALVAR'),
         200,
@@ -149,12 +155,10 @@ void main() {
       await tester.tap(find.text('SALVAR'));
       await tester.pump();
 
-      // Then — the cubit is called with the trimmed value
       final captured =
           verify(() => mockProfileCubit.updateMyProfile(captureAny())).captured;
       final payload = captured.single as Map<String, dynamic>;
       expect(payload['name'], 'Ana Updated');
-      // And the other original fields round-trip untouched
       expect(payload['email'], 'ana@test.com');
       expect(payload['city'], 'São Paulo');
     });
@@ -162,12 +166,12 @@ void main() {
     testWidgets(
         'should NOT call ProfileCubit.updateMyProfile while the cubit is already saving',
         (tester) async {
-      // Given — the cubit is in the saving state (SALVAR label is replaced
-      // by a spinner, so we scroll to the button type, not its label).
       when(() => mockProfileCubit.state).thenReturn(const ProfileState.saving());
       when(() => mockProfileCubit.updateMyProfile(any()))
           .thenAnswer((_) async {});
       await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
       final scrollable = find.byType(Scrollable).first;
       await tester.scrollUntilVisible(
         find.byType(FilledButton),
@@ -175,7 +179,6 @@ void main() {
         scrollable: scrollable,
       );
 
-      // When / Then — the FilledButton's onPressed is null during saving
       final button = tester.widget<FilledButton>(find.byType(FilledButton));
       expect(button.onPressed, isNull);
     });
@@ -183,13 +186,12 @@ void main() {
 
   group('EditProfilePage - States', () {
     testWidgets(
-        'should display a progress indicator inside the submit button while the cubit state is saving',
+        'should display a progress indicator inside the submit button while saving',
         (tester) async {
-      // Given — the cubit is in its saving state
       when(() => mockProfileCubit.state).thenReturn(const ProfileState.saving());
-
-      // When — the page is pumped
       await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
       final scrollable = find.byType(Scrollable).first;
       await tester.scrollUntilVisible(
         find.byType(FilledButton),
@@ -197,7 +199,6 @@ void main() {
         scrollable: scrollable,
       );
 
-      // Then — a spinner is shown instead of the SALVAR label
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.text('SALVAR'), findsNothing);
     });
@@ -205,7 +206,6 @@ void main() {
     testWidgets(
         'should show an error snackbar when the cubit transitions to an error state',
         (tester) async {
-      // Given — the cubit stream will emit an error state after pump
       whenListen(
         mockProfileCubit,
         Stream.fromIterable(const [
@@ -214,29 +214,24 @@ void main() {
         initialState: const ProfileState.initial(),
       );
 
-      // When — the page is pumped and the listener reacts
       await tester.pumpWidget(buildSubject());
       await tester.pump();
 
-      // Then — an error snackbar carrying the message is shown
       expect(find.text('Erro ao salvar'), findsOneWidget);
     });
 
     testWidgets(
         'should show a success snackbar when the cubit transitions to a saved state',
         (tester) async {
-      // Given — the cubit stream will emit saved after pump
       whenListen(
         mockProfileCubit,
         Stream.fromIterable(const [ProfileState.saved()]),
         initialState: const ProfileState.initial(),
       );
 
-      // When — the page is pumped and the listener reacts
       await tester.pumpWidget(buildSubject());
       await tester.pump();
 
-      // Then — the success snackbar is visible
       expect(find.text('Perfil salvo com sucesso'), findsOneWidget);
     });
   });

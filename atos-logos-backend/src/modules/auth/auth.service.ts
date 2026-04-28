@@ -358,9 +358,13 @@ export class AuthService {
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {
+    // Convert empty strings to null so they don't overwrite existing data
+    const cleaned = Object.fromEntries(
+      Object.entries(dto).map(([k, v]) => [k, v === '' ? null : v]),
+    );
     const user = await this.prisma.user.update({
       where: { id: userId },
-      data: dto,
+      data: cleaned,
     });
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;

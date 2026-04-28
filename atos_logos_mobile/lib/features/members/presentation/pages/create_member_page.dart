@@ -136,6 +136,8 @@ class _CreateMemberPageState extends State<CreateMemberPage> {
     return List.generate(10, (_) => chars[rng.nextInt(chars.length)]).join();
   }
 
+  String _stripMask(String value) => value.replaceAll(RegExp(r'[^\d]'), '');
+
   Future<void> _onSubmit() async {
     if (_submitting) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -157,8 +159,8 @@ class _CreateMemberPageState extends State<CreateMemberPage> {
             password: tempPassword,
             branchId: _selectedBranch!,
             email: _emailController.text.trim(),
-            cpf: _cpfController.text.trim(),
-            phone: _phoneController.text.trim(),
+            cpf: _stripMask(_cpfController.text),
+            phone: _stripMask(_phoneController.text),
             rg: _rgController.text.trim(),
             sex: _selectedSex?.wireValue,
             civilStatus: _selectedCivilStatus?.wireValue,

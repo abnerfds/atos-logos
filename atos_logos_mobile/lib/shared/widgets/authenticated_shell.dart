@@ -60,6 +60,8 @@ class _AuthenticatedShellState extends State<AuthenticatedShell> {
         context.push('/branches');
       case 'ebd':
         context.push('/ebd');
+      case 'role-permissions':
+        context.push('/role-permissions');
       default:
         context.push('/coming-soon');
     }
@@ -133,11 +135,17 @@ class _AuthenticatedShellState extends State<AuthenticatedShell> {
               orElse: () => 'Igreja',
             );
 
+            final userRole = authState.maybeWhen(
+              authenticated: (profile) => profile?.membership.role,
+              orElse: () => null,
+            );
+
             return Scaffold(
               key: _scaffoldKey,
               extendBody: true,
               drawer: AppDrawer(
                 churchName: churchName,
+                userRole: userRole,
                 onNavigate: _onDrawerNavigate,
               ),
               appBar: AtosAppBar(

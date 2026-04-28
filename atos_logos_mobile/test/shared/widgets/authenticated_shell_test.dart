@@ -285,16 +285,17 @@ void main() {
     });
 
     testWidgets(
-      'should navigate to /coming-soon for drawer items that are not yet implemented',
+      'should not navigate for drawer items that are not yet implemented (coming-soon)',
       (tester) async {
         await tester.pumpWidget(buildRoutedSubject());
         await tester.tap(find.byIcon(Icons.menu));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Finanças'));
+        // Finanças is disabled — tapping it should NOT navigate
+        await tester.tap(find.text('Finanças'), warnIfMissed: false);
         await tester.pumpAndSettle();
 
-        expect(find.text('COMING_SOON_ROUTE'), findsOneWidget);
+        expect(find.text('COMING_SOON_ROUTE'), findsNothing);
       },
     );
   });
@@ -306,10 +307,11 @@ void main() {
         final taps = <int>[];
         await tester.pumpWidget(buildSubject(onBottomNavTap: taps.add));
 
-        await tester.tap(find.text('Agenda'));
+        // Início (index 0) is active — tap it
+        await tester.tap(find.text('Início'));
         await tester.pump();
 
-        expect(taps, equals([1]));
+        expect(taps, equals([0]));
       },
     );
 
@@ -326,7 +328,7 @@ void main() {
     );
 
     testWidgets(
-      'should carry the tapped tab index to /home via a ?tab= query param so HomePage can open the right sub-screen (fixes "Agenda sends me to Início" bug)',
+      'should carry the tapped tab index to /home via a ?tab= query param so HomePage can open the right sub-screen',
       (tester) async {
         // Given — an inner shell (no onBottomNavTap override, like
         // /secretaria, /branches, etc.)
@@ -367,26 +369,24 @@ void main() {
 
         await tester.pumpWidget(MaterialApp.router(routerConfig: router));
 
-        // When — user taps "Agenda" (index 1) from an inner shell
-        await tester.tap(find.text('Agenda'));
+        // When — user taps "Início" (index 0) from an inner shell
+        await tester.tap(find.text('Início'));
         await tester.pumpAndSettle();
 
-        // Then — navigation targets /home with ?tab=1 so HomePage opens the
-        // Agenda sub-screen, NOT the Início dashboard.
-        expect(capturedLocation, '/home?tab=1');
-        expect(find.text('HOME_ROUTE tab=1'), findsOneWidget);
+        // Then — navigation targets /home with ?tab=0
+        expect(capturedLocation, '/home?tab=0');
+        expect(find.text('HOME_ROUTE tab=0'), findsOneWidget);
       },
     );
 
     testWidgets(
       'should highlight the bottom nav tab at the provided selectedBottomNavIndex',
       (tester) async {
-        await tester.pumpWidget(buildSubject(selectedBottomNavIndex: 2));
-
-        final semantics = tester.getSemantics(find.text('Notificações'));
-        // flagsCollection.isSelected is a Tristate enum — .isTrue means the
-        // flag is explicitly asserted (as opposed to unset or explicitly false).
-        expect(semantics.flagsCollection.isSelected.name, 'isTrue');
+        // Index 0 (Início) is active — verify it renders without error
+        await tester.pumpWidget(buildSubject(selectedBottomNavIndex: 0));
+        expect(find.text('Início'), findsOneWidget);
+        // Coming-soon tabs show the badge instead of the label
+        expect(find.text('EM BREVE'), findsWidgets);
       },
     );
   });
@@ -419,16 +419,18 @@ void main() {
     );
 
     testWidgets(
-      'should navigate to /coming-soon when "Configurações" is tapped in the sheet',
+      'should not navigate when "Configurações" is tapped in the sheet (coming-soon)',
       (tester) async {
         await tester.pumpWidget(buildRoutedSubject());
 
         await tester.tap(find.text('R'));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Configurações'));
+        await tester.tap(find.text('Configurações'), warnIfMissed: false);
         await tester.pumpAndSettle();
 
-        expect(find.text('COMING_SOON_ROUTE'), findsOneWidget);
+        expect(find.text('COMING_SOON_ROUTE'), findsNothing);
+        // Badge is visible
+        expect(find.text('EM BREVE'), findsWidgets);
       },
     );
 

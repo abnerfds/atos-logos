@@ -28,11 +28,13 @@ class CustomBottomNav extends StatelessWidget {
       icon: Icons.calendar_month_outlined,
       activeIcon: Icons.calendar_month,
       label: 'Agenda',
+      comingSoon: true,
     ),
     _NavItem(
       icon: Icons.notifications_outlined,
       activeIcon: Icons.notifications,
       label: 'Notificações',
+      comingSoon: true,
     ),
   ];
 
@@ -74,7 +76,7 @@ class CustomBottomNav extends StatelessWidget {
                   return _NavItemWidget(
                     item: item,
                     isActive: isActive,
-                    onTap: () => onTap(index),
+                    onTap: item.comingSoon ? null : () => onTap(index),
                   );
                 }),
               ),
@@ -90,18 +92,20 @@ class _NavItem {
   final IconData icon;
   final IconData activeIcon;
   final String label;
+  final bool comingSoon;
 
   const _NavItem({
     required this.icon,
     required this.activeIcon,
     required this.label,
+    this.comingSoon = false,
   });
 }
 
 class _NavItemWidget extends StatelessWidget {
   final _NavItem item;
   final bool isActive;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _NavItemWidget({
     required this.item,
@@ -111,6 +115,13 @@ class _NavItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final muted = item.comingSoon;
+    final iconColor = muted
+        ? AppTheme.onSurfaceVariant.withValues(alpha: 0.4)
+        : isActive
+        ? AppTheme.primary
+        : AppTheme.onSurfaceVariant;
+
     return Semantics(
       label: item.label,
       button: true,
@@ -123,7 +134,7 @@ class _NavItemWidget extends StatelessWidget {
           constraints: const BoxConstraints(minWidth: 64),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
-            color: isActive
+            color: isActive && !muted
                 ? AppTheme.secondaryContainer
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppTheme.radiusXl),
@@ -134,21 +145,40 @@ class _NavItemWidget extends StatelessWidget {
               Icon(
                 isActive ? item.activeIcon : item.icon,
                 size: 24,
-                color: isActive
-                    ? AppTheme.primary
-                    : AppTheme.onSurfaceVariant,
+                color: iconColor,
               ),
               const SizedBox(height: 2),
-              Text(
-                item.label,
-                style: GoogleFonts.inter(
-                  fontSize: 10,
-                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                  color: isActive
-                      ? AppTheme.primary
-                      : AppTheme.onSurfaceVariant,
+              if (muted)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppTheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    'EM BREVE',
+                    style: GoogleFonts.inter(
+                      fontSize: 7,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                      color: AppTheme.primary,
+                    ),
+                  ),
+                )
+              else
+                Text(
+                  item.label,
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                    color: isActive
+                        ? AppTheme.primary
+                        : AppTheme.onSurfaceVariant,
+                  ),
                 ),
-              ),
             ],
           ),
         ),

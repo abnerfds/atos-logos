@@ -1,5 +1,10 @@
 import { IsString, IsOptional, IsEmail, IsEnum } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { CivilStatus, Sex } from '@prisma/client';
+
+/** Strips every non-digit character — used to sanitise CPF and phone. */
+const digitsOnly = ({ value }: { value: unknown }) =>
+  typeof value === 'string' ? value.replace(/\D/g, '') || undefined : value;
 
 export class UpdateProfileDto {
   @IsOptional()
@@ -7,6 +12,7 @@ export class UpdateProfileDto {
   name?: string;
 
   @IsOptional()
+  @Transform(digitsOnly)
   @IsString()
   cpf?: string;
 
@@ -31,6 +37,7 @@ export class UpdateProfileDto {
   motherName?: string;
 
   @IsOptional()
+  @Transform(digitsOnly)
   @IsString()
   phone?: string;
 

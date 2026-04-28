@@ -11,12 +11,14 @@ const Color _kStatusHealthyGreen = Color(0xFF22C55E);
 
 class AppDrawer extends StatelessWidget {
   final String churchName;
+  final String? userRole;
   final void Function(String route) onNavigate;
 
   const AppDrawer({
     super.key,
     required this.churchName,
     required this.onNavigate,
+    this.userRole,
   });
 
   @override
@@ -90,11 +92,13 @@ class AppDrawer extends StatelessWidget {
                     icon: Icons.payments,
                     label: 'Finanças',
                     onTap: () => _navigate(context, 'financas'),
+                    comingSoon: true,
                   ),
                   _DrawerItem(
                     icon: Icons.account_balance,
                     label: 'Patrimônio',
                     onTap: () => _navigate(context, 'patrimonio'),
+                    comingSoon: true,
                   ),
                   _DrawerItem(
                     icon: Icons.church,
@@ -106,33 +110,53 @@ class AppDrawer extends StatelessWidget {
                     label: 'EBD',
                     onTap: () => _navigate(context, 'ebd'),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Divider(
-                      height: 1,
-                      color: AppTheme.surfaceContainerHigh,
+                  // Only show Configurações section if user is ADMIN
+                  if (userRole == 'ADMIN') ...[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: Divider(
+                        height: 1,
+                        color: AppTheme.surfaceContainerHigh,
+                      ),
                     ),
-                  ),
+                    const _SectionLabel(text: 'Configurações'),
+                    _DrawerItem(
+                      icon: Icons.admin_panel_settings,
+                      label: 'Cargos e Permissões',
+                      onTap: () => _navigate(context, 'role-permissions'),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: Divider(
+                        height: 1,
+                        color: AppTheme.surfaceContainerHigh,
+                      ),
+                    ),
+                  ],
                   const _SectionLabel(text: 'Ferramentas'),
                   _DrawerItem(
                     icon: Icons.analytics,
                     label: 'Relatórios',
                     onTap: () => _navigate(context, 'relatorios'),
+                    comingSoon: true,
                   ),
                   _DrawerItem(
                     icon: Icons.verified,
                     label: 'Certificados',
                     onTap: () => _navigate(context, 'certificados'),
+                    comingSoon: true,
                   ),
                   _DrawerItem(
                     icon: Icons.volunteer_activism,
                     label: 'Contribuições',
                     onTap: () => _navigate(context, 'contribuicoes'),
+                    comingSoon: true,
                   ),
                   _DrawerItem(
                     icon: Icons.groups,
                     label: 'Célula',
                     onTap: () => _navigate(context, 'celula'),
+                    comingSoon: true,
                   ),
                 ],
               ),
@@ -222,25 +246,54 @@ class _DrawerItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final bool comingSoon;
+
   const _DrawerItem({
     required this.icon,
     required this.label,
     required this.onTap,
+    this.comingSoon = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: AppTheme.onSurfaceVariant, size: 24),
+      leading: Icon(
+        icon,
+        color: comingSoon
+            ? AppTheme.onSurfaceVariant.withValues(alpha: 0.4)
+            : AppTheme.onSurfaceVariant,
+        size: 24,
+      ),
       title: Text(
         label,
         style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: AppTheme.onSurfaceVariant,
+          color: comingSoon
+              ? AppTheme.onSurfaceVariant.withValues(alpha: 0.4)
+              : AppTheme.onSurfaceVariant,
         ),
       ),
-      onTap: onTap,
+      trailing: comingSoon
+          ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppTheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                'EM BREVE',
+                style: GoogleFonts.inter(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.8,
+                  color: AppTheme.primary,
+                ),
+              ),
+            )
+          : null,
+      onTap: comingSoon ? null : onTap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),

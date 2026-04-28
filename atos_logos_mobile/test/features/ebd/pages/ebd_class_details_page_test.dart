@@ -161,5 +161,47 @@ void main() {
 
       expect(find.text('ATTENDANCE_PAGE'), findsOneWidget);
     });
+
+    testWidgets('should show edit card and navigate to edit page', (
+      tester,
+    ) async {
+      stubAll();
+
+      final router = GoRouter(
+        initialLocation: '/details',
+        routes: [
+          GoRoute(
+            path: '/details',
+            builder: (context, state) => const Scaffold(
+              body: EbdClassDetailsPage(classId: 'cls-1'),
+            ),
+          ),
+          GoRoute(
+            path: '/ebd/classes/:id/edit',
+            builder: (context, state) =>
+                const Scaffold(body: Text('EDIT_PAGE')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pump();
+      await tester.pump();
+
+      // Edit card is visible
+      await tester.scrollUntilVisible(
+        find.text('Deseja alterar os dados deste trimestre?'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Deseja alterar os dados deste trimestre?'), findsOneWidget);
+      expect(find.byKey(const Key('edit_ebd_class_button')), findsOneWidget);
+
+      // Tapping navigates to edit page
+      await tester.tap(find.byKey(const Key('edit_ebd_class_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('EDIT_PAGE'), findsOneWidget);
+    });
   });
 }

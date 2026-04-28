@@ -15,23 +15,28 @@ import { UpdatePositionDto } from './dto/update-position.dto';
 import { AssignPositionDto } from './dto/assign-position.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Permission } from '../../common/enums/permission.enum';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface';
 import { Role } from '@prisma/client';
 
 @Controller('member-positions')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 export class MemberPositionsController {
   constructor(private readonly positionsService: MemberPositionsService) {}
 
   @Get()
+  @RequirePermissions(Permission.MANAGE_POSITIONS)
   async findAll(@CurrentUser() user: AuthenticatedUser) {
     return this.positionsService.findAll(user.churchId);
   }
 
   @Post()
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.MANAGE_POSITIONS)
   async create(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreatePositionDto,
@@ -41,6 +46,7 @@ export class MemberPositionsController {
 
   @Patch(':id')
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.MANAGE_POSITIONS)
   async update(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,
@@ -52,6 +58,7 @@ export class MemberPositionsController {
   @Delete(':id')
   @HttpCode(204)
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.MANAGE_POSITIONS)
   async remove(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,
@@ -63,6 +70,7 @@ export class MemberPositionsController {
 
   @Post(':id/users')
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.MANAGE_POSITIONS)
   async assignUser(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') positionId: string,
@@ -74,6 +82,7 @@ export class MemberPositionsController {
   @Delete(':id/users/:userId')
   @HttpCode(204)
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.MANAGE_POSITIONS)
   async unassignUser(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') positionId: string,

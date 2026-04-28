@@ -15,17 +15,21 @@ import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Permission } from '../../common/enums/permission.enum';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface';
 import { Role } from '@prisma/client';
 
 @Controller('branches')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}
 
   @Get()
+  @RequirePermissions(Permission.VIEW_BRANCHES)
   async findAll(
     @CurrentUser() user: AuthenticatedUser,
     @Query('q') q?: string,
@@ -35,6 +39,7 @@ export class BranchesController {
 
   @Post()
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.CREATE_BRANCHES)
   async create(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateBranchDto,
@@ -44,6 +49,7 @@ export class BranchesController {
 
   @Patch(':id')
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.EDIT_BRANCHES)
   async update(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,
@@ -57,6 +63,7 @@ export class BranchesController {
   /// church and must not already be HQ.
   @Patch(':id/promote-to-headquarters')
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.EDIT_BRANCHES)
   async promoteToHeadquarters(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,
@@ -67,6 +74,7 @@ export class BranchesController {
   @Delete(':id')
   @HttpCode(204)
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.DELETE_BRANCHES)
   async remove(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,

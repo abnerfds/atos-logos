@@ -107,7 +107,7 @@ void main() {
     );
 
     testWidgets(
-      'should call onNavigate with "financas" when the Finanças item is tapped',
+      'should show EM BREVE badge and not navigate for coming-soon modules',
       (tester) async {
         String? navigatedTo;
         await tester.pumpWidget(
@@ -115,99 +115,25 @@ void main() {
         );
         await tester.tap(find.text('Open'));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Finanças'));
+
+        // Badge visible for Finanças and Patrimônio
+        expect(find.text('EM BREVE'), findsWidgets);
+
+        // Tapping a coming-soon item does NOT navigate
+        await tester.tap(find.text('Finanças'), warnIfMissed: false);
         await tester.pumpAndSettle();
-        expect(navigatedTo, 'financas');
+        expect(navigatedTo, isNull);
+
+        await tester.tap(find.text('Patrimônio'), warnIfMissed: false);
+        await tester.pumpAndSettle();
+        expect(navigatedTo, isNull);
       },
     );
 
     testWidgets(
-      'should call onNavigate with "patrimonio" when the Patrimônio item is tapped',
+      'should show EM BREVE badge for all tools section items',
       (tester) async {
-        String? navigatedTo;
-        await tester.pumpWidget(
-          buildSubject(onNavigate: (route) => navigatedTo = route),
-        );
-        await tester.tap(find.text('Open'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Patrimônio'));
-        await tester.pumpAndSettle();
-        expect(navigatedTo, 'patrimonio');
-      },
-    );
-
-    testWidgets(
-      'should call onNavigate with "relatorios" when the Relatórios tool is tapped',
-      (tester) async {
-        String? navigatedTo;
-        await tester.pumpWidget(
-          buildSubject(onNavigate: (route) => navigatedTo = route),
-        );
-        await tester.tap(find.text('Open'));
-        await tester.pumpAndSettle();
-        await tester.scrollUntilVisible(
-          find.text('Relatórios'),
-          100,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Relatórios'), warnIfMissed: false);
-        await tester.pumpAndSettle();
-        expect(navigatedTo, 'relatorios');
-      },
-    );
-
-    testWidgets(
-      'should call onNavigate with "certificados" when the Certificados tool is tapped',
-      (tester) async {
-        String? navigatedTo;
-        await tester.pumpWidget(
-          buildSubject(onNavigate: (route) => navigatedTo = route),
-        );
-        await tester.tap(find.text('Open'));
-        await tester.pumpAndSettle();
-        await tester.scrollUntilVisible(
-          find.text('Certificados'),
-          100,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Certificados'), warnIfMissed: false);
-        await tester.pumpAndSettle();
-        expect(navigatedTo, 'certificados');
-      },
-    );
-
-    testWidgets(
-      'should call onNavigate with "contribuicoes" when the Contribuições tool is tapped',
-      (tester) async {
-        String? navigatedTo;
-        await tester.pumpWidget(
-          buildSubject(onNavigate: (route) => navigatedTo = route),
-        );
-        await tester.tap(find.text('Open'));
-        await tester.pumpAndSettle();
-        await tester.scrollUntilVisible(
-          find.text('Contribuições'),
-          100,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.pumpAndSettle();
-        await tester.ensureVisible(find.text('Contribuições'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Contribuições'));
-        await tester.pumpAndSettle();
-        expect(navigatedTo, 'contribuicoes');
-      },
-    );
-
-    testWidgets(
-      'should call onNavigate with "celula" when the Célula tool is tapped',
-      (tester) async {
-        String? navigatedTo;
-        await tester.pumpWidget(
-          buildSubject(onNavigate: (route) => navigatedTo = route),
-        );
+        await tester.pumpWidget(buildSubject());
         await tester.tap(find.text('Open'));
         await tester.pumpAndSettle();
         await tester.scrollUntilVisible(
@@ -215,9 +141,9 @@ void main() {
           100,
           scrollable: find.byType(Scrollable).first,
         );
-        await tester.tap(find.text('Célula'));
         await tester.pumpAndSettle();
-        expect(navigatedTo, 'celula');
+        // At least the visible coming-soon items show the badge
+        expect(find.text('EM BREVE'), findsWidgets);
       },
     );
 

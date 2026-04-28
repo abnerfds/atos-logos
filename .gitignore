@@ -26,3 +26,9 @@ desktop.ini
 # ── Logs genéricos ──────────────────────────────────────────
 *.log
 logs/
+
+# ── Documentação temporária ─────────────────────────────────
+PERMISSIONS_IMPLEMENTATION.md
+PERMISSIONS_TESTING.md
+PROJECT_CONTEXT.md
+TEST_CONTEXT.md

@@ -116,6 +116,21 @@ class EbdRepository {
     }
   }
 
+  Future<List<String>> getEnrollmentIds(String classId) async {
+    try {
+      final response = await _dio.get('/ebd/classes/$classId/enrollments');
+      return (response.data as List)
+          .map((e) => (e as Map<String, dynamic>)['userId'] as String)
+          .toList();
+    } on DioException catch (e) {
+      throw NetworkException(
+        parseBackendErrorMessage(e.response?.data) ??
+            'Erro ao carregar matrículas',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
   Future<List<EbdAttendanceEntry>> getLessonAttendance(
     String lessonId,
   ) async {
@@ -168,6 +183,36 @@ class EbdRepository {
       throw NetworkException(
         parseBackendErrorMessage(e.response?.data) ??
             'Erro ao carregar resumo do trimestre',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  Future<void> updateClass({
+    required String classId,
+    String? name,
+    String? targetAudience,
+    String? quarterName,
+    List<String>? teacherIds,
+    List<String>? studentIds,
+    List<EbdLessonInput>? lessons,
+  }) async {
+    try {
+      await _dio.patch(
+        '/ebd/classes/$classId',
+        data: {
+          if (name != null) 'name': name,
+          if (targetAudience != null) 'targetAudience': targetAudience,
+          if (quarterName != null) 'quarterName': quarterName,
+          if (teacherIds != null) 'teacherIds': teacherIds,
+          if (studentIds != null) 'studentIds': studentIds,
+          if (lessons != null)
+            'lessons': lessons.map((l) => l.toJson()).toList(),
+        },
+      );
+    } on DioException catch (e) {
+      throw NetworkException(
+        parseBackendErrorMessage(e.response?.data) ?? 'Erro ao atualizar classe',
         statusCode: e.response?.statusCode,
       );
     }

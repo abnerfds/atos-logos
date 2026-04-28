@@ -12,6 +12,9 @@ class EbdClassDetail {
     this.teacherName,
     this.quarterName,
     this.targetAudience,
+    this.branchId,
+    this.teachers = const [],
+    this.enrolledCount = 0,
   });
 
   factory EbdClassDetail.fromJson(Map<String, dynamic> json) {
@@ -21,6 +24,11 @@ class EbdClassDetail {
       teacherName: json['teacherName'] as String?,
       quarterName: json['quarterName'] as String?,
       targetAudience: json['targetAudience'] as String?,
+      branchId: json['branchId'] as String?,
+      teachers: ((json['teachers'] as List?) ?? [])
+          .map((t) => EbdTeacherRef.fromJson(t as Map<String, dynamic>))
+          .toList(),
+      enrolledCount: json['enrolledCount'] as int? ?? 0,
     );
   }
 
@@ -29,6 +37,23 @@ class EbdClassDetail {
   final String? teacherName;
   final String? quarterName;
   final String? targetAudience;
+  final String? branchId;
+  final List<EbdTeacherRef> teachers;
+  final int enrolledCount;
+}
+
+class EbdTeacherRef {
+  const EbdTeacherRef({required this.id, required this.name});
+
+  factory EbdTeacherRef.fromJson(Map<String, dynamic> json) {
+    return EbdTeacherRef(
+      id: json['id'] as String,
+      name: json['name'] as String,
+    );
+  }
+
+  final String id;
+  final String name;
 }
 
 // ── EbdLesson ─────────────────────────────────────────────────────────────────

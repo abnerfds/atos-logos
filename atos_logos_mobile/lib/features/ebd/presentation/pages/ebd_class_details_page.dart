@@ -85,9 +85,16 @@ class _EbdClassDetailsPageState extends State<EbdClassDetailsPage> {
                   classDetail: state.classDetail,
                   lessons: state.lessons,
                   classId: widget.classId,
+                  onAttendanceDone: () =>
+                      _cubit.loadDetails(widget.classId),
                 )
               else
                 const SizedBox.shrink(),
+              const SizedBox(height: 24),
+              _EditCard(
+                classId: widget.classId,
+                onEditDone: () => _cubit.loadDetails(widget.classId),
+              ),
             ],
           );
         },
@@ -127,11 +134,13 @@ class _LessonList extends StatelessWidget {
     required this.classDetail,
     required this.lessons,
     required this.classId,
+    required this.onAttendanceDone,
   });
 
   final EbdClassDetail classDetail;
   final List<EbdLesson> lessons;
   final String classId;
+  final VoidCallback onAttendanceDone;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +179,7 @@ class _LessonList extends StatelessWidget {
             if (classDetail.quarterName != null)
               _InfoPill(
                 icon: Icons.calendar_today,
-                label: classDetail.quarterName!,
+                label: _formatQuarterName(classDetail.quarterName!),
               ),
           ],
         ),
@@ -235,6 +244,7 @@ class _LessonList extends StatelessWidget {
               lesson: lesson,
               status: status,
               classId: classId,
+              onAttendanceDone: onAttendanceDone,
             ),
           );
         }),
@@ -345,11 +355,13 @@ class _LessonCard extends StatelessWidget {
     required this.lesson,
     required this.status,
     required this.classId,
+    required this.onAttendanceDone,
   });
 
   final EbdLesson lesson;
   final _LessonStatus status;
   final String classId;
+  final VoidCallback onAttendanceDone;
 
   @override
   Widget build(BuildContext context) {
@@ -361,9 +373,12 @@ class _LessonCard extends StatelessWidget {
 
     return InkWell(
       key: isToday ? const Key('take_attendance_button') : null,
-      onTap: () => context.push(
-        '/ebd/classes/$classId/lessons/${lesson.id}/attendance',
-      ),
+      onTap: () async {
+        await context.push(
+          '/ebd/classes/$classId/lessons/${lesson.id}/attendance',
+        );
+        onAttendanceDone();
+      },
       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         padding: EdgeInsets.all(isToday ? 22 : 18),
@@ -536,4 +551,79 @@ String _formatDate(DateTime date) {
   final day = date.day.toString().padLeft(2, '0');
   final month = months[date.month - 1];
   return '$day $month, ${date.year}';
+}
+
+// ── Edit card ─────────────────────────────────────────────────────────────────
+
+class _EditCard extends StatelessWidget {
+  const _EditCard({required this.classId, required this.onEditDone});
+
+  final String classId;
+  final VoidCallback onEditDone;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+        boxShadow: AppTheme.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Deseja alterar os dados deste trimestre?',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: AppTheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            key: const Key('edit_ebd_class_button'),
+            onPressed: () async {
+              await context.push('/ebd/classes/$classId/edit');
+              onEditDone();
+            },
+            icon: const Icon(Icons.edit_outlined, size: 16),
+            label: const Text('Editar'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppTheme.primary,
+              side: const BorderSide(color: AppTheme.primary),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/// Converts stored quarter codes to a human-readable label.
+///
+/// Examples:
+///   "2026.1" → "1º Trimestre 2026"
+///   "2026.2" → "2º Trimestre 2026"
+///   "4º Trimestre 2023" → "4º Trimestre 2023"  (already formatted, pass-through)
+String _formatQuarterName(String raw) {
+  // Match patterns like "2026.1", "2026.2", "2025.4", etc.
+  final match = RegExp(r'^(\d{4})\.([1-4])$').firstMatch(raw.trim());
+  if (match == null) return raw; // unrecognised format — show as-is
+
+  final year = match.group(1)!;
+  final quarter = match.group(2)!;
+  const ordinals = ['1º', '2º', '3º', '4º'];
+  final ordinal = ordinals[int.parse(quarter) - 1];
+  return '$ordinal Trimestre $year';
 }

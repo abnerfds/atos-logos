@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateEbdClassDto } from './dto/create-ebd-class.dto';
+import { UpdateEbdClassDto } from './dto/update-ebd-class.dto';
 import { SaveLessonAttendanceDto } from './dto/record-attendance.dto';
 
 type PrismaAny = PrismaService & Record<string, any>;
@@ -215,6 +216,96 @@ export class EbdService {
     await this.findClassOrThrow(churchId, classId);
     return (this.prisma as PrismaAny).ebdClass.delete({
       where: { id: classId },
+    });
+  }
+
+  async updateClass(
+    churchId: string,
+    classId: string,
+    dto: UpdateEbdClassDto,
+  ) {
+    await this.findClassOrThrow(churchId, classId);
+    const db = this.prisma as PrismaAny;
+
+    return db.$transaction(async (tx: PrismaAny) => {
+      // Resolve new quarter when quarterName is provided
+      let quarterId: string | undefined;
+      if (dto.quarterName !== undefined) {
+        const trimmed = dto.quarterName.trim();
+        if (trimmed) {
+          const existing = await tx.ebdQuarter.findFirst({
+            where: { churchId, name: trimmed },
+          });
+          if (existing) {
+            quarterId = existing.id;
+          } else {
+            const created = await tx.ebdQuarter.create({
+              data: { churchId, name: trimmed, status: 'ACTIVE' },
+            });
+            quarterId = created.id;
+          }
+        }
+      }
+
+      // Update scalar fields on the class
+      const updated = await tx.ebdClass.update({
+        where: { id: classId },
+        data: {
+          ...(dto.name !== undefined && { name: dto.name }),
+          ...(dto.targetAudience !== undefined && {
+            targetAudience: dto.targetAudience,
+          }),
+          ...(quarterId !== undefined && { quarterId }),
+        },
+      });
+
+      // Replace teachers when provided
+      if (dto.teacherIds !== undefined) {
+        await tx.ebdClassTeacher.deleteMany({ where: { classId } });
+        if (dto.teacherIds.length > 0) {
+          await tx.ebdClassTeacher.createMany({
+            data: dto.teacherIds.map((userId: string) => ({
+              classId,
+              userId,
+            })),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      // Replace enrollments when provided
+      if (dto.studentIds !== undefined) {
+        await tx.ebdEnrollment.deleteMany({ where: { classId } });
+        if (dto.studentIds.length > 0) {
+          await tx.ebdEnrollment.createMany({
+            data: dto.studentIds.map((userId: string) => ({ classId, userId })),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      // Update lesson themes/dates when provided (matched by position/id)
+      if (dto.lessons !== undefined) {
+        const existingLessons = await tx.ebdLesson.findMany({
+          where: { classId },
+          orderBy: { number: 'asc' },
+        });
+
+        for (let i = 0; i < dto.lessons.length; i++) {
+          const lessonDto = dto.lessons[i];
+          const existing = existingLessons[i];
+          if (!existing) continue;
+          await tx.ebdLesson.update({
+            where: { id: existing.id },
+            data: {
+              theme: lessonDto.theme,
+              scheduledDate: new Date(lessonDto.scheduledDate),
+            },
+          });
+        }
+      }
+
+      return updated;
     });
   }
 

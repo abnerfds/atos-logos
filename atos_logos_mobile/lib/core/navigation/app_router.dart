@@ -15,9 +15,13 @@ import '../../features/branches/presentation/pages/branches_page.dart';
 import '../../features/branches/presentation/pages/create_branch_page.dart';
 import '../../features/branches/presentation/pages/edit_branch_page.dart';
 import '../../features/ebd/presentation/pages/create_ebd_quarter_page.dart';
+import '../../features/ebd/presentation/pages/edit_ebd_class_page.dart';
 import '../../features/ebd/presentation/pages/ebd_attendance_page.dart';
 import '../../features/ebd/presentation/pages/ebd_class_details_page.dart';
 import '../../features/ebd/presentation/pages/ebd_page.dart';
+import '../../features/role_permissions/presentation/pages/role_management_page.dart';
+import '../../features/role_permissions/presentation/pages/edit_role_permissions_page.dart';
+import '../../features/role_permissions/presentation/cubit/role_permissions_cubit.dart';
 import '../../shared/widgets/authenticated_shell.dart';
 import '../../shared/widgets/coming_soon_page.dart';
 import '../di/injection.dart';
@@ -118,6 +122,13 @@ final appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/ebd/classes/:id/edit',
+      builder: (context, state) => AuthenticatedShell(
+        selectedBottomNavIndex: 1,
+        child: EditEbdClassPage(classId: state.pathParameters['id']!),
+      ),
+    ),
+    GoRoute(
       path: '/ebd/classes/:id/lessons/:lessonId/attendance',
       builder: (context, state) => AuthenticatedShell(
         selectedBottomNavIndex: 1,
@@ -150,6 +161,24 @@ final appRouter = GoRouter(
       path: '/coming-soon',
       builder: (context, state) =>
           const AuthenticatedShell(child: ComingSoonPage(title: 'Em breve')),
+    ),
+    GoRoute(
+      path: '/role-permissions',
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<RolePermissionsCubit>()..loadRoles(),
+        child: const AuthenticatedShell(child: RoleManagementPage()),
+      ),
+    ),
+    GoRoute(
+      path: '/role-permissions/edit/:role',
+      builder: (context, state) => BlocProvider(
+        create: (_) => getIt<RolePermissionsCubit>()..loadRoles(),
+        child: AuthenticatedShell(
+          child: EditRolePermissionsPage(
+            roleValue: state.pathParameters['role']!,
+          ),
+        ),
+      ),
     ),
   ],
 );

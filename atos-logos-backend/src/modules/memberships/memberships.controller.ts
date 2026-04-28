@@ -18,17 +18,21 @@ import { UpdateMemberUserDataDto } from './dto/update-member-user-data.dto';
 import { QueryMembershipDto } from './dto/query-membership.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Permission } from '../../common/enums/permission.enum';
 import type { AuthenticatedUser } from '../../common/interfaces/authenticated-user.interface';
 import { Role } from '@prisma/client';
 
 @Controller('memberships')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 export class MembershipsController {
   constructor(private readonly membershipsService: MembershipsService) {}
 
   @Get()
+  @RequirePermissions(Permission.VIEW_MEMBERS)
   async findAll(
     @CurrentUser() user: AuthenticatedUser,
     @Query() query: QueryMembershipDto,
@@ -43,6 +47,7 @@ export class MembershipsController {
 
   @Post()
   @Roles(Role.ADMIN, Role.SECRETARY)
+  @RequirePermissions(Permission.CREATE_MEMBERS)
   async create(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateMembershipDto,
@@ -55,6 +60,7 @@ export class MembershipsController {
   /// single transaction. Used by the mobile "Novo Membro" form.
   @Post('with-user')
   @Roles(Role.ADMIN, Role.SECRETARY)
+  @RequirePermissions(Permission.CREATE_MEMBERS)
   async createWithUser(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateMemberWithUserDto,
@@ -68,6 +74,7 @@ export class MembershipsController {
 
   @Patch(':id')
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.EDIT_MEMBERS)
   async update(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,
@@ -81,6 +88,7 @@ export class MembershipsController {
   /// matches that URL shape). Only touches User columns, never role/status.
   @Patch('by-user/:userId/user-data')
   @Roles(Role.ADMIN, Role.SECRETARY)
+  @RequirePermissions(Permission.EDIT_MEMBERS)
   async updateMemberUserData(
     @CurrentUser() user: AuthenticatedUser,
     @Param('userId') userId: string,
@@ -99,6 +107,7 @@ export class MembershipsController {
   @Patch('by-user/:userId/inactivate')
   @HttpCode(200)
   @Roles(Role.ADMIN, Role.SECRETARY)
+  @RequirePermissions(Permission.EDIT_MEMBERS)
   async inactivateByUserId(
     @CurrentUser() user: AuthenticatedUser,
     @Param('userId') userId: string,
@@ -109,6 +118,7 @@ export class MembershipsController {
   @Delete(':id')
   @HttpCode(204)
   @Roles(Role.ADMIN)
+  @RequirePermissions(Permission.DELETE_MEMBERS)
   async remove(
     @CurrentUser() user: AuthenticatedUser,
     @Param('id') id: string,

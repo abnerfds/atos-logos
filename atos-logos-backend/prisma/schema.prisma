@@ -68,6 +68,7 @@ model Church {
   ebdClasses            EbdClass[]
   campaigns             Campaign[]
   financialTransactions FinancialTransaction[]
+  rolePermissions       RolePermission[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 
@@ -172,6 +173,22 @@ model Membership {
 
   @@unique([userId, churchId]) // A user can only have one membership per church
   @@map("memberships")
+}
+
+/// Granular permissions configuration for each role within a church.
+/// Stores a JSON object mapping permission keys to boolean values.
+/// ADMIN role always has full access regardless of this configuration.
+model RolePermission {
+  id          String   @id @default(uuid())
+  churchId    String
+  church      Church   @relation(fields: [churchId], references: [id], onDelete: Cascade)
+  role        Role
+  permissions Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([churchId, role])
+  @@map("role_permissions")
 }
 
 // ── Module 2: Ecclesiastical Data ──────────────────────────────────────────

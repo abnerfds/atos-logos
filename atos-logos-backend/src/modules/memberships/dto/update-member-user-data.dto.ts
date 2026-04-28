@@ -6,7 +6,12 @@ import {
   IsUUID,
   MinLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { CivilStatus, Sex } from '@prisma/client';
+
+/** Strips every non-digit character — used to sanitise CPF and phone. */
+const digitsOnly = ({ value }: { value: unknown }) =>
+  typeof value === 'string' ? value.replace(/\D/g, '') || undefined : value;
 
 /**
  * Payload for the secretariat edit form. Updates the User row behind a
@@ -28,10 +33,12 @@ export class UpdateMemberUserDataDto {
   email?: string;
 
   @IsOptional()
+  @Transform(digitsOnly)
   @IsString()
   phone?: string;
 
   @IsOptional()
+  @Transform(digitsOnly)
   @IsString()
   cpf?: string;
 

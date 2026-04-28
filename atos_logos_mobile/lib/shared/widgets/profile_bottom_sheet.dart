@@ -112,9 +112,22 @@ class ProfileBottomSheet extends StatelessWidget {
             icon: Icons.settings_outlined,
             label: 'Configurações',
             onTap: onSettings,
-            trailing: const Icon(
-              Icons.chevron_right,
-              color: AppTheme.outlineVariant,
+            comingSoon: true,
+            trailing: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppTheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                'EM BREVE',
+                style: GoogleFonts.inter(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.8,
+                  color: AppTheme.primary,
+                ),
+              ),
             ),
           ),
           _MenuItem(
@@ -145,6 +158,7 @@ class _MenuItem extends StatelessWidget {
   final Color? iconColor;
   final Color? labelColor;
   final Widget? trailing;
+  final bool comingSoon;
 
   const _MenuItem({
     required this.icon,
@@ -153,22 +167,30 @@ class _MenuItem extends StatelessWidget {
     this.iconColor,
     this.labelColor,
     this.trailing,
+    this.comingSoon = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveIconColor = comingSoon
+        ? (iconColor ?? AppTheme.onSurfaceVariant).withValues(alpha: 0.4)
+        : iconColor ?? AppTheme.onSurfaceVariant;
+    final effectiveLabelColor = comingSoon
+        ? (labelColor ?? AppTheme.onSurface).withValues(alpha: 0.4)
+        : labelColor ?? AppTheme.onSurface;
+
     return ListTile(
-      leading: Icon(icon, color: iconColor ?? AppTheme.onSurfaceVariant),
+      leading: Icon(icon, color: effectiveIconColor),
       title: Text(
         label,
         style: GoogleFonts.inter(
           fontSize: 15,
           fontWeight: FontWeight.w500,
-          color: labelColor ?? AppTheme.onSurface,
+          color: effectiveLabelColor,
         ),
       ),
       trailing: trailing,
-      onTap: onTap,
+      onTap: comingSoon ? null : onTap,
       contentPadding: EdgeInsets.zero,
     );
   }

@@ -12,6 +12,7 @@ import { EventsModule } from './modules/events/events.module';
 import { VisitorsModule } from './modules/visitors/visitors.module';
 import { EbdModule } from './modules/ebd/ebd.module';
 import { FinancialModule } from './modules/financial/financial.module';
+import { RolePermissionsModule } from './modules/role-permissions/role-permissions.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { FinancialModule } from './modules/financial/financial.module';
     VisitorsModule,
     EbdModule,
     FinancialModule,
+    RolePermissionsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

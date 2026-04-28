@@ -54,4 +54,33 @@ class EbdCubit extends Cubit<EbdState> {
       return false;
     }
   }
+
+  Future<bool> updateClass({
+    required String classId,
+    String? name,
+    String? targetAudience,
+    String? quarterName,
+    List<String>? teacherIds,
+    List<String>? studentIds,
+    List<EbdLessonInput>? lessons,
+  }) async {
+    emit(const EbdState.loading());
+    try {
+      await _repository.updateClass(
+        classId: classId,
+        name: name,
+        targetAudience: targetAudience,
+        quarterName: quarterName,
+        teacherIds: teacherIds,
+        studentIds: studentIds,
+        lessons: lessons,
+      );
+      await loadClasses();
+      return true;
+    } catch (e) {
+      final message = e is AppException ? e.message : 'Erro inesperado';
+      emit(EbdState.error(message: message));
+      return false;
+    }
+  }
 }
