@@ -81,8 +81,9 @@ describe('MemberProfilesService', () => {
         membership: {
           findFirst: jest.fn().mockResolvedValue({ id: 'm', status: 'ACTIVE' }),
         },
+        positionUser: { findFirst: jest.fn().mockResolvedValue(null) },
       };
-      mockPrismaService.forTenant.mockReturnValueOnce(tenantClient);
+      mockPrismaService.forTenant.mockReturnValueOnce(tenantClient as any);
       mockMemberProfile.count.mockResolvedValue(0);
       mockMemberProfile.create.mockResolvedValue({ id: 'profile-1' });
 
@@ -110,8 +111,9 @@ describe('MemberProfilesService', () => {
           findFirst: jest.fn().mockResolvedValue({ id: 'profile-uuid' }),
         },
         membership: { findFirst: jest.fn() },
+        positionUser: { findFirst: jest.fn().mockResolvedValue(null) },
       };
-      mockPrismaService.forTenant.mockReturnValueOnce(tenantClient);
+      mockPrismaService.forTenant.mockReturnValueOnce(tenantClient as any);
       mockMemberProfile.update.mockResolvedValue({ id: 'profile-uuid' });
 
       await service.update('church-uuid', 'profile-uuid', {
@@ -200,9 +202,10 @@ describe('MemberProfilesService', () => {
           }),
         },
       };
-      mockPrismaService.forTenant.mockReturnValue(tenantClient);
+      mockPrismaService.forTenant.mockReturnValue(tenantClient as any);
 
-      const result = await service.findByUserId(churchId, userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await service.findByUserId(churchId, userId) as any;
 
       // Identity fields must be present in the returned user object
       expect(result.user).toMatchObject({
@@ -260,9 +263,10 @@ describe('MemberProfilesService', () => {
           findFirst: jest.fn().mockResolvedValue(null),
         },
       };
-      mockPrismaService.forTenant.mockReturnValue(tenantClient);
+      mockPrismaService.forTenant.mockReturnValue(tenantClient as any);
 
-      const result = await service.findByUserId(churchId, userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await service.findByUserId(churchId, userId) as any;
 
       expect(result.user).toMatchObject({
         rg: 'MG-1234567',

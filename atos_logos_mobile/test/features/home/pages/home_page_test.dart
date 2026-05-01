@@ -9,6 +9,7 @@ import 'package:atos_logos_mobile/features/auth/presentation/cubit/auth_cubit.da
 import 'package:atos_logos_mobile/features/auth/presentation/cubit/auth_state.dart';
 import 'package:atos_logos_mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:atos_logos_mobile/features/home/presentation/cubit/home_state.dart';
+import 'package:atos_logos_mobile/features/home/presentation/pages/dashboard_page.dart';
 import 'package:atos_logos_mobile/features/home/presentation/pages/home_page.dart';
 import 'package:atos_logos_mobile/shared/widgets/custom_bottom_nav.dart';
 
@@ -48,41 +49,38 @@ void main() {
   }
 
   group('HomePage - tab switching', () {
-    testWidgets('should render the bottom nav with the three tab labels',
+    testWidgets('should render the bottom nav with Início label and EM BREVE badges for coming-soon tabs',
         (tester) async {
       await tester.pumpWidget(buildSubject());
 
       expect(find.byType(CustomBottomNav), findsOneWidget);
+      // Active/non-coming-soon tab shows its label text.
       expect(find.text('Início'), findsOneWidget);
-      expect(find.text('Agenda'), findsOneWidget);
-      expect(find.text('Notificações'), findsOneWidget);
+      // Coming-soon tabs show EM BREVE badge, not the label text.
+      expect(find.text('EM BREVE'), findsNWidgets(2));
     });
 
     testWidgets(
-        'should show the Agenda coming-soon page when the Agenda tab is tapped',
+        'should stay on Dashboard when coming-soon Agenda icon is tapped',
         (tester) async {
       await tester.pumpWidget(buildSubject());
-      await tester.tap(find.text('Agenda'));
+
+      // Coming-soon items show the icon but onTap is null — they are disabled.
+      // Tapping the 'EM BREVE' badge area does nothing.
+      await tester.tap(find.text('EM BREVE').first, warnIfMissed: false);
       await tester.pump();
 
-      // ComingSoonPage(title: 'Agenda') renders this subtitle.
-      expect(
-        find.text('Estamos trabalhando nessa funcionalidade'),
-        findsWidgets,
-      );
+      // Dashboard is still the active page (tab 0).
+      expect(find.byType(DashboardPage), findsOneWidget);
     });
 
     testWidgets(
-        'should show the Notificações coming-soon page when the Notificações tab is tapped',
+        'should show Dashboard by default when the page is first opened',
         (tester) async {
       await tester.pumpWidget(buildSubject());
-      await tester.tap(find.text('Notificações'));
       await tester.pump();
 
-      expect(
-        find.text('Estamos trabalhando nessa funcionalidade'),
-        findsWidgets,
-      );
+      expect(find.byType(DashboardPage), findsOneWidget);
     });
   });
 

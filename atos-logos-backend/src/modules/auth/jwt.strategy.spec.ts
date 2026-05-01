@@ -1,5 +1,6 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { JwtStrategy } from './jwt.strategy';
-import { JwtPayload } from '../../common/interfaces/jwt-payload.interface';
+import { JwtPayload, SelectionTokenPayload } from '../../common/interfaces/jwt-payload.interface';
 
 describe('JwtStrategy', () => {
   const originalEnv = process.env;
@@ -53,6 +54,24 @@ describe('JwtStrategy', () => {
         branchId: 'branch-uuid',
         role: 'ADMIN',
       });
+    });
+
+    it('should throw UnauthorizedException when the payload belongs to a selection token', async () => {
+      // Given — a selectionToken payload (type: 'church_selection')
+      //         This token is issued by POST /auth/login for multi-church users
+      //         and must ONLY be consumed by POST /auth/select-church.
+      const strategy = new JwtStrategy();
+      const selectionPayload: SelectionTokenPayload = {
+        sub: 'user-uuid',
+        email: 'multi@church.com',
+        type: 'church_selection',
+      };
+
+      // When — the passport pipeline calls validate() with this payload
+      // Then — UnauthorizedException is thrown, blocking access to any endpoint
+      await expect(strategy.validate(selectionPayload)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

@@ -2,27 +2,32 @@ import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
 import { PermissionsGuard } from './permissions.guard';
-import { PrismaService } from '../../prisma/prisma.service';
 import { Permission } from '../enums/permission.enum';
 import type { AuthenticatedUser } from '../interfaces/authenticated-user.interface';
+
+// Minimal stub — typed as `any` to avoid TS fighting Prisma's fluent API
+// return types (PrismaClientKnownRequestError vs jest.Mock) on findUnique.
+function buildPrismaMock() {
+  return {
+    rolePermission: {
+      findUnique: jest.fn(),
+    },
+  };
+}
 
 describe('PermissionsGuard', () => {
   let guard: PermissionsGuard;
   let reflector: jest.Mocked<Reflector>;
-  let prisma: jest.Mocked<PrismaService>;
+  let prisma: ReturnType<typeof buildPrismaMock>;
 
   beforeEach(() => {
     reflector = {
       getAllAndOverride: jest.fn(),
     } as any;
 
-    prisma = {
-      rolePermission: {
-        findUnique: jest.fn(),
-      },
-    } as any;
+    prisma = buildPrismaMock();
 
-    guard = new PermissionsGuard(reflector, prisma);
+    guard = new PermissionsGuard(reflector, prisma as any);
   });
 
   const mockExecutionContext = (user: AuthenticatedUser): ExecutionContext => {

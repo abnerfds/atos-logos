@@ -180,7 +180,7 @@ class _EditRolePermissionsPageState extends State<EditRolePermissionsPage> {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: 16,
+                bottom: 80,
                 child: Center(
                   child: FloatingActionButton.extended(
                     onPressed: _saveChanges,
@@ -207,7 +207,7 @@ class _EditRolePermissionsPageState extends State<EditRolePermissionsPage> {
     final isAdmin = role == Role.admin;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 140),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

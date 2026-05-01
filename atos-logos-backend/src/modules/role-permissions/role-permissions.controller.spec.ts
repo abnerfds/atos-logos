@@ -47,7 +47,7 @@ describe('RolePermissionsController', () => {
         },
       ];
 
-      service.findAll.mockResolvedValue(mockConfigs);
+      service.findAll.mockResolvedValue(mockConfigs as any);
 
       // When
       const result = await controller.findAll(mockUser);

@@ -1,4 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { EbdService } from './ebd.service';
 
 const churchId = 'church-1';
@@ -533,6 +534,111 @@ describe('EbdService', () => {
 
       // Then
       expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ── enrollUser ─────────────────────────────────────────────────────────
+
+  describe('enrollUser', () => {
+    const userId = 'user-to-enroll';
+
+    it('should return the created enrollment when the student is not yet enrolled', async () => {
+      // Given — class exists in this church; the student has no existing enrollment
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      const expectedEnrollment = {
+        id: 'enrollment-1',
+        classId,
+        userId,
+        user: { id: userId, name: 'Estudante' },
+      };
+      prisma.ebdEnrollment.create.mockResolvedValue(expectedEnrollment);
+
+      // When — admin enrolls the student
+      const result = await service.enrollUser(churchId, classId, userId);
+
+      // Then — Prisma create is called with the correct data
+      expect(prisma.ebdEnrollment.create).toHaveBeenCalledWith({
+        data: { classId, userId },
+        include: { user: { select: { id: true, name: true } } },
+      });
+      expect(result).toEqual(expectedEnrollment);
+    });
+
+    it('should let a P2002 unique-violation propagate when the user is already enrolled in the class', async () => {
+      // Given — class exists; student is already enrolled (unique(classId, userId) violated)
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdEnrollment.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError(
+          'Unique constraint failed on fields: (classId, userId)',
+          { code: 'P2002', clientVersion: '5.0.0', meta: { target: ['classId', 'userId'] } },
+        ),
+      );
+
+      // When — second enrollment attempt for the same student in the same class
+      const attempt = service.enrollUser(churchId, classId, userId);
+
+      // Then — the P2002 is NOT swallowed by the service; the PrismaExceptionFilter
+      //        will catch it at the HTTP layer and return 409 Conflict
+      await expect(attempt).rejects.toThrow(Prisma.PrismaClientKnownRequestError);
+      await expect(attempt).rejects.toMatchObject({ code: 'P2002' });
+    });
+
+    it('should throw NotFoundException when the class does not belong to the church', async () => {
+      // Given — class not found in this church's scope
+      prisma.ebdClass.findFirst.mockResolvedValue(null);
+
+      // When — enrollment attempt on a class from another tenant
+      const attempt = service.enrollUser(churchId, classId, userId);
+
+      // Then — NotFoundException is thrown before any enrollment write
+      await expect(attempt).rejects.toThrow(NotFoundException);
+      expect(prisma.ebdEnrollment.create).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── unenrollUser ───────────────────────────────────────────────────────
+
+  describe('unenrollUser', () => {
+    const userId = 'user-to-unenroll';
+
+    it('should delete the enrollment when the student is enrolled in the class', async () => {
+      // Given — class exists; student has an active enrollment
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      const existingEnrollment = { id: 'enrollment-1', classId, userId };
+      prisma.ebdEnrollment.findFirst.mockResolvedValue(existingEnrollment);
+      prisma.ebdEnrollment.delete.mockResolvedValue(existingEnrollment);
+
+      // When — admin removes the student from the class
+      await service.unenrollUser(churchId, classId, userId);
+
+      // Then — enrollment is deleted by its primary key
+      expect(prisma.ebdEnrollment.delete).toHaveBeenCalledWith({
+        where: { id: existingEnrollment.id },
+      });
+    });
+
+    it('should throw NotFoundException when the student is not enrolled in the class', async () => {
+      // Given — class exists; but no enrollment row found for this student
+      prisma.ebdClass.findFirst.mockResolvedValue({ id: classId, churchId });
+      prisma.ebdEnrollment.findFirst.mockResolvedValue(null);
+
+      // When — unenroll attempt for a non-enrolled student
+      const attempt = service.unenrollUser(churchId, classId, userId);
+
+      // Then — NotFoundException prevents a spurious delete call
+      await expect(attempt).rejects.toThrow(NotFoundException);
+      expect(prisma.ebdEnrollment.delete).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when the class does not belong to the church', async () => {
+      // Given — class not found for this tenant
+      prisma.ebdClass.findFirst.mockResolvedValue(null);
+
+      // When / Then
+      await expect(service.unenrollUser(churchId, classId, userId)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(prisma.ebdEnrollment.findFirst).not.toHaveBeenCalled();
     });
   });
 });

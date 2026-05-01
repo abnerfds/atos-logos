@@ -1,25 +1,27 @@
 import { NotFoundException } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { RolePermissionsService } from './role-permissions.service';
-import { PrismaService } from '../../prisma/prisma.service';
 import { Permission } from '../../common/enums/permission.enum';
+
+function buildPrismaMock() {
+  return {
+    rolePermission: {
+      findUnique: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+    },
+  };
+}
 
 describe('RolePermissionsService', () => {
   let service: RolePermissionsService;
-  let prisma: jest.Mocked<PrismaService>;
+  let prisma: ReturnType<typeof buildPrismaMock>;
 
   const churchId = 'church-123';
 
   beforeEach(() => {
-    prisma = {
-      rolePermission: {
-        findUnique: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-      },
-    } as any;
-
-    service = new RolePermissionsService(prisma);
+    prisma = buildPrismaMock();
+    service = new RolePermissionsService(prisma as any);
   });
 
   describe('findAll', () => {

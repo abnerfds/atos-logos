@@ -234,7 +234,9 @@ describe('Memberships + Auth identity fields (e2e)', () => {
       motherName: 'Patched Mother',
       name: 'Original Name',
       email: 'patch-target@test.com',
-      phone: '+5531999990000',
+      // DTOs strip non-digit chars from phone (@Transform digitsOnly), so
+      // '+5531999990000' is stored as '5531999990000'.
+      phone: '5531999990000',
       cpf: '12345678901',
     });
   });
