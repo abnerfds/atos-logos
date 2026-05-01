@@ -9,17 +9,16 @@ services:
   db:
     image: postgres:18.3-alpine3.23
     container_name: atos_logos_db
-    restart: unless-stopped
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend_net
+    # Sem exposição de porta — banco acessível apenas dentro da rede interna
 
   api:
     build:
@@ -27,13 +26,13 @@ services:
       dockerfile: Dockerfile
       target: runtime
     container_name: atos_logos_api
-    restart: unless-stopped
+    restart: always
     ports:
-      - "3000:3000"
+      - "80:3000"
     environment:
       DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3000
     depends_on:
       - db

@@ -23,7 +23,12 @@
       "Bash(dart analyze:*)",
       "Bash(npx ts-node -e ':*)",
       "Bash(grep -E \"^\\\\.env|package\\\\.json$\")",
-      "Bash(node tool/coverage_home.js)"
+      "Bash(node tool/coverage_home.js)",
+      "Bash(rtk read *)",
+      "Bash(rtk ls *)",
+      "Bash(rtk find *)",
+      "Bash(rtk tsc *)",
+      "Bash(rtk grep *)"
     ]
   }
 }
