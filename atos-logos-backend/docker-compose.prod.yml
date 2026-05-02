@@ -18,13 +18,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend_net
-    # Sem exposição de porta — banco acessível apenas dentro da rede interna
 
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: runtime
+    image: sa-saopaulo-1.ocir.io/grz6egart44y/atos-logos-api:latest
     container_name: atos_logos_api
     restart: always
     ports:

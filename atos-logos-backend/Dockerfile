@@ -7,9 +7,12 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+# GERA O CLIENT DO PRISMA ANTES DO BUILD DO NESTJS
+RUN npx prisma generate 
 RUN npm run build
 
-# Prune dev dependencies so the runtime stage only ships production deps
+# Remove dependências de dev para manter a imagem leve
 RUN npm prune --omit=dev
 
 # ── Stage 2: Runtime ──────────────────────────────────────────────────────────

@@ -1,36 +1,14 @@
-#!/usr/bin/env bash
-# Script de deploy para Oracle Cloud (usuário: deploy)
-# Uso: ./deploy.sh [branch]
+#!/bin/bash
+cd /home/deploy/apps/atos-logos
 
-set -euo pipefail
+# 1. Baixa a nova imagem do OCI Registry
+docker compose pull api
 
-BRANCH="${1:-main}"
-APP_DIR="$(cd "$(dirname "$0")/atos-logos-backend" && pwd)"
+# 2. Roda a migração em contêiner temporário e o descarta ao final
+docker compose run --rm api npx prisma migrate deploy
 
-echo "==> Atualizando código (branch: $BRANCH)..."
-git -C "$(dirname "$0")" pull origin "$BRANCH"
+# 3. Sobe a aplicação principal de forma destacada
+docker compose up -d --no-deps api
 
-echo "==> Acessando diretório da API..."
-cd "$APP_DIR"
-
-echo "==> Verificando arquivo .env..."
-if [[ ! -f .env ]]; then
-  echo "ERRO: arquivo .env não encontrado em $APP_DIR"
-  echo "Copie .env.example para .env e preencha os valores."
-  exit 1
-fi
-
-echo "==> Parando containers existentes..."
-docker compose -f docker-compose.prod.yml down
-
-echo "==> Subindo containers com rebuild..."
-docker compose -f docker-compose.prod.yml up -d --build
-
-echo "==> Aguardando banco ficar pronto..."
-sleep 5
-
-echo "==> Rodando migrations Prisma..."
-docker compose -f docker-compose.prod.yml exec api npx prisma migrate deploy
-
-echo "==> Deploy concluído."
-docker compose -f docker-compose.prod.yml ps
+# 4. Remove imagens antigas soltas para não lotar o disco da VM
+# docker image prune -f
