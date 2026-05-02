@@ -16,6 +16,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # 1. ADICIONADO: Emulador para permitir build ARM em máquina Intel
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -32,6 +36,8 @@ jobs:
           context: ./atos-logos-backend
           file: ./atos-logos-backend/Dockerfile
           push: true
+          # 2. ADICIONADO: Força o build para a arquitetura da VM da Oracle
+          platforms: linux/arm64
           # Monta a URL dinamicamente baseada nos seus Secrets
           tags: ${{ secrets.OCI_REGISTRY }}/${{ secrets.OCI_NAMESPACE }}/atos-logos-api:latest
           cache-from: type=gha
