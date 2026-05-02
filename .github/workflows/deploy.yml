@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'atos-logos-backend/**' # Só roda se houver alteração na pasta do backend
+    # paths:
+    #   - 'atos-logos-backend/**' # Só roda se houver alteração na pasta do backend
 
 jobs:
   build-and-push:
