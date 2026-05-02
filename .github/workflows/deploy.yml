@@ -40,8 +40,8 @@ jobs:
           platforms: linux/arm64
           # Monta a URL dinamicamente baseada nos seus Secrets
           tags: ${{ secrets.OCI_REGISTRY }}/${{ secrets.OCI_NAMESPACE }}/atos-logos-api:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
   deploy:
     name: Deploy to Ubuntu VM
