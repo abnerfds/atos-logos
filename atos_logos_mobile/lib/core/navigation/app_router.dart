@@ -25,6 +25,7 @@ import '../../features/role_permissions/presentation/cubit/role_permissions_cubi
 import '../../shared/widgets/authenticated_shell.dart';
 import '../../shared/widgets/coming_soon_page.dart';
 import '../di/injection.dart';
+import '../network/session_expired_notifier.dart';
 import '../../features/profile/presentation/cubit/profile_cubit.dart';
 import '../../features/branches/presentation/cubit/branches_cubit.dart';
 import '../../features/members/presentation/cubit/members_cubit.dart';
@@ -32,6 +33,7 @@ import 'auth_redirect.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
+  refreshListenable: getIt<SessionExpiredNotifier>(),
   redirect: (context, state) async {
     // Persisted token acts as the source of truth for "logged in".
     // Token validity (expiry, revocation) is enforced by the API and

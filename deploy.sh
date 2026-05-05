@@ -1,14 +1,24 @@
 #!/bin/bash
 cd /home/deploy/apps/atos-logos
 
-# 1. Baixa a nova imagem do OCI Registry
-docker compose pull api
+echo "🚀 Iniciando Deploy..."
 
-# 2. Roda a migração em contêiner temporário e o descarta ao final
+# 1. Atualiza as imagens
+docker compose pull
+
+# 2. Garante que o banco está de pé antes de migrar
+docker compose up -d db
+echo "⏳ Aguardando banco de dados estabilizar..."
+sleep 5 
+
+# 3. Roda a migração
+echo "🔄 Aplicando Migrations..."
 docker compose run --rm api npx prisma migrate deploy
 
-# 3. Sobe a aplicação principal de forma destacada
-docker compose up -d --no-deps api
+# 4. Sobe/Atualiza a API
+echo "🆙 Subindo a API..."
+docker compose up -d api
 
-# 4. Remove imagens antigas soltas para não lotar o disco da VM
-# docker image prune -f
+# 5. Limpeza
+docker image prune -f
+echo "✅ Deploy finalizado com sucesso!"

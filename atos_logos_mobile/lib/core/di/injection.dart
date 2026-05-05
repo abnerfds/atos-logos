@@ -5,15 +5,21 @@ import 'package:dio/dio.dart';
 
 import 'injection.config.dart';
 import '../network/dio_client.dart';
+import '../network/session_expired_notifier.dart';
 
 final getIt = GetIt.instance;
 
 @InjectableInit(
-  initializerName: 'init', // default
-  preferRelativeImports: true, // default
-  asExtension: true, // default
+  initializerName: 'init',
+  preferRelativeImports: true,
+  asExtension: true,
 )
-void configureDependencies() => getIt.init();
+void configureDependencies() {
+  getIt.registerLazySingleton<SessionExpiredNotifier>(
+    () => SessionExpiredNotifier(),
+  );
+  getIt.init();
+}
 
 @module
 abstract class AppModule {
@@ -21,5 +27,8 @@ abstract class AppModule {
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
 
   @lazySingleton
-  Dio get dio => DioClient.getInstance(storage: getIt<FlutterSecureStorage>());
+  Dio get dio => DioClient.getInstance(
+        storage: getIt<FlutterSecureStorage>(),
+        sessionNotifier: getIt<SessionExpiredNotifier>(),
+      );
 }

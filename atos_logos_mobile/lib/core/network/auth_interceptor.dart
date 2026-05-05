@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'session_expired_notifier.dart';
+
 /// Keys kept here (not imported from the auth feature) so this core
 /// infrastructure file does not reach into a feature folder.
 const String _kAccessTokenKey = 'access_token';
@@ -30,8 +32,9 @@ const String kAuthRetryMarker = '_authRetried';
 class AuthInterceptor extends Interceptor {
   final FlutterSecureStorage _storage;
   final Dio _refreshDio;
+  final SessionExpiredNotifier _sessionNotifier;
 
-  AuthInterceptor(this._storage, this._refreshDio);
+  AuthInterceptor(this._storage, this._refreshDio, this._sessionNotifier);
 
   @override
   Future<void> onRequest(
@@ -114,5 +117,6 @@ class AuthInterceptor extends Interceptor {
   Future<void> _clearTokens() async {
     await _storage.delete(key: _kAccessTokenKey);
     await _storage.delete(key: _kRefreshTokenKey);
+    _sessionNotifier.notifySessionExpired();
   }
 }

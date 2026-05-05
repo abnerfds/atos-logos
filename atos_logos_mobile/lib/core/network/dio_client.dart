@@ -4,16 +4,26 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../constants/api_constants.dart';
 import 'auth_interceptor.dart';
+import 'session_expired_notifier.dart';
 
 class DioClient {
   static Dio? _instance;
 
-  static Dio getInstance({FlutterSecureStorage? storage}) {
-    _instance ??= _createDio(storage ?? const FlutterSecureStorage());
+  static Dio getInstance({
+    FlutterSecureStorage? storage,
+    SessionExpiredNotifier? sessionNotifier,
+  }) {
+    _instance ??= _createDio(
+      storage ?? const FlutterSecureStorage(),
+      sessionNotifier ?? SessionExpiredNotifier(),
+    );
     return _instance!;
   }
 
-  static Dio _createDio(FlutterSecureStorage storage) {
+  static Dio _createDio(
+    FlutterSecureStorage storage,
+    SessionExpiredNotifier sessionNotifier,
+  ) {
     final baseOptions = BaseOptions(
       baseUrl: ApiConstants.baseUrl,
       connectTimeout: ApiConstants.connectTimeout,
@@ -28,7 +38,7 @@ class DioClient {
     final refreshDio = Dio(baseOptions);
 
     final dio = Dio(baseOptions);
-    dio.interceptors.add(AuthInterceptor(storage, refreshDio));
+    dio.interceptors.add(AuthInterceptor(storage, refreshDio, sessionNotifier));
 
     // Debug-only request/response logging. The `logPrint` closure is wired
     // up during DI bootstrap but is only ever invoked by the Dio runtime on
