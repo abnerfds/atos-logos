@@ -25,7 +25,9 @@ jobs:
 
       - name: Copiar arquivos para o servidor
         run: | 
-            echo "${{ secrets.ENV_PROD }}" | sed 's/[^0-9]//g' > .env
+            cat << 'EOF' > .env
+            ${{ secrets.ENV_PROD }}
+            EOF
 
             scp .env "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/.env.atos-logos-backend"
             scp atos-logos-backend/docker-compose.prod.yml "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/docker-compose.atos-logos-backend"
