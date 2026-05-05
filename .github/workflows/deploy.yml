@@ -16,11 +16,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
       - name: Copiar arquivos para o servidor
         run: | 
             echo "${{ secrets.ENV_PROD }}" | sed 's/[^0-9]//g' > .env
 
             scp .env "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/.env.atos-logos-backend"
+
 
       # # 1. ADICIONADO: Emulador para permitir build ARM em máquina Intel
       # - name: Set up QEMU
@@ -58,6 +66,7 @@ jobs:
   #     - name: Execute Deploy Script via SSH
   #       uses: appleboy/ssh-action@v1.0.3
   #       with:
+  ## MUDAR A FORMA DE SE CONECTAR ABAIXO
   #         host: ${{ secrets.SSH_HOST }}
   #         username: ${{ secrets.SSH_USER }}
   #         key: ${{ secrets.SSH_PRIVATE_KEY }}
