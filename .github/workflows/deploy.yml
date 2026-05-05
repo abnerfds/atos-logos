@@ -28,6 +28,7 @@ jobs:
             echo "${{ secrets.ENV_PROD }}" | sed 's/[^0-9]//g' > .env
 
             scp .env "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/.env.atos-logos-backend"
+            scp atos-logos-backend/docker-compose.prod.yml "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/docker-compose.atos-logos-backend"
 
 
       # # 1. ADICIONADO: Emulador para permitir build ARM em máquina Intel
