@@ -22,5 +22,6 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
   Logger.log(`Application running on port ${port}`, 'Bootstrap');
+  console.log('dafad')
 }
 bootstrap();
