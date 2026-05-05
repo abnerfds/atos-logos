@@ -80,10 +80,10 @@ jobs:
             echo '${OCI_AUTH_TOKEN}' | docker login ${OCI_REGISTRY} -u '${OCI_USERNAME}' --password-stdin
             
             # 2. Faz o pull da imagem recém-buildada usando os arquivos copiados anteriormente
-            docker compose -f docker-compose.prod.yml --env-file ~/.env.atos-logos-backend pull
+            docker compose -f docker-compose.prod.yml --env-file ~/.env.atos-logos-backend pull api
             
             # 3. Sobe/Atualiza os containers em background (-d)
-            docker compose -f docker-compose.prod.yml --env-file ~/.env.atos-logos-backend up -d
+            docker compose -f docker-compose.prod.yml --env-file ~/.env.atos-logos-backend up -d api
             
             # 4. Remove imagens antigas que ficaram órfãs após a atualização
             docker image prune -f
