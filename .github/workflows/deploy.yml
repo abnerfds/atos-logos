@@ -60,12 +60,25 @@ jobs:
       #     cache-from: type=gha
       #     cache-to: type=gha,mode=max
 
-  # deploy:
-  #   name: Deploy to Ubuntu VM
-  #   needs: build-and-push
-  #   runs-on: ubuntu-latest
+  deploy:
+    name: Deploy to Ubuntu VM
+    needs: build-and-push
+    runs-on: ubuntu-latest
     
-  #   steps:
+    steps:
+      - name: Faz pull para o container na VPS
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+
+            cleanup() {
+              rm -rf ~/.env.atos-logos-backend || true
+              rm -rf ~/docker-compose.atos-logos-backend || true
+            }
+            trap cleanup EXIT
+
+            docker compose -f ~/docker-compose.atos-logos-backend --env-file ~/.env.atos-logos-backend up -d
+          EOF
+
   #     - name: Execute Deploy Script via SSH
   #       uses: appleboy/ssh-action@v1.0.3
   #       with:
@@ -78,3 +91,4 @@ jobs:
   #           chmod +x /home/deploy/apps/atos-logos/deploy.sh
   #           # Executa o script
   #           /home/deploy/apps/atos-logos/deploy.sh
+
