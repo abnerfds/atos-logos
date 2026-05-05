@@ -14,27 +14,27 @@ jobs:
     
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # 1. ADICIONADO: Emulador para permitir build ARM em máquina Intel
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@4
 
       - name: Login to OCI Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ secrets.OCI_REGISTRY }}
           username: ${{ secrets.OCI_USERNAME }}
           password: ${{ secrets.OCI_AUTH_TOKEN }}
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ./atos-logos-backend
-          file: ./atos-logos-backend/Dockerfile
+          # file: ./atos-logos-backend/Dockerfile
           push: true
           # 2. ADICIONADO: Força o build para a arquitetura da VM da Oracle
           platforms: linux/arm64
@@ -51,39 +51,69 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Copiar arquivos para o servidor
-        run: | 
-            cat << 'EOF' > .env
-            ${{ secrets.ENV_PROD }}
-            EOF
+        env:
+          ENV_PROD: ${{ secrets.ENV_PROD }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          # Criar arquivo .env de forma mais limpa e imune a quebras
+          echo "$ENV_PROD" > .env
+          
+          # Copia o .env para a home do usuário (como na sua imagem)
+          scp .env "${SSH_USER}@${SSH_HOST}:~/.env.atos-logos-backend"
+          
+          # Copia o docker-compose (certifique-se que o caminho de destino exista na VPS)
+          # Exemplo: Se vai para ~/app/, essa pasta ~/app já deve existir lá!
+          scp atos-logos-backend/docker-compose.prod.yml "${SSH_USER}@${SSH_HOST}:~/"
 
-            scp .env "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/.env.atos-logos-backend"
-            scp atos-logos-backend/docker-compose.prod.yml "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/docker-compose.atos-logos-backend"
+      - name: Executar Deploy na VPS (Pull e Up)
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          OCI_REGISTRY: ${{ secrets.OCI_REGISTRY }}
+          OCI_USERNAME: ${{ secrets.OCI_USERNAME }}
+          OCI_AUTH_TOKEN: ${{ secrets.OCI_AUTH_TOKEN }}
+        run: |
+          # Executa os comandos remotamente na sua VPS da Oracle
+          ssh "${SSH_USER}@${SSH_HOST}" "
+            # 1. Autentica o Docker da VPS no seu OCI Registry privado
+            echo '${OCI_AUTH_TOKEN}' | docker login ${OCI_REGISTRY} -u '${OCI_USERNAME}' --password-stdin
+            
+            # 2. Faz o pull da imagem recém-buildada usando os arquivos copiados anteriormente
+            docker compose -f docker-compose.prod.yml --env-file ~/.env.atos-logos-backend pull
+            
+            # 3. Sobe/Atualiza os containers em background (-d)
+            docker compose -f docker-compose.prod.yml --env-file ~/.env.atos-logos-backend up -d
+            
+            # 4. Remove imagens antigas que ficaram órfãs após a atualização
+            docker image prune -f
+          "
 
-  deploy:
-    name: Deploy to Ubuntu VM
-    needs: build-and-push
-    runs-on: ubuntu-latest
+  # deploy:
+  #   name: Deploy to Ubuntu VM
+  #   needs: build-and-push
+  #   runs-on: ubuntu-latest
     
-    steps:
-      - name: Configurar SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+  #   steps:
+  #     - name: Configurar SSH
+  #       run: |
+  #         mkdir -p ~/.ssh
+  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+  #         chmod 600 ~/.ssh/id_rsa
+  #         ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Faz pull para o container na VPS
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+  #     - name: Faz pull para o container na VPS
+  #       run: |
+  #         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
 
-            cleanup() {
-              rm -rf ~/.env.atos-logos-backend || true
-              rm -rf ~/docker-compose.atos-logos-backend || true
-            }
-            trap cleanup EXIT
+  #           cleanup() {
+  #             rm -rf ~/.env.atos-logos-backend || true
+  #             rm -rf ~/docker-compose.atos-logos-backend || true
+  #           }
+  #           trap cleanup EXIT
 
-            docker compose -f ~/docker-compose.atos-logos-backend --env-file ~/.env.atos-logos-backend up -d
-          EOF
+  #           docker compose -f ~/docker-compose.atos-logos-backend --env-file ~/.env.atos-logos-backend up -d
+  #         EOF
 
   #     - name: Execute Deploy Script via SSH
   #       uses: appleboy/ssh-action@v1.0.3
